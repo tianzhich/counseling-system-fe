@@ -1,8 +1,13 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { Hello } from "./Hello";
+import { render } from 'react-dom';
+import Root from "./Root";
+import configureStore from './common/storeConfig';
+import routes from './common/routeConfig';
 
-ReactDOM.render(
-    <Hello compiler="TypeScript" framework="React" />,
-    document.getElementById("root")
-);
+const store = configureStore({})
+
+function renderApp(app: any) {
+    render(app, document.getElementById('root'));
+}
+
+renderApp(<Root store={store} routes={routes} />);
