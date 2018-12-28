@@ -38,7 +38,6 @@ function renderRoute(route: IRoute): ReactElement<RouteProps> {
             exact={route.exact ? route.exact : undefined}
         />
     } else {
-        console.log(route);
         return (
             <Route
                 key={route.path}
