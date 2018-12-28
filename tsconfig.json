@@ -1,14 +1,21 @@
 {
     "compilerOptions": {
+        "baseUrl": ".",
         "outDir": "./dist/",
         "sourceMap": true,
         "noImplicitAny": true,
+        "suppressImplicitAnyIndexErrors": true,
         "module": "esnext",
         "moduleResolution": "node",
         "target": "es5",
         "jsx": "react",
         "allowSyntheticDefaultImports": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "lib": ["es2015", "dom"],
+        "paths": {
+            "@src/*": ["src/*"],
+            "@features/*": ["src/features/*"],
+        },
     },
     "include": [
         "./src/**/*"
