@@ -2,7 +2,7 @@ files="
 node_modules/react/umd/react.production.min.js
 node_modules/react-dom/umd/react-dom.production.min.js
 ";
-umd=dist/assets/lib.umd.min.js
+umd=public/assets/lib.umd.min.js
 if [ -f $umd ];then
   rm $umd
 fi
@@ -15,4 +15,4 @@ for file in $files;do
   fi
 done
 
-cp -rf node_modules/\@ant-design/icons/lib/umd.js dist/assets/antd.icons.min.js
+cp -rf node_modules/\@ant-design/icons/lib/umd.js public/assets/antd.icons.min.js

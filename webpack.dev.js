@@ -1,5 +1,7 @@
 const merge = require('webpack-merge');
 const common = require('./webpack.common');
+const htmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 
 module.exports = merge(common, {
     mode: 'development',
@@ -16,8 +18,17 @@ module.exports = merge(common, {
             }
         ]
     },
+    output: {
+        path: path.resolve(__dirname, './public'),
+        filename: 'static/js/bundle.js',
+    },
+    plugins: [
+        new htmlWebpackPlugin({
+            template: 'public/index.html'
+        })
+    ],
     devServer: {
-        contentBase: './dist',
+        contentBase: './public',
         historyApiFallback: true
     }
 });

@@ -3,6 +3,7 @@ const common = require('./webpack.common');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
+
 module.exports = merge(common, {
     mode: 'production',
     externals: {
@@ -17,5 +18,9 @@ module.exports = merge(common, {
     },
     plugins: [
         new BundleAnalyzerPlugin(),
-    ]
+    ],
+    output: {
+        filename: 'bundle.js',
+        path: path.resolve(__dirname, 'dist')
+    }
 })
