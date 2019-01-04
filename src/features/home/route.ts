@@ -1,11 +1,19 @@
+import App from '../common/App';
+
 const loader = (name: string) => async () => {
     const entrance = await import('./');
     return entrance[name];
 };
 
-export default {
-    path: '/',
+const childRoutes = [{
+    path: '/home',
     name: 'Home',
     loader: loader('Home'),
-    exact: true
+}]
+
+export default {
+    path: '/home',
+    name: '',
+    component: App,
+    childRoutes
 };
