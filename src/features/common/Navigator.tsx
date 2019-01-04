@@ -14,7 +14,7 @@ export default class Navigator extends React.Component<INavigatorProps, {}> {
                     selectedKeys={[location.pathname]}
                     style={{ lineHeight: '64px' }}
                 >
-                    <Menu.Item key="/">
+                    <Menu.Item key="/home">
                         <NavLink to="/">首页</NavLink>
                     </Menu.Item>
                     <Menu.Item key="/article">
@@ -23,8 +23,8 @@ export default class Navigator extends React.Component<INavigatorProps, {}> {
                     <Menu.Item key="/forum">
                         <NavLink to="/forum">论坛</NavLink>
                     </Menu.Item>
-                    <Menu.Item key="/todo">
-                        <NavLink to="/todo">待办</NavLink>
+                    <Menu.Item key="/login">
+                        <NavLink to="/login">登录</NavLink>
                     </Menu.Item>
                 </Menu>
             )} />
