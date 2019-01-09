@@ -1,0 +1,38 @@
+@import '../../styles/global.less';
+
+.counseling-panel {
+
+}
+
+.condition-panel {
+    background-color: @bg-color-white;
+    padding-right: 10px;
+    .ant-tag {
+        font-size: 14px;
+    }
+    .ant-menu {
+        line-height: 60px;
+    }
+    .condition-container {
+        flex-grow: 1;
+        height: 100%;
+        display: inline-flex;
+        align-items: center;
+    }
+    .method, .city {
+        .condition-container {
+            border-bottom: @border-thick;
+        }
+    }
+    .topic, .method, .city, .isOnline {
+        display: flex;
+        align-items: center;
+        height: 80px;
+        > span:first-of-type {
+            display: inline-block;
+            width: 100px;
+            text-align: center;
+            font-size: 16px;
+        }
+    }
+}

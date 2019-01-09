@@ -20,8 +20,8 @@ export default class Navigator extends React.Component<INavigatorProps, {}> {
                     <Menu.Item key="/article">
                         <NavLink to="/article">阅读</NavLink>
                     </Menu.Item>
-                    <Menu.Item key="/forum">
-                        <NavLink to="/forum">论坛</NavLink>
+                    <Menu.Item key="/counseling">
+                        <NavLink to="/counseling">咨询</NavLink>
                     </Menu.Item>
                     <Menu.Item key="/login">
                         <NavLink to="/login">登录</NavLink>
