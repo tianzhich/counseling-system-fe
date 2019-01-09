@@ -1,0 +1,18 @@
+import React from 'react';
+
+interface I<%= featureUpperName %>Props {}
+
+interface I<%= featureUpperName %>State {}
+
+export default class <%= featureUpperName %> extends React.Component<I<%= featureUpperName %>Props, I<%= featureUpperName %>State> {
+    constructor(props: I<%= featureUpperName %>Props) {
+        super(props);
+        this.state = {};
+    }
+
+    render() {
+        return (
+            <h2>My Home</h2>
+        )
+    }
+}

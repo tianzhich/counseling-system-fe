@@ -1,0 +1,19 @@
+import App from '../common/App';
+
+const loader = (name: string) => async () => {
+    const entrance = await import('./');
+    return entrance[name];
+};
+
+const childRoutes = [{
+    path: '/<%= featureName %>',
+    name: '<%= featureUpperName %>',
+    loader: loader('<%= featureUpperName %>'),
+}]
+
+export default {
+    path: '/<%= featureName %>',
+    name: '',
+    component: App,
+    childRoutes
+};
