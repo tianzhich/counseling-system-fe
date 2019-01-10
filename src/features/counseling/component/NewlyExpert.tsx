@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Avatar } from "antd";
 
-import { newlyExperts, Expert } from "./fakeData";
+import { Expert } from "@types";
 
 import './NewlyExpert.less';
 
@@ -36,6 +36,9 @@ function Title(props: Partial<Expert>) {
 }
 
 export default class NewlyExpert extends React.Component<INewlyExpertProps, {}> {
+    componentDidMount() {
+        // Todo: get newly experts
+    }
     render() {
         return (
             <div className="newly-expert">

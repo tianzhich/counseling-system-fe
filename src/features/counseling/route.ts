@@ -1,4 +1,4 @@
-import App from '../common/App';
+import App from '@features/common/component/App';
 
 const loader = (name: string) => async () => {
     const entrance = await import('./');

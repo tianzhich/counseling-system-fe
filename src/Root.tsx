@@ -6,7 +6,7 @@ import { IRoute } from "./common/routeConfig";
 import { Route, RouteProps, Switch, Redirect, Router } from "react-router";
 import Loadable from 'react-loadable';
 import { AsyncComponentLoader } from "@src/common/routeConfig";
-import Loading from "./features/common/Loading";
+import Loading from "./features/common/component/Loading";
 
 interface IRootProps {
     store: any

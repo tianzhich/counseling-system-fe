@@ -1,8 +1,10 @@
 import React from 'react';
 import { Menu, Tag } from "antd";
-import { topicMap, methodMap, cityMap } from '@src/map';
+import { topicMap, methodMap, cityMap } from '@src/features/common/map';
+import ExpertList from './ExpertList';
 
 import './CounselingPanel.less';
+import { newlyExperts } from '@src/features/common/fakeData';
 
 const { CheckableTag } = Tag;
 
@@ -127,6 +129,7 @@ export default class CounselingPanel extends React.Component<ICounselingPanelPro
                     isOnline={this.state.condition.isOnline}
                     onConditionChange={this.handleConditionChange}
                 />
+                <ExpertList experts={newlyExperts}/>
             </div>
         )
     }

@@ -1,9 +1,9 @@
 import React from 'react';
-import NewlyExpert from './NewlyExpert';
+import NewlyExpert from './component/NewlyExpert';
 import { Button, Icon } from "antd";
-import CounselingPanel from './CounselingPanel';
+import CounselingPanel from './component/CounselingPanel';
 
-import { newlyExperts } from './fakeData';
+import { newlyExperts } from '../common/fakeData';
 
 import './Counseling.less';
 

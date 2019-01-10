@@ -1,0 +1,76 @@
+@import '~@src/styles/global.less';
+.query-bar {
+    background-color: @bg-color-white;
+    display: flex;
+    height: 60px;
+    align-items: center;
+    position: relative;
+    margin-bottom: 10px;
+    >span:first-of-type {
+        flex-basis: 120px;
+        text-align: center;
+        border-right: @border-thick;
+    }
+    >span:last-of-type {
+        width: 250px;
+        position: absolute;
+        right: 20px;
+        input {
+            font-size: 12px;
+        }
+    }
+}
+
+.expert-list {
+    .ant-card {
+        border: none;
+    }
+    .ant-card-body {
+        margin: 0 20px;
+        padding: 20px 0;
+        border-bottom: @border-thick;
+    }
+    .ant-avatar {
+        height: 100px;
+        width: 100px;
+    }
+    .ant-card-meta-title {
+        display: flex;
+        align-items: center;
+        .name {
+            font-size: 18px;
+            font-weight: 400;
+            width: 50px;
+        }
+        .description {
+            flex-grow: 1;
+            font-size: 14px;
+            font-weight: 200;
+        }
+    }
+    .ant-card-meta-description {
+        .motto {
+            height: 50px;
+            font-weight: 500;
+            padding-right: 70px;
+        }
+        .footer {
+            display: flex;
+            padding-right: 70px;
+            .workYears,
+            .goodRate,
+            .price {
+                width: 120px;
+            }
+        }
+    }
+}
+
+.pagination-wrapper {
+    background-color: @bg-color-white;
+    ul {
+        height: 60px;
+        text-align: center;
+        line-height: 60px;
+    }
+}

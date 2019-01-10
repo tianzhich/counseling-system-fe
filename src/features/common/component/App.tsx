@@ -21,7 +21,7 @@ export default class App extends React.Component<IAppProps, {}> {
                         <div className="pcs-content">{this.props.children}</div>
                     </Content>
                     <Footer>
-                        Ant Design ©2018 Created by Ant UED
+                        Zhi Psychological Counseling System ©2018 Created by Tian Zhi
                     </Footer>
                 </Layout>
             </div>
