@@ -6,6 +6,7 @@
     align-items: center;
     position: relative;
     margin-bottom: 10px;
+    border-radius: @border-radius;
     >span:first-of-type {
         flex-basis: 120px;
         text-align: center;
@@ -22,8 +23,13 @@
 }
 
 .expert-list {
+    border-radius: @border-radius;
     .ant-card {
         border: none;
+    }
+    .ant-card:first-of-type {
+        border-top-left-radius: @border-radius;
+        border-top-right-radius: @border-radius;
     }
     .ant-card-body {
         margin: 0 20px;
@@ -68,6 +74,8 @@
 
 .pagination-wrapper {
     background-color: @bg-color-white;
+    border-bottom-right-radius: @border-radius;
+    border-bottom-left-radius: @border-radius;
     ul {
         height: 60px;
         text-align: center;

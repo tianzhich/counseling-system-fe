@@ -80,9 +80,9 @@ export default class ExpertList extends React.Component<IExpertListProps, IExper
                             <ExpertListItem key={expert.id} {...expert} />
                         )
                     }
-                </div>
-                <div className="pagination-wrapper">
-                    <Pagination total={120} />
+                    <div className="pagination-wrapper">
+                        <Pagination total={120} />
+                    </div>
                 </div>
             </div>
         )
