@@ -27,12 +27,12 @@ export default class Counseling extends React.Component<ICounselingProps, ICouns
 
     render() {
         return (
-            <div className="psc-counseling-wrapper">
-                <div className="psc-counseling-newly-expert">
+            <div className="pcs-counseling-wrapper">
+                <div className="pcs-counseling-newly-expert">
                     <NewlyExpert experts={newlyExperts} />
                     <ApplyButton />
                 </div>
-                <div className="psc-counseling">
+                <div className="pcs-counseling">
                     <CounselingPanel />
                 </div>
             </div>
