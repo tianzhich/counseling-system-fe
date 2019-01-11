@@ -6,13 +6,9 @@ export const conditionMap = {
 
 export const topicMap = {
     all: '不限',
-    marriage: '婚恋',
-    family: '家庭',
-    work: '职场',
-    growth: '成长',
-    learn: '学习',
+    growth: '个人成长',
+    love: '恋爱婚姻',
     geriatric: '老年心理',
-    sex: '性心理'
 }
 
 export const methodMap = {
