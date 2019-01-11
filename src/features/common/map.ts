@@ -25,3 +25,13 @@ export const cityMap = {
     guangzhou: '广州',
     shenzhen: '深圳'
 }
+
+export const articleTopicMap = {
+    all: "全部",
+    psychology: "心理科普",
+    love: "婚恋情感",
+    family: "家庭关系",
+    growth: "成长学习",
+    workSkill: "职场技能",
+    hotTopic: "热点"
+}

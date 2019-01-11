@@ -1,6 +1,7 @@
 import HomeRoute from "../features/home/route";
 import LoginRoute from "../features/login/route";
 import CounselingRoute from "../features/counseling/route";
+import ArticleRoute from "../features/article/route";
 
 export type AsyncComponentLoader = () => Promise<any>;
 
@@ -14,7 +15,7 @@ export interface IRoute {
     redirect?: string
 }
 
-const childRoutes: IRoute[] = [HomeRoute, LoginRoute, CounselingRoute]
+const childRoutes: IRoute[] = [HomeRoute, LoginRoute, CounselingRoute, ArticleRoute]
 
 const routes = [{
     path: '/',

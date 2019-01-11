@@ -1,0 +1,50 @@
+@import "~@src/styles/global.less";
+.popular-list {
+    width: 320px;
+    margin-left: 20px;
+    background-color: @bg-color-white;
+    border-radius: @border-radius;
+    height: fit-content;
+    .title-bar {
+        height: 40px;
+        line-height: 50px;
+        font-size: 16px;
+        text-align: center;
+        border-bottom: @border-thick;
+        margin: 0 40px;
+    }
+    ol {
+        list-style-type: none;
+        padding-left: 0;
+    }
+}
+
+.list-item {
+    display: flex;
+    margin-bottom: 5px;
+    .number {
+        text-align: center;
+        flex-basis: 40px;
+        flex-shrink: 0;
+        font-size: 28px;
+        color: rgba(0,0,0,.15);
+        font-family: medium-content-sans-serif-font;
+    }
+    .content {
+        padding-right: 40px;
+        padding-top: 5px;
+        .title {
+            margin-bottom: 2px;
+            font-size: 15px;
+        }
+        .excerpt {
+            margin-bottom: 2px;
+            font-size: 13px;
+        }
+        .date, .author {
+            width: 100px;
+            display: inline-block;
+            font-size: 12px;
+        }
+    }
+}
