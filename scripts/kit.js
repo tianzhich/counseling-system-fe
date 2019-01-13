@@ -4,6 +4,7 @@ const fse = require('fs-extra');
 const path = require('path');
 const _ = require('lodash/string')
 const commander = require('commander')
+const ast = require('./ts-ast')
 
 const templatesDir = path.join(__dirname, 'templates');
 const targetDir = path.join(__dirname, '..', 'src', 'features');
@@ -53,7 +54,10 @@ commander
     .version(require('../package.json').version)
     .command('add <feature>')
     .action((featureName) => {
+        // add features
         addFeature(featureName);
+        // manipulate some ts file like route
+        ast(featureName);
     })
 
 commander.parse(process.argv);
