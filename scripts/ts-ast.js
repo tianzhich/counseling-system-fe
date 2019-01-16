@@ -18,7 +18,6 @@ async function addRoute(featureName) {
     let newRoutes = [];
 
     routeVar.getDeclarations().forEach((decl, i) => {
-      console.log(i);
       decl.getInitializer().forEachChild(node => {
         newRoutes.push(node.getText());
       })
