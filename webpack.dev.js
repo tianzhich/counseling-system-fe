@@ -19,7 +19,7 @@ module.exports = merge(common, {
         ]
     },
     output: {
-        path: path.resolve(__dirname, './public'),
+        publicPath: '/',
         filename: 'static/js/bundle.js',
     },
     plugins: [
