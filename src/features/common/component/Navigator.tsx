@@ -11,19 +11,19 @@ export default class Navigator extends React.Component<INavigatorProps, {}> {
                 <Menu
                     theme="dark"
                     mode="horizontal"
-                    selectedKeys={[location.pathname]}
+                    selectedKeys={[location.pathname.split('/')[1]]}
                     style={{ lineHeight: '64px' }}
                 >
-                    <Menu.Item key="/home">
+                    <Menu.Item key="home">
                         <NavLink to="/">首页</NavLink>
                     </Menu.Item>
-                    <Menu.Item key="/article">
+                    <Menu.Item key="article">
                         <NavLink to="/article">阅读</NavLink>
                     </Menu.Item>
-                    <Menu.Item key="/counseling">
+                    <Menu.Item key="counseling">
                         <NavLink to="/counseling">咨询</NavLink>
                     </Menu.Item>
-                    <Menu.Item key="/login">
+                    <Menu.Item key="login">
                         <NavLink to="/login">登录</NavLink>
                     </Menu.Item>
                 </Menu>
