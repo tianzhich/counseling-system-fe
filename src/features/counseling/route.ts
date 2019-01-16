@@ -1,11 +1,12 @@
 import App from '@features/common/component/App';
+import { IRoute } from '@src/common/routeConfig';
 
 const loader = (name: string) => async () => {
     const entrance = await import('./');
     return entrance[name];
 };
 
-const childRoutes = [{
+const childRoutes: IRoute[] = [{
     path: '/counseling',
     name: 'Counseling',
     loader: loader('Counseling'),
