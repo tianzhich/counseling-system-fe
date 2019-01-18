@@ -1,8 +1,9 @@
 import React from 'react';
-import { Affix } from "antd";
+import { Affix, Button } from "antd";
 import { Article } from '@src/features/common/types';
 
 import "./PopularList.less";
+import { Link } from 'react-router-dom';
 
 interface IPopularListProps {
     articles: Article[]
@@ -37,6 +38,9 @@ export default class PopularList extends React.Component<IPopularListProps, {}> 
                             )
                         }
                     </ol>
+                    <div className="post-button">
+                        <Link to="/post"><Button type="primary">发表文章</Button></Link>
+                    </div>
                 </div>
             </Affix>
         )

@@ -26,6 +26,10 @@ module.exports = {
                         javascriptEnabled: true
                     }
                 }],
+            },
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader'],
             }
         ]
     },
