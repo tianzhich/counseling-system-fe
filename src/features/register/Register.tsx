@@ -1,9 +1,11 @@
 import React from 'react';
 import RegistrationForm from './component/RegistrationForm'
 
-interface IRegisterProps {}
+import './Register.less'
 
-interface IRegisterState {}
+interface IRegisterProps { }
+
+interface IRegisterState { }
 
 export default class Register extends React.Component<IRegisterProps, IRegisterState> {
     constructor(props: IRegisterProps) {
@@ -13,7 +15,9 @@ export default class Register extends React.Component<IRegisterProps, IRegisterS
 
     render() {
         return (
-            <div><RegistrationForm /></div>
+            <div className="pcs-register">
+                <RegistrationForm />
+            </div>
         )
     }
 }
