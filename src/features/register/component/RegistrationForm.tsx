@@ -3,6 +3,7 @@ import {
     Form, Input, Select, Checkbox, Button, message, 
 } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
+import { register } from '@src/common/api';
 
 const { Option } = Select;
 interface IRegistrationFormProps {
@@ -32,6 +33,9 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
                     return;
                 }
                 console.log('Received values of form: ', values);
+                register(values).then(res => {
+                    console.log(res)
+                })
             }
         });
     }
