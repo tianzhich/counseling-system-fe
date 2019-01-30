@@ -3,7 +3,7 @@ import {
     Form, Input, Select, Checkbox, Button, message, 
 } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
-import { register } from '@src/common/api';
+import * as API from '@src/common/api';
 
 const { Option } = Select;
 interface IRegistrationFormProps {
@@ -32,9 +32,24 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
                     message.error('请同意注册协议！');
                     return;
                 }
-                console.log('Received values of form: ', values);
-                register(values).then(res => {
-                    console.log(res)
+
+                const data = {
+                    username: values.username,
+                    password: values.password,
+                    phone: values.phone,
+                    email: values.email
+                }
+
+                API.register(data).then(res => {
+                    if(res.data.code === 1) {
+                        message.success(res.data.message)
+                    } else if(res.data.code === 0) {
+                        message.warn(res.data.message)
+                    } else {
+                        message.error(res.data.message)
+                    }
+                }).catch(err => {
+                    message.error('网络错误, 请稍后重试！')
                 })
             }
         });
