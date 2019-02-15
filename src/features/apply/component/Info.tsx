@@ -1,0 +1,176 @@
+import React from 'react';
+import {
+    Form, Input, Select, Checkbox, message, 
+} from 'antd';
+import { WrappedFormUtils } from 'antd/lib/form/Form';
+
+const { Option } = Select;
+interface IRegistrationFormProps {
+    form: WrappedFormUtils
+    onSubmitInfo: (values: any) => void
+}
+
+interface IRegistrationFormState {
+    confirmDirty: boolean
+    autoCompleteResult: any[]
+}
+
+class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistrationFormState> {
+    constructor(props: IRegistrationFormProps) {
+        super(props);
+        this.state = {
+            confirmDirty: false,
+            autoCompleteResult: [],
+        }
+    }
+
+    onValidate = () => {
+        let isValidate: boolean;
+        this.props.form.validateFieldsAndScroll((err, values) => {
+            if (!err) {
+                if(!values.agreement) {
+                    message.error('请同意注册协议！');
+                    isValidate = false
+                    return;
+                }
+                isValidate = true
+                this.props.onSubmitInfo(values)
+            } else {
+                isValidate = false
+            }
+        });
+        return isValidate
+    }
+
+    handleConfirmBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+    }
+
+    compareToFirstPassword = (rule: any, value: any, callback: any) => {
+        const form = this.props.form;
+        if (value && value !== form.getFieldValue('password')) {
+            callback('密码不一致!');
+        } else {
+            callback();
+        }
+    }
+
+    validateToNextPassword = (rule: any , value: any, callback: any) => {
+        const form = this.props.form;
+        if (value && this.state.confirmDirty) {
+            form.validateFields(['confirm'], { force: true });
+        }
+        callback();
+    }
+
+    render() {
+        const { getFieldDecorator } = this.props.form;
+
+        const formItemLayout = {
+            labelCol: {
+                xs: { span: 24 },
+                sm: { span: 8 },
+            },
+            wrapperCol: {
+                xs: { span: 24 },
+                sm: { span: 16 },
+            },
+        };
+        const tailFormItemLayout = {
+            wrapperCol: {
+                xs: {
+                    span: 24,
+                    offset: 0,
+                },
+                sm: {
+                    span: 16,
+                    offset: 8,
+                },
+            },
+        };
+        const prefixSelector = getFieldDecorator('prefix', {
+            initialValue: '86',
+        })(
+            <Select style={{ width: 70 }}>
+                <Option value="86">+86</Option>
+            </Select>
+        );
+
+        return (
+            <Form>
+                <Form.Item
+                    {...formItemLayout}
+                    label="用户名"
+                >
+                    {getFieldDecorator('username', {
+                        rules: [{ required: true, message: '请输入用户名!', whitespace: true }],
+                    })(
+                        <Input />
+                    )}
+                </Form.Item>
+                <Form.Item
+                    {...formItemLayout}
+                    label="密码"
+                >
+                    {getFieldDecorator('password', {
+                        rules: [{
+                            required: true, message: '请输入密码!',
+                        }, {
+                            validator: this.validateToNextPassword,
+                        }],
+                    })(
+                        <Input type="password" />
+                    )}
+                </Form.Item>
+                <Form.Item
+                    {...formItemLayout}
+                    label="确认密码"
+                >
+                    {getFieldDecorator('confirm', {
+                        rules: [{
+                            required: true, message: '请二次确认密码!',
+                        }, {
+                            validator: this.compareToFirstPassword,
+                        }],
+                    })(
+                        <Input type="password" onBlur={this.handleConfirmBlur} />
+                    )}
+                </Form.Item>
+                <Form.Item
+                    {...formItemLayout}
+                    label="电子邮箱"
+                >
+                    {getFieldDecorator('email', {
+                        rules: [{
+                            type: 'email', message: '不符合邮箱地址规范!',
+                        }, {
+                            required: true, message: '请输入电子邮箱!',
+                        }],
+                    })(
+                        <Input />
+                    )}
+                </Form.Item>
+                <Form.Item
+                    {...formItemLayout}
+                    label="手机号码"
+                >
+                    {getFieldDecorator('phone', {
+                        rules: [{ required: true, message: '请输入手机号码!' }],
+                    })(
+                        <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
+                    )}
+                </Form.Item>
+                <Form.Item {...tailFormItemLayout}>
+                    {getFieldDecorator('agreement', {
+                        valuePropName: 'checked',
+                    })(
+                        <Checkbox>我已阅读 <a href="">注册协议</a></Checkbox>
+                    )}
+                </Form.Item>
+            </Form>
+        );
+    }
+}
+
+export default Form.create()(RegistrationForm);

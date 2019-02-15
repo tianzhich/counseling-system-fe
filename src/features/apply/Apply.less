@@ -1,0 +1,36 @@
+@import '~@src/styles/global.less';
+.pcs-apply {
+    width: 90%;
+    .steps-bar {
+        background-color: #fff;
+        height: 80px;
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        border-radius: @border-radius;
+    }
+    .steps-content {
+        margin-top: 20px;
+        background-color: #fff;
+        border-radius: @border-radius;
+        padding: 10px 20px;
+        .apply-agreements {
+            h2 {
+                text-align: center
+            }
+            p {
+                height: 400px;
+                overflow: scroll;
+                word-break: break-word;
+                padding: 10px;
+            }
+        }
+        .ant-form {
+            width: 500px;
+            margin: 0 auto;
+        }
+    }
+    .steps-action {
+        text-align: center
+    }
+}
