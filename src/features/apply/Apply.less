@@ -1,6 +1,8 @@
 @import '~@src/styles/global.less';
+
 .pcs-apply {
-    width: 90%;
+    width: 850px;
+
     .steps-bar {
         background-color: #fff;
         height: 80px;
@@ -9,15 +11,18 @@
         align-items: center;
         border-radius: @border-radius;
     }
+
     .steps-content {
         margin-top: 20px;
         background-color: #fff;
         border-radius: @border-radius;
         padding: 10px 20px;
+
         .apply-agreements {
             h2 {
                 text-align: center
             }
+
             p {
                 height: 400px;
                 overflow: scroll;
@@ -25,12 +30,34 @@
                 padding: 10px;
             }
         }
+
         .ant-form {
-            width: 500px;
-            margin: 0 auto;
+            .detail-guide {
+                padding: 10px;
+                width: 500px;
+                margin: 0 auto;
+                border: 1px solid rgba(0, 0, 0, 0.15);
+
+                h3 {
+                    text-align: center
+                }
+            }
+        }
+
+        .apply-credit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .ant-upload {
+                width: 400px;
+                height: 150px;
+            }
         }
     }
+
     .steps-action {
-        text-align: center
+        text-align: center;
+        margin-top: 10px;
     }
 }

@@ -1,10 +1,14 @@
 import React from 'react';
 import {
-    Form, Input, Select, Checkbox, message, 
+    Form, Input, Select, Upload, Radio, InputNumber, Divider, Icon, Tooltip, Button
 } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 
 const { Option } = Select;
+const { TextArea } = Input
+
+let genId = 0;
+
 interface IRegistrationFormProps {
     form: WrappedFormUtils
     onSubmitInfo: (values: any) => void
@@ -14,6 +18,32 @@ interface IRegistrationFormState {
     confirmDirty: boolean
     autoCompleteResult: any[]
 }
+
+const GuideItem = (props: { title: string, content: React.ReactNode }) =>
+    <div style={{marginBottom: "10px"}}>
+        <div>{`【${props.title}】`}</div>
+        <div>{props.content}</div>
+    </div>
+
+const DetailGuide = () => <div className="detail-guide">
+    <h3>个人简介 填写指引</h3>
+    <p>
+        如果你在以下项目中，有一项或多项有优势，请按照小标题【XXXX】+文字描述(第三人称)的方式填写到「个人简介」文本框中。格式如下。建议精简语言。
+    </p>
+    <GuideItem title="教育背景" content="示例：美国 XX州注册心理咨询师，美国 XX University全职咨询师" />
+    <GuideItem title="实习经验" content="示例：在美国修读硕士的过程中，进入到西雅图当地高中，担任实习school counselor半年。" />
+    <GuideItem title="工作经验" content="示例：毕业以后进入北京国奥心理医院，担任全职心理咨询师，周咨询量稳定在20个。至今积累超过3000小时的个案时长。" />
+    <GuideItem title="擅长领域经验介绍" content={
+        <React.Fragment>
+            <p>示例1：高校担任专职心理咨询师超过5年，接触过大量与自信心建立和个人成长相关议题的青年个案。尤其对青年女性在成长和独立方面的议题，有独到的见解。曾受邀担任学校女性成长社团特邀讲师/咨询师，陪伴千位现代青年女性发现自己的独特气质，自信面对人生</p>
+            <p>示例2：从2007年进入心理咨询行业，先后在三甲医院心理科，心理咨询机构担任高级咨询师。对抑郁症，焦虑症，强迫症等问题有过大量的临床研究和实践。在XX等科学期刊上发表《叙事治疗在抑郁症的优势》《xxx》等文章。</p>
+            <p>示例3：2008年从北京师范大学心理学专业硕士毕业，开始在机构担任心理咨询师。随后受聘成为多家世界500强企业做员工心理辅导。长期为白领提供心理咨询服务，对职场人际关系、职业规划以及跳槽辞职等议题有丰富经验</p>
+        </React.Fragment>
+    } />
+    <GuideItem title="个人心路历程" content="示例：心理咨询在我看来是艺术和科学的完美结合，我从20XX年开始学习的心理学……" />
+    <GuideItem title="咨询服务流程" content="示例：一般来说我的咨询流程是……" />
+    <GuideItem title="其他" content="" />
+</div>
 
 class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistrationFormState> {
     constructor(props: IRegistrationFormProps) {
@@ -28,13 +58,21 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
         let isValidate: boolean;
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                if(!values.agreement) {
-                    message.error('请同意注册协议！');
-                    isValidate = false
-                    return;
-                }
                 isValidate = true
-                this.props.onSubmitInfo(values)
+
+                // 表单处理和上传
+                const data = {
+                    name: values.name,
+                    gender: values.gender,
+                    description: values.description,
+                    motto: values.motto,
+                    workYears: values.workYears,
+                    detail: values.keys.map((k: any) => ({
+                        title: values.title[k],
+                        content: values.content[k]
+                    }))
+                }
+                this.props.onSubmitInfo(data)
             } else {
                 isValidate = false
             }
@@ -42,132 +80,172 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
         return isValidate
     }
 
-    handleConfirmBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+    removeDetailItem = (k: any) => {
+        const { form } = this.props;
+        // can use data-binding to get
+        const keys = form.getFieldValue('keys');
+
+        // can use data-binding to set
+        form.setFieldsValue({
+            keys: keys.filter((key: any) => key !== k),
+        });
     }
 
-    compareToFirstPassword = (rule: any, value: any, callback: any) => {
-        const form = this.props.form;
-        if (value && value !== form.getFieldValue('password')) {
-            callback('密码不一致!');
-        } else {
-            callback();
-        }
-    }
-
-    validateToNextPassword = (rule: any , value: any, callback: any) => {
-        const form = this.props.form;
-        if (value && this.state.confirmDirty) {
-            form.validateFields(['confirm'], { force: true });
-        }
-        callback();
+    addDetailItem = () => {
+        const { form } = this.props;
+        // can use data-binding to get
+        const keys = form.getFieldValue('keys');
+        const nextKeys = keys.concat(genId++);
+        // can use data-binding to set
+        // important! notify form to detect changes
+        form.setFieldsValue({
+            keys: nextKeys,
+        });
     }
 
     render() {
-        const { getFieldDecorator } = this.props.form;
+        const { getFieldDecorator, getFieldValue } = this.props.form;
 
         const formItemLayout = {
             labelCol: {
                 xs: { span: 24 },
-                sm: { span: 8 },
+                sm: { span: 4 },
             },
             wrapperCol: {
                 xs: { span: 24 },
                 sm: { span: 16 },
             },
         };
-        const tailFormItemLayout = {
-            wrapperCol: {
-                xs: {
-                    span: 24,
-                    offset: 0,
-                },
-                sm: {
-                    span: 16,
-                    offset: 8,
-                },
-            },
-        };
-        const prefixSelector = getFieldDecorator('prefix', {
-            initialValue: '86',
-        })(
-            <Select style={{ width: 70 }}>
-                <Option value="86">+86</Option>
-            </Select>
-        );
+
+        getFieldDecorator('keys', { initialValue: [] });
+        const detailKeys = getFieldValue('keys');
+        const detailItems = detailKeys.map((k: any, index: number) => (
+            <React.Fragment key={k}>
+                <Form.Item
+                    {...formItemLayout}
+                    label="小标题"
+                    required={false}
+                    key={`title[${k}]`}
+                >
+                    {getFieldDecorator(`title[${k}]`, {
+                        rules: [{
+                            required: true,
+                            whitespace: true,
+                            message: "请输入小标题或删除该项",
+                        }],
+                    })(
+                        <Input style={{ width: '60%', marginRight: 8 }} />
+                    )}
+                    <Icon
+                        className="dynamic-delete-button"
+                        type="minus-circle-o"
+                        onClick={() => this.removeDetailItem(k)}
+                    />
+                </Form.Item>
+                <Form.Item
+                    {...formItemLayout}
+                    label="文字描述"
+                    required={false}
+                    key={`content[${k}]`}
+                >
+                    {getFieldDecorator(`content[${k}]`, {
+                        rules: [{
+                            required: true,
+                            whitespace: true,
+                            message: "请输入文字描述或删除该项",
+                        }],
+                    })(
+                        <TextArea style={{ height: "100px" }} />
+                    )}
+                </Form.Item>
+                <Divider />
+            </React.Fragment>
+        ))
 
         return (
             <Form>
                 <Form.Item
                     {...formItemLayout}
-                    label="用户名"
+                    label="姓名"
                 >
-                    {getFieldDecorator('username', {
-                        rules: [{ required: true, message: '请输入用户名!', whitespace: true }],
+                    {getFieldDecorator('name', {
+                        rules: [{ required: true, message: '请填写您的姓名', whitespace: true }],
                     })(
                         <Input />
                     )}
                 </Form.Item>
                 <Form.Item
                     {...formItemLayout}
-                    label="密码"
+                    label="性别"
                 >
-                    {getFieldDecorator('password', {
+                    {getFieldDecorator('gender', {
                         rules: [{
-                            required: true, message: '请输入密码!',
-                        }, {
-                            validator: this.validateToNextPassword,
-                        }],
+                            required: true, message: '请选择您的性别'
+                        }]
                     })(
-                        <Input type="password" />
+                        <Radio.Group>
+                            <Radio value={1}>男</Radio>
+                            <Radio value={0}>女</Radio>
+                        </Radio.Group>
                     )}
                 </Form.Item>
                 <Form.Item
                     {...formItemLayout}
-                    label="确认密码"
+                    label="工作年限"
                 >
-                    {getFieldDecorator('confirm', {
+                    {getFieldDecorator('workYears', {
                         rules: [{
-                            required: true, message: '请二次确认密码!',
-                        }, {
-                            validator: this.compareToFirstPassword,
-                        }],
+                            required: true, message: '请输入您的工作年限'
+                        }]
                     })(
-                        <Input type="password" onBlur={this.handleConfirmBlur} />
+                        <InputNumber min={1} max={50} />
                     )}
                 </Form.Item>
                 <Form.Item
                     {...formItemLayout}
-                    label="电子邮箱"
+                    label="个人头衔"
                 >
-                    {getFieldDecorator('email', {
+                    {getFieldDecorator('description', {
                         rules: [{
-                            type: 'email', message: '不符合邮箱地址规范!',
+                            required: true, message: '请填写您的个人头衔'
                         }, {
-                            required: true, message: '请输入电子邮箱!',
-                        }],
+                            type: 'string', max: 20, message: '最多20个字符'
+                        }]
                     })(
-                        <Input />
+                        <Input placeholder="限20个字符，示例：XX协会会员/硕士/执业医师/三甲医院心理科医生" />
                     )}
                 </Form.Item>
                 <Form.Item
                     {...formItemLayout}
-                    label="手机号码"
+                    label="个人签名"
                 >
-                    {getFieldDecorator('phone', {
-                        rules: [{ required: true, message: '请输入手机号码!' }],
+                    {getFieldDecorator('motto', {
+                        rules: [{
+                            required: true, message: '请填写您的个人签名',
+                        }, {
+                            type: 'string', max: 50, message: '最多50个字符'
+                        }],
                     })(
-                        <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
+                        <TextArea
+                            placeholder="限50个字符。&#10;方向1：可以写咨询师对咨询的理解（价值观）。示例：有阴影的地方就有阳光。咨询师，就是要让来访者看到更整体、全面的东西。&#10;方向2：咨询师想要对来访者说的话。示例：星洲易渡，心河难逾，与你共觅心河之舟。&#10;方向3：咨询师最想要来访者了解的讯息。示例：十年正念结合心理学实践经验，致力于推动正念禅修结合心理学。"
+                            style={{height: "150px"}}
+                        />
                     )}
                 </Form.Item>
-                <Form.Item {...tailFormItemLayout}>
-                    {getFieldDecorator('agreement', {
-                        valuePropName: 'checked',
-                    })(
-                        <Checkbox>我已阅读 <a href="">注册协议</a></Checkbox>
-                    )}
+                <Divider />
+                <div style={{ textAlign: "center", fontSize: "16px" }}>
+                    个人简介&nbsp;
+                    <Tooltip title="请参照下方的 个人简介文本框 填写指引。">
+                        <Icon type="question-circle-o" />
+                    </Tooltip>
+                </div>
+                {detailItems}
+                <Form.Item wrapperCol={{ span: 24 }} style={{textAlign: "center"}}>
+                    <Button type="dashed" onClick={this.addDetailItem} style={{ width: '60%' }}>
+                        <Icon type="plus" /> 添加一项
+                    </Button>
                 </Form.Item>
+                <DetailGuide />
             </Form>
         );
     }

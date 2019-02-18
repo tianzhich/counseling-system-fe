@@ -2,6 +2,8 @@ import React from 'react';
 import { Steps, Icon, Button } from 'antd'
 import Agreements from "./component/Agreements";
 import Info from "./component/Info";
+import Credit from "./component/Credit";
+import Settings from "./component/Settings";
 
 import './Apply.less';
 
@@ -19,13 +21,15 @@ interface IApplyState {
 export default class Apply extends React.Component<IApplyProps, IApplyState> {
     countdownInterval: any
     infoRef: React.RefObject<any>
+    settingsRef: React.RefObject<any>
     constructor(props: IApplyProps) {
         super(props);
         this.infoRef = React.createRef();
+        this.settingsRef = React.createRef();
         this.state = {
             currentStep: 0,
-            countdown: 8,
-            personInfo: {}
+            countdown: 0, // fake,默认为8s
+            personInfo: {},
         };
     }
 
@@ -48,12 +52,16 @@ export default class Apply extends React.Component<IApplyProps, IApplyState> {
     }
 
     goNextStep = () => {
-        console.log(this.infoRef)
-        if(this.state.currentStep === 1) {
-            // validate
-            if(!this.infoRef.current.onValidate()) {
-                return
-            }
+        // if (this.state.currentStep === 1) {
+        //     // validate info
+        //     if (!this.infoRef.current.onValidate()) {
+        //         return
+        //     }
+        // }
+        if (this.state.currentStep === 3) {
+            // validate settings and submit
+            this.settingsRef.current.onSubmitSettings();
+            return
         }
         const currentStep = this.state.currentStep + 1;
         this.setState({
@@ -62,9 +70,18 @@ export default class Apply extends React.Component<IApplyProps, IApplyState> {
     }
 
     handleInfoSubmit = (info: {}) => {
+        console.log(info);
         this.setState({
             personInfo: info
         })
+    }
+
+    // 设置完成，使用个人信息、资质、设置信息发起入驻请求
+    handleSettingsSubmit = (settings: {}) => {
+        console.log(settings);
+
+        // api
+
     }
 
     render() {
@@ -82,21 +99,18 @@ export default class Apply extends React.Component<IApplyProps, IApplyState> {
         }, {
             title: '资质上传',
             icon: <Icon type="profile" />,
-            content: '',
+            content: <Credit />,
         }, {
             title: '服务设置',
             icon: <Icon type="edit" />,
-            content: '',
+            content: <Settings ref={this.settingsRef} onSubmitSettings={this.handleSettingsSubmit} />,
         }]
 
         const renderActionBtn = () => {
-            if (current === 3) {
-                return null
-            }
             if (current === 0) {
                 return <Button type="primary" disabled={countdown >= 0} onClick={this.goNextStep}>{`我知道了${countdown >= 0 ? `(${countdown})` : ''}`}</Button>
             } else {
-                return <Button type="primary" onClick={this.goNextStep}>下一步</Button>
+                return <Button type="primary" onClick={this.goNextStep}>{current === 3 ? '完成' : '下一步'}</Button>
             }
         }
         return (
