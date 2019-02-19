@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "baseUrl": ".",
+        "baseUrl": "src",
         "outDir": "./dist/",
         "sourceMap": true,
         "noImplicitAny": true,
@@ -13,14 +13,13 @@
         "esModuleInterop": true,
         "lib": ["es2015", "dom"],
         "paths": {
-            "@src/*": ["src/*"],
-            "@features/*": ["src/features/*"],
-            "@common/*": ["src/common/*"],
-            "@styles/*": ["src/styles/*"],
-            "@utils/*": ["src/utils/*"],
-            "@fakeData": ["src/features/common/fakeData.ts"],
-            "@map": ["src/features/common/map.ts"],
-            "@types": ["src/features/common/types.ts"]
+            "@features/*": ["features/*"],
+            "@common/*": ["common/*"],
+            "@styles/*": ["styles/*"],
+            "@utils/*": ["utils/*"],
+            "@fakeData": ["features/common/fakeData.ts"],
+            "@map": ["features/common/map.ts"],
+            "@types": ["features/common/types.ts"]
         },
     },
     "include": [
