@@ -29,7 +29,7 @@ class SignupForm extends React.Component<ISignupFormProps, ISignupFormState> {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 if(!values.agreement) {
-                    message.error('请同意注册协议！');
+                    message.error('请阅读并同意注册协议！');
                     return;
                 }
 
@@ -158,7 +158,11 @@ class SignupForm extends React.Component<ISignupFormProps, ISignupFormState> {
                     label="手机号码"
                 >
                     {getFieldDecorator('phone', {
-                        rules: [{ required: true, message: '请输入手机号码!' }],
+                        rules: [{ 
+                            required: true, message: '请输入手机号码!' 
+                        }, {
+                            type: 'string', len: 11, message: '请输入合法手机号码!'
+                        }],
                     })(
                         <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
                     )}
