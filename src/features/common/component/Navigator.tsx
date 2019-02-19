@@ -9,7 +9,7 @@ export default class Navigator extends React.Component<INavigatorProps, {}> {
         return (
             <Route children={({location}) => (
                 <Menu
-                    theme="dark"
+                    theme="light"
                     mode="horizontal"
                     selectedKeys={[location.pathname.split('/')[1]]}
                     style={{ lineHeight: '64px' }}
@@ -22,9 +22,6 @@ export default class Navigator extends React.Component<INavigatorProps, {}> {
                     </Menu.Item>
                     <Menu.Item key="counseling">
                         <NavLink to="/counseling">咨询</NavLink>
-                    </Menu.Item>
-                    <Menu.Item key="login">
-                        <NavLink to="/login">登录</NavLink>
                     </Menu.Item>
                 </Menu>
             )} />

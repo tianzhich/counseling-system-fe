@@ -1,5 +1,23 @@
 .pcs-app {
     // antd layout override
+    .ant-layout-header {
+        background-color: #fff;
+        position: relative;
+        .ant-menu-item {
+            padding: 0 30px;
+        }
+        button.ant-btn {
+            position: absolute;
+            &:first-of-type {
+                right: 170px;
+                top: 25%;
+            }
+            &:last-of-type {
+                right: 50px;
+                top: 25%;
+            }
+        }
+    }
     .ant-layout-content {
         margin-top: 30px;
     }

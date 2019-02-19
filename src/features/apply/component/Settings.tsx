@@ -1,7 +1,7 @@
 import React from 'react';
 import { Tooltip, Icon, InputNumber, Radio, Cascader, message } from "antd";
 import { RadioChangeEvent } from 'antd/lib/radio';
-import { cities } from '@src/utils/cities';
+import { cities } from '@utils/cities';
 
 const RadioGroup = Radio.Group
 

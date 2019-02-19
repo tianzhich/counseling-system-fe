@@ -2,19 +2,17 @@ import React from 'react';
 import { Form, Icon, Input, Button, Checkbox, } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 
-import './LoginForm.less'
-
-interface ILoginFormProps {
+interface ISigninFormProps {
     form: WrappedFormUtils
 }
 
-interface ILoginFormState {
+interface ISigninFormState {
     username: string
     password: string
 }
 
-class LoginForm extends React.Component<ILoginFormProps, ILoginFormState> {
-    constructor(props: ILoginFormProps) {
+class SigninForm extends React.Component<ISigninFormProps, ISigninFormState> {
+    constructor(props: ISigninFormProps) {
         super(props);
         this.state = {
             username: "",
@@ -25,7 +23,7 @@ class LoginForm extends React.Component<ILoginFormProps, ILoginFormState> {
     render() {
         const { getFieldDecorator } = this.props.form
         return (
-            <Form>
+            <Form className="signin-form">
                 <Form.Item>
                     {getFieldDecorator('username', {
                         rules: [{ required: true, message: '请输入用户名!' }],
@@ -47,15 +45,14 @@ class LoginForm extends React.Component<ILoginFormProps, ILoginFormState> {
                     })(
                         <Checkbox>记住密码</Checkbox>
                     )}
-                    <a className="login-form-forgot" href="">忘记密码?</a>
+                    <a className="login-form-forgot" href="javascript:void(0)">忘记密码?</a>
                     <Button type="primary" htmlType="submit" className="login-form-button">
                         登录
                     </Button>
-                    或者 <a href="">现在注册!</a>
                 </Form.Item>
             </Form>
         )
     }
 }
 
-export default Form.create()(LoginForm);
+export default Form.create()(SigninForm);

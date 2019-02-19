@@ -3,20 +3,20 @@ import {
     Form, Input, Select, Checkbox, Button, message, 
 } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
-import * as API from '@src/common/api';
+import * as API from '@common/api';
 
 const { Option } = Select;
-interface IRegistrationFormProps {
+interface ISignupFormProps {
     form: WrappedFormUtils
 }
 
-interface IRegistrationFormState {
+interface ISignupFormState {
     confirmDirty: boolean
     autoCompleteResult: any[]
 }
 
-class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistrationFormState> {
-    constructor(props: IRegistrationFormProps) {
+class SignupForm extends React.Component<ISignupFormProps, ISignupFormState> {
+    constructor(props: ISignupFormProps) {
         super(props);
         this.state = {
             confirmDirty: false,
@@ -83,25 +83,14 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
         const formItemLayout = {
             labelCol: {
                 xs: { span: 24 },
-                sm: { span: 8 },
+                sm: { span: 6 },
             },
             wrapperCol: {
                 xs: { span: 24 },
-                sm: { span: 16 },
+                sm: { span: 18 },
             },
         };
-        const tailFormItemLayout = {
-            wrapperCol: {
-                xs: {
-                    span: 24,
-                    offset: 0,
-                },
-                sm: {
-                    span: 16,
-                    offset: 8,
-                },
-            },
-        };
+
         const prefixSelector = getFieldDecorator('prefix', {
             initialValue: '86',
         })(
@@ -111,7 +100,7 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
         );
 
         return (
-            <Form onSubmit={this.handleSubmit}>
+            <Form onSubmit={this.handleSubmit} className='signup-form'>
                 <Form.Item
                     {...formItemLayout}
                     label="用户名"
@@ -174,14 +163,14 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
                         <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
                     )}
                 </Form.Item>
-                <Form.Item {...tailFormItemLayout}>
+                <Form.Item>
                     {getFieldDecorator('agreement', {
                         valuePropName: 'checked',
                     })(
-                        <Checkbox>我已阅读 <a href="">注册协议</a></Checkbox>
+                        <Checkbox>我已阅读 <a href="javascript:void(0)">注册协议</a></Checkbox>
                     )}
                 </Form.Item>
-                <Form.Item {...tailFormItemLayout}>
+                <Form.Item>
                     <Button type="primary" htmlType="submit">注册</Button>
                 </Form.Item>
             </Form>
@@ -189,4 +178,4 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
     }
 }
 
-export default Form.create()(RegistrationForm);
+export default Form.create()(SignupForm);

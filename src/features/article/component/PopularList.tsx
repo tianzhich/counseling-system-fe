@@ -1,6 +1,6 @@
 import React from 'react';
 import { Affix, Button } from "antd";
-import { Article } from '@src/features/common/types';
+import { Article } from '@types';
 
 import "./PopularList.less";
 import { Link } from 'react-router-dom';

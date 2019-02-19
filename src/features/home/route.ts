@@ -1,5 +1,5 @@
 import App from '../common/component/App';
-import { IRoute } from '@src/common/routeConfig';
+import { IRoute } from '@common/routeConfig';
 
 const loader = (name: string) => async () => {
     const entrance = await import('./');

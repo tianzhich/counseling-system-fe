@@ -1,0 +1,38 @@
+.sign-modal {
+
+    .login-form-icon-username,
+    .login-form-icon-password {
+        color: rgba(0, 0, 0, .25);
+    }
+
+    .login-form-forgot {
+        float: right;
+    }
+
+    .login-form-button {
+        width: 100%;
+    }
+
+    .ant-modal-body {
+        padding-bottom: 0;
+        .signup-form {
+            & > div:nth-of-type(6) {
+                margin-bottom: 0;
+                text-align: center;
+            }
+            & > div:last-of-type {
+                text-align: center;
+            }
+        }
+    }
+
+    .ant-modal-footer {
+        background-color: rgba(0, 0, 0, .08);
+        &>div {
+            text-align: center;
+            height: 30px;
+            line-height: 30px;
+            font-size: 16px;
+        }
+    }
+}
