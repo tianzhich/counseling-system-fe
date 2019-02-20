@@ -31,9 +31,10 @@ export default class SignModal extends React.Component<ISignModalProps, ISignMod
     }
 
     closeModal = () => {
+        // 关闭后默认设置为登录页
         this.setState({
             showModal: false
-        })
+        }, () => this.props.onChangeModal('signin'))
     }
 
     render() {

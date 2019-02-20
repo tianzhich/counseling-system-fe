@@ -3,6 +3,7 @@ import { Layout, Modal, Button } from 'antd';
 import { RouteComponentProps } from 'react-router-dom';
 import Navigator from './Navigator';
 import SignModal, { SignModalType } from './SignModal';
+import emitter from "@utils/events";
 
 import './App.less'
 
@@ -35,6 +36,14 @@ export default class App extends React.Component<IAppProps, IAppState> {
         this.setState({
             signModal: type
         })
+    }
+
+    componentDidMount() {
+        emitter.addListener("login", this.signModalRef.current.openModal)
+    }
+
+    componentWillUnmount() {
+        emitter.removeListener("login", this.signModalRef.current.openModal)
     }
 
     render() {
