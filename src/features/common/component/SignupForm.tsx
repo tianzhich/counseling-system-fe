@@ -40,7 +40,7 @@ class SignupForm extends React.Component<ISignupFormProps, ISignupFormState> {
                     email: values.email
                 }
 
-                API.register(data).then(res => {
+                API.signup(data).then(res => {
                     if(res.data.code === 1) {
                         message.success(res.data.message)
                     } else if(res.data.code === 0) {

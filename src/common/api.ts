@@ -1,9 +1,9 @@
 import axios from 'axios'
 
-const URL = 'http://localhost:8081/api/'
+const URL = `${window.location.origin}/api/`;
 
-export const register = (data: any) => {
-    let url = `${URL}register`
+export const signup = (data: any) => {
+    let url = `${URL}signup`
     return axios.post(url, data)
 }
 
