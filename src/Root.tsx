@@ -7,6 +7,7 @@ import { Route, RouteProps, Switch, Redirect, Router } from "react-router";
 import Loadable from 'react-loadable';
 import { AsyncComponentLoader } from "@common/routeConfig";
 import Loading from "./features/common/component/Loading";
+import { fetchAction } from "@common/api/action";
 
 interface IRootProps {
     store: any
@@ -69,6 +70,10 @@ function renderRouteConfig(routes: IRoute[]) {
 }
 
 export default class Root extends React.Component<IRootProps, {}> {
+    componentDidMount() {
+        // 登录验证
+        this.props.store.dispatch(fetchAction('oauth/auth'))
+    }
     render() {
         return (
             <Provider store={this.props.store}>

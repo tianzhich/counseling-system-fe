@@ -3,7 +3,8 @@ import {
     Form, Input, Select, Checkbox, Button, message, 
 } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
-import * as API from '@common/api';
+import * as API from '@common/api/config';
+import { fetchAction } from '@common/api/action';
 
 const { Option } = Select;
 interface ISignupFormProps {
@@ -40,17 +41,19 @@ class SignupForm extends React.Component<ISignupFormProps, ISignupFormState> {
                     email: values.email
                 }
 
-                API.signup(data).then(res => {
-                    if(res.data.code === 1) {
-                        message.success(res.data.message)
-                    } else if(res.data.code === 0) {
-                        message.warn(res.data.message)
-                    } else {
-                        message.error(res.data.message)
-                    }
-                }).catch(err => {
-                    message.error('网络错误, 请稍后重试！')
-                })
+                // API.signup(data).then(res => {
+                //     if(res.data.code === 1) {
+                //         message.success(res.data.message)
+                //     } else if(res.data.code === 0) {
+                //         message.warn(res.data.message)
+                //     } else {
+                //         message.error(res.data.message)
+                //     }
+                // }).catch(err => {
+                //     message.error('网络错误, 请稍后重试！')
+                // })
+
+                fetchAction('oauth/signup', {data})
             }
         });
     }

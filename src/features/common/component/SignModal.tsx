@@ -1,22 +1,36 @@
 import React from 'react';
-import { Modal } from "antd";
+import { Modal, message } from "antd";
 import SigninForm from "./SigninForm";
 import SignupForm from "./SignupForm";
 
 import './SignModal.less';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import { fetchAction } from '@common/api/action';
+import { ApiKey } from '@common/api/config';
 
 export type SignModalType = 'signin' | 'signup'
+
+const signinKey: ApiKey = 'oauth/signin'
+const signupKey: ApiKey = 'oauth/signup'
+
+interface ISignRes {
+    code: number
+    message: string
+}
 
 interface ISignModalProps {
     type: SignModalType
     onChangeModal: (type: SignModalType) => void
+    dispatch: Dispatch
+    signinRes: ISignRes
 }
 
 interface ISignModalState {
     showModal: boolean
 }
 
-export default class SignModal extends React.Component<ISignModalProps, ISignModalState> {
+class SignModal extends React.Component<ISignModalProps, ISignModalState> {
     constructor(props: ISignModalProps) {
         super(props);
         this.state = {
@@ -37,6 +51,13 @@ export default class SignModal extends React.Component<ISignModalProps, ISignMod
         }, () => this.props.onChangeModal('signin'))
     }
 
+    componentDidUpdate(prevProps: ISignModalProps, prevState: ISignModalState) {
+        // 登录结果(登录成功后进行验证)
+        if (prevProps.signinRes === undefined && this.props.signinRes.code === 1) {
+            this.props.dispatch(fetchAction('oauth/auth'))
+        }
+    }
+
     render() {
         const Title = (
             <div>
@@ -48,8 +69,8 @@ export default class SignModal extends React.Component<ISignModalProps, ISignMod
             <div>
                 {
                     this.props.type === "signin" ?
-                        <span>没有账号? <span style={{color: "#1890ff", cursor: "pointer"}} onClick={() => this.props.onChangeModal('signup')}>注册</span></span> :
-                        <span>已有账号? <span style={{color: "#1890ff", cursor: "pointer"}} onClick={() => this.props.onChangeModal('signin')}>登录</span></span>
+                        <span>没有账号? <span style={{ color: "#1890ff", cursor: "pointer" }} onClick={() => this.props.onChangeModal('signup')}>注册</span></span> :
+                        <span>已有账号? <span style={{ color: "#1890ff", cursor: "pointer" }} onClick={() => this.props.onChangeModal('signin')}>登录</span></span>
                 }
             </div>
         )
@@ -64,9 +85,15 @@ export default class SignModal extends React.Component<ISignModalProps, ISignMod
                 maskClosable={false}
             >
                 {
-                    this.props.type === "signin" ? <SigninForm /> : <SignupForm />
+                    this.props.type === "signin" ? <SigninForm dispatch={this.props.dispatch} /> : <SignupForm />
                 }
             </Modal>
         )
     }
 }
+
+const mapState = (state: any) => ({
+    signinRes: state[signinKey].data
+})
+
+export default connect(mapState, null, null, { forwardRef: true })(SignModal)
