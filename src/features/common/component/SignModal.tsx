@@ -4,10 +4,11 @@ import SigninForm from "./SigninForm";
 import SignupForm from "./SignupForm";
 
 import './SignModal.less';
-import { connect } from 'react-redux';
+import { connect, Omit } from 'react-redux';
 import { Dispatch } from 'redux';
 import { fetchAction } from '@common/api/action';
 import { ApiKey } from '@common/api/config';
+import { NetworkStatus, NetworkErrorMsg } from '@common/api/reducer';
 
 export type SignModalType = 'signin' | 'signup'
 
@@ -15,13 +16,19 @@ const signinKey: ApiKey = 'oauth/signin'
 const signupKey: ApiKey = 'oauth/signup'
 
 interface ISignRes {
-    code: number
-    message: string
+    status: NetworkStatus
+    data: {
+        code: number
+        message: string
+    }
 }
 
-interface ISignModalProps {
+interface ISignModalOwnProps {
     type: SignModalType
     onChangeModal: (type: SignModalType) => void
+}
+
+interface ISignModalProps extends ISignModalOwnProps {
     dispatch: Dispatch
     signinRes: ISignRes
 }
@@ -53,8 +60,20 @@ class SignModal extends React.Component<ISignModalProps, ISignModalState> {
 
     componentDidUpdate(prevProps: ISignModalProps, prevState: ISignModalState) {
         // 登录结果(登录成功后进行验证)
-        if (prevProps.signinRes === undefined && this.props.signinRes.code === 1) {
-            this.props.dispatch(fetchAction('oauth/auth'))
+        if (prevProps.signinRes.status === 'loading') {
+            if (this.props.signinRes.status === 'success') {
+                if (this.props.signinRes.data.code === 1) {
+                    this.props.dispatch(fetchAction('oauth/auth'))
+                    this.setState({
+                        showModal: false
+                    })
+                } else if (this.props.signinRes.data.code === 0) {
+                    message.error(this.props.signinRes.data.message)
+                }
+            } else if(this.props.signinRes.status === 'failed') {
+                message.error(NetworkErrorMsg)
+            }
+
         }
     }
 
@@ -74,6 +93,7 @@ class SignModal extends React.Component<ISignModalProps, ISignModalState> {
                 }
             </div>
         )
+
         return (
             <Modal
                 visible={this.state.showModal}
@@ -93,7 +113,7 @@ class SignModal extends React.Component<ISignModalProps, ISignModalState> {
 }
 
 const mapState = (state: any) => ({
-    signinRes: state[signinKey].data
+    signinRes: state[signinKey]
 })
 
-export default connect(mapState, null, null, { forwardRef: true })(SignModal)
+export default connect(mapState, null, null, { forwardRef: true })(SignModal) as React.ComponentClass<ISignModalOwnProps>;

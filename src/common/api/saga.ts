@@ -1,7 +1,7 @@
 import { IConfig, ApiKey, apiConfig, baseURL } from "./config";
 import Axios, { AxiosRequestConfig } from "axios";
 import { IFetchSucessAction, IFetchFailedAction, IFetchAction } from "./action";
-import { put, fork, take } from "redux-saga/effects";
+import { put, fork, take, takeEvery } from "redux-saga/effects";
 
 function* fetchData(config: IConfig, key: ApiKey, option?: AxiosRequestConfig) {
     const { method } = config
@@ -40,7 +40,9 @@ export default Object.keys(apiConfig).map((key: ApiKey) => {
     const config: IConfig = apiConfig[key]
 
     return function* () {
-        const action: IFetchAction = yield take(`${key}_fetching`);
-        yield fork(fetchData, config, key, action.options)
+        while (true) {
+            const action: IFetchAction = yield take(`${key}_fetching`);
+            yield fork(fetchData, config, key, action.options)
+        }
     }
 })

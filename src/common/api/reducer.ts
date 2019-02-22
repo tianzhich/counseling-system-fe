@@ -1,13 +1,15 @@
-import { apiConfig, IApiConfig, ApiKey } from "./config";
+import { IApiConfig, ApiKey, apiConfig } from "./config";
 import { Reducer } from "redux";
 import { IApiAction, IFetchSucessAction, IFetchFailedAction } from "./action";
 
-type status = 'loading' | 'success' | 'failed'
+export type NetworkStatus = 'loading' | 'success' | 'failed'
+
+export const NetworkErrorMsg = '网络错误，请稍后重试！'
 
 type reducerGenerator = (key: ApiKey, isPage?: boolean) => Reducer
 
 interface IApiState {
-    status?: status
+    status?: NetworkStatus
     totalPageNum?: number
     totalNum?: number
     currentPageNum?: number
@@ -30,7 +32,12 @@ const genReducer: reducerGenerator = (key, isPage) => (state: IApiState = isPage
                 status: 'loading'
             }
         case `${key}_success`:
-            const { data, currentPageNum, totalNum, totalPageNum, pageSize } = action as IFetchSucessAction
+            const { currentPageNum, totalNum, totalPageNum, pageSize } = action as IFetchSucessAction
+            const { processor } = apiConfig[key]
+            let { data } = action as IFetchSucessAction
+            if (processor) {
+                data = processor(data)
+            }
             return isPage ? {
                 ...state,
                 status: 'success',

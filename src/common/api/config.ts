@@ -9,6 +9,8 @@ export type IApiConfig = {
 export interface IConfig {
     method: 'POST' | 'GET'
     isPage?: boolean // 分页请求
+    processor?: (res: any) => any // 数据额外加工
+    initState?: any
 }
 
 export const apiConfig: IApiConfig = {

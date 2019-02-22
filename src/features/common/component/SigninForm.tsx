@@ -45,7 +45,7 @@ class SigninForm extends React.Component<ISigninFormProps, ISigninFormState> {
                     {getFieldDecorator('password', {
                         rules: [{ required: true, message: '请输入密码!' }],
                     })(
-                        <Input prefix={<Icon type="lock" className="login-form-icon-password" />} placeholder="密码" />
+                        <Input prefix={<Icon type="lock" className="login-form-icon-password" />} placeholder="密码" type='password' />
                     )}
                 </Form.Item>
                 <Form.Item>
