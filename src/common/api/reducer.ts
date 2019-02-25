@@ -47,15 +47,16 @@ const genReducer: reducerGenerator = (key, isPage) => (state: IApiState = isPage
                 totalPageNum,
                 pageSize
             } : {
-                ...state,
-                status: 'success',
-                data,
-            }
+                    ...state,
+                    status: 'success',
+                    data,
+                }
         case `${key}_failed`:
             const { error } = action as IFetchFailedAction
             return {
                 ...state,
-                error
+                error,
+                status: 'failed'
             }
         default:
             return state
