@@ -1,17 +1,21 @@
 import React from 'react';
-import { Layout, Modal, Button, Badge, Avatar, message, Icon } from 'antd';
-import { RouteComponentProps } from 'react-router-dom';
+import { Layout, Modal, Button, Badge, Avatar, message, Icon, Dropdown, Menu, Anchor } from 'antd';
+import { RouteComponentProps, Link, withRouter } from 'react-router-dom';
 import Navigator from './Navigator';
 import SignModal, { SignModalType } from './SignModal';
 
 import './App.less'
 import { connect } from 'react-redux';
-import { ApiKey } from '@common/api/config';
+import { ApiKey, OtherAPI } from '@common/api/config';
+import { NetworkErrorMsg } from '@common/api/reducer';
+import { Dispatch } from 'redux';
+import { fetchAction } from '@common/api/action';
 
 const { Header, Content, Footer } = Layout;
 
 interface IAppProps extends RouteComponentProps {
     isAuth: boolean
+    dispatch: Dispatch
 }
 
 interface IAppState {
@@ -43,12 +47,42 @@ class App extends React.Component<IAppProps, IAppState> {
         })
     }
 
+    handleUserSignout = (e: React.MouseEvent) => {
+        e.preventDefault()
+        OtherAPI.Signout().then(res => {
+            this.props.dispatch(fetchAction('oauth/auth'))
+        }).catch(err => {
+            message.error(NetworkErrorMsg)
+        })
+    }
+
+    componentDidUpdate(prevProps: IAppProps, prevState: IAppState) {
+        if(prevProps.isAuth === true && this.props.isAuth === false) {
+            window.location.reload()
+        }
+    }
+
     render() {
+        const UserOverlay = (
+            <Menu>
+                <Menu.Item>
+                    <Link to="" ><Icon type="user" /> 我的主页</Link>
+                </Menu.Item>
+                <Menu.Item>
+                    <Link to="" ><Icon type="setting" /> 设置</Link>
+                </Menu.Item>
+                <Menu.Item>
+                    <Link to="" onClick={this.handleUserSignout} ><Icon type="poweroff" /> 退出</Link>
+                </Menu.Item>
+            </Menu>
+        )
         const UserViewer = (
             <div className="user-viewer">
                 <Badge count={1}><Icon type="message" style={{ fontSize: "25px" }} /></Badge>
                 <Badge dot><Icon type="bell" style={{ fontSize: "25px" }} /></Badge>
-                <Badge count={1}><Avatar shape="square" icon="user" /></Badge>
+                <Dropdown overlay={UserOverlay}>
+                    <Badge count={1} style={{cursor: "pointer"}}><Avatar shape="square" icon="user" /></Badge>
+                </Dropdown>
             </div>
         )
         const SignButtonGroup = (

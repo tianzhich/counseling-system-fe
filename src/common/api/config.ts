@@ -1,3 +1,5 @@
+import Axios from "axios";
+
 export const baseURL = `${window.location.origin}/api/`;
 
 export type ApiKey = 'oauth/signin' | 'oauth/signup' | 'oauth/auth'
@@ -23,4 +25,8 @@ export const apiConfig: IApiConfig = {
     'oauth/auth': {
         method: 'GET'
     },
+}
+
+export const OtherAPI = {
+    'Signout': () => Axios.get(`${baseURL}oauth/signout`)
 }
