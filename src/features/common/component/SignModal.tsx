@@ -31,6 +31,7 @@ interface ISignModalOwnProps {
 interface ISignModalProps extends ISignModalOwnProps {
     dispatch: Dispatch
     signinRes: ISignRes
+    signupRes: ISignRes
 }
 
 interface ISignModalState {
@@ -73,7 +74,22 @@ class SignModal extends React.Component<ISignModalProps, ISignModalState> {
             } else if(this.props.signinRes.status === 'failed') {
                 message.error(NetworkErrorMsg)
             }
-
+        }
+        
+        // 注册结果
+        if (prevProps.signupRes.status === 'loading') {
+            if (this.props.signupRes.status === 'success') {
+                if (this.props.signupRes.data.code === 1) {
+                    this.setState({
+                        showModal: false
+                    })
+                    message.success(this.props.signupRes.data.message)
+                } else if (this.props.signupRes.data.code === 0) {
+                    message.warning(this.props.signupRes.data.message)
+                }
+            } else if(this.props.signupRes.status === 'failed') {
+                message.error(NetworkErrorMsg)
+            }
         }
     }
 
@@ -105,7 +121,7 @@ class SignModal extends React.Component<ISignModalProps, ISignModalState> {
                 maskClosable={false}
             >
                 {
-                    this.props.type === "signin" ? <SigninForm dispatch={this.props.dispatch} /> : <SignupForm />
+                    this.props.type === "signin" ? <SigninForm dispatch={this.props.dispatch} /> : <SignupForm dispatch={this.props.dispatch} />
                 }
             </Modal>
         )
@@ -113,7 +129,8 @@ class SignModal extends React.Component<ISignModalProps, ISignModalState> {
 }
 
 const mapState = (state: any) => ({
-    signinRes: state[signinKey]
+    signinRes: state[signinKey],
+    signupRes: state[signupKey]
 })
 
 export default connect(mapState, null, null, { forwardRef: true })(SignModal) as React.ComponentClass<ISignModalOwnProps>;
