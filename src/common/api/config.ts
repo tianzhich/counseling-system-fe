@@ -2,7 +2,7 @@ import Axios from "axios";
 
 export const baseURL = `${window.location.origin}/api/`;
 
-export type ApiKey = 'oauth/signin' | 'oauth/signup' | 'oauth/auth'
+export type ApiKey = 'oauth/signin' | 'oauth/signup' | 'oauth/auth' | 'oauth/apply'
 
 export type IApiConfig = {
     [key in ApiKey]: IConfig 
@@ -25,6 +25,9 @@ export const apiConfig: IApiConfig = {
     'oauth/auth': {
         method: 'GET'
     },
+    'oauth/apply': {
+        method: 'POST'
+    }
 }
 
 export const OtherAPI = {

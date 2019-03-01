@@ -1,31 +1,57 @@
 import React from 'react';
 import NewlyExpert from './component/NewlyExpert';
-import { Button, Icon } from "antd";
+import { Button, Icon, message } from "antd";
 import CounselingPanel from './component/CounselingPanel';
 
 import { newlyExperts } from '../common/fakeData';
 
 import './Counseling.less';
+import { withRouter, Redirect } from 'react-router';
+import { ApiKey } from '@common/api/config';
+import { connect } from 'react-redux';
+import Emitter from '@utils/events';
 
-interface ICounselingProps { }
+interface ICounselingProps {
+    isAuth: boolean
+}
 
 interface ICounselingState { }
 
-function ApplyButton() {
-    return (
-        <div className="apply-button-wrapper">
-            <Button type="primary" size="large" className="apply-button"><Icon type="edit" />咨询师入驻</Button>
-        </div>
-    )
-}
+const authKey: ApiKey = 'oauth/auth'
 
-export default class Counseling extends React.Component<ICounselingProps, ICounselingState> {
+class Counseling extends React.Component<ICounselingProps, ICounselingState> {
     constructor(props: ICounselingProps) {
         super(props);
         this.state = {};
     }
 
+    isAuth = () => {
+        if (this.props.isAuth === false) {
+            Emitter.emit('openSigninModal')
+            return false
+        } else {
+            return true
+        }
+    }
+
     render() {
+        const ApplyButton = withRouter(({ history }) => (
+            <div className="apply-button-wrapper">
+                <Button
+                    type="primary"
+                    size="large"
+                    className="apply-button"
+                    onClick={() => {
+                        if (this.isAuth()) {
+                            history.push('/apply')
+                        }
+                    }}
+                >
+                    <Icon type="edit" />咨询师入驻
+                </Button>
+            </div>
+        ))
+
         return (
             <div className="pcs-counseling-wrapper">
                 <div className="pcs-counseling-newly-expert">
@@ -39,3 +65,9 @@ export default class Counseling extends React.Component<ICounselingProps, ICouns
         )
     }
 }
+
+const mapState = (state: any) => ({
+    isAuth: state[authKey].data ? state[authKey].data.code === 0 ? false : true : false
+})
+
+export default connect(mapState)(Counseling)

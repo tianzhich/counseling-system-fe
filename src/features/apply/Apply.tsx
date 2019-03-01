@@ -6,10 +6,20 @@ import Credit from "./component/Credit";
 import Settings from "./component/Settings";
 
 import './Apply.less';
+import { connect } from 'react-redux';
+import { ApiKey } from '@common/api/config';
+import { Redirect } from 'react-router';
+import { fetchAction } from '@common/api/action';
+import { Dispatch } from 'redux';
 
 const Step = Steps.Step;
 
-interface IApplyProps { }
+const authKey: ApiKey = 'oauth/auth'
+
+interface IApplyProps {
+    isAuth: boolean
+    dispatch: Dispatch
+}
 
 interface IApplyState {
     currentStep: number
@@ -18,7 +28,7 @@ interface IApplyState {
     personInfo: {}
 }
 
-export default class Apply extends React.Component<IApplyProps, IApplyState> {
+class Apply extends React.Component<IApplyProps, IApplyState> {
     countdownInterval: any
     infoRef: React.RefObject<any>
     settingsRef: React.RefObject<any>
@@ -52,13 +62,12 @@ export default class Apply extends React.Component<IApplyProps, IApplyState> {
     }
 
     goNextStep = () => {
-        // if (this.state.currentStep === 1) {
-        //     // validate info
-        //     if (!this.infoRef.current.onValidate()) {
-        //         return
-        //     }
-        // }
-        if (this.state.currentStep === 3) {
+        if (this.state.currentStep === 1) {
+            // validate info
+            if (!this.infoRef.current.onValidate()) {
+                return
+            }
+        } else if (this.state.currentStep === 3) {
             // validate settings and submit
             this.settingsRef.current.onSubmitSettings();
             return
@@ -70,7 +79,6 @@ export default class Apply extends React.Component<IApplyProps, IApplyState> {
     }
 
     handleInfoSubmit = (info: {}) => {
-        console.log(info);
         this.setState({
             personInfo: info
         })
@@ -78,13 +86,19 @@ export default class Apply extends React.Component<IApplyProps, IApplyState> {
 
     // 设置完成，使用个人信息、资质、设置信息发起入驻请求
     handleSettingsSubmit = (settings: {}) => {
-        console.log(settings);
+        const data = {
+            ...this.state.personInfo, ...settings
+        }
 
         // api
-
+        this.props.dispatch(fetchAction('oauth/apply', { data }))
     }
 
     render() {
+        if (this.props.isAuth === false) {
+            return <Redirect to="/" />
+        }
+
         const current = this.state.currentStep;
         const countdown = this.state.countdown;
 
@@ -136,3 +150,9 @@ export default class Apply extends React.Component<IApplyProps, IApplyState> {
         )
     }
 }
+
+const mapState = (state: any) => ({
+    isAuth: state[authKey].data ? state[authKey].data.code === 0 ? false : true : false
+})
+
+export default connect(mapState)(Apply)

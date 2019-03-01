@@ -8,6 +8,9 @@ import Loadable from 'react-loadable';
 import { AsyncComponentLoader } from "@common/routeConfig";
 import Loading from "./features/common/component/Loading";
 import { fetchAction } from "@common/api/action";
+import { ApiKey } from "@common/api/config";
+
+const authKey: ApiKey = 'oauth/auth'
 
 interface IRootProps {
     store: any

@@ -82,7 +82,6 @@ export default class Settings extends React.Component<ISettingsProps, ISettingsS
             }
         }
         this.props.onSubmitSettings(data);
-
     }
 
     render() {
@@ -99,6 +98,7 @@ export default class Settings extends React.Component<ISettingsProps, ISettingsS
                         <span>电话咨询</span>
                         <InputNumber
                             value={this.state.audioPrice}
+                            min={0}
                             formatter={value => `¥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                             parser={value => isNaN(Number(value.replace(/¥\s?|(,*)/g, ''))) ? 0 : Number(value.replace(/¥\s?|(,*)/g, ''))}
                             onChange={(value) => this.handleSetPrice('audioPrice', value)}
@@ -107,6 +107,7 @@ export default class Settings extends React.Component<ISettingsProps, ISettingsS
                     <div>
                         <span>视频咨询</span>
                         <InputNumber
+                            min={0}
                             value={this.state.videoPrice}
                             formatter={value => `¥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                             parser={value => isNaN(Number(value.replace(/¥\s?|(,*)/g, ''))) ? 0 : Number(value.replace(/¥\s?|(,*)/g, ''))}
@@ -122,6 +123,7 @@ export default class Settings extends React.Component<ISettingsProps, ISettingsS
                         <div style={{ display: this.state.ftf ? 'block' : 'none' }}>
                             <span>价格</span>
                             <InputNumber
+                                min={0}
                                 value={this.state.ftf ? this.state.ftf.price : 0}
                                 formatter={value => `¥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                 parser={value => isNaN(Number(value.replace(/¥\s?|(,*)/g, ''))) ? 0 : Number(value.replace(/¥\s?|(,*)/g, ''))}

@@ -10,6 +10,8 @@ import { ApiKey, OtherAPI } from '@common/api/config';
 import { NetworkErrorMsg } from '@common/api/reducer';
 import { Dispatch } from 'redux';
 import { fetchAction } from '@common/api/action';
+import Emitter from '@utils/events';
+import { EventEmitter } from 'events';
 
 const { Header, Content, Footer } = Layout;
 
@@ -26,6 +28,7 @@ const authKey: ApiKey = 'oauth/auth'
 
 class App extends React.Component<IAppProps, IAppState> {
     signModalRef: React.RefObject<any>
+    signinToken: EventEmitter
 
     constructor(props: IAppProps) {
         super(props);
@@ -50,16 +53,18 @@ class App extends React.Component<IAppProps, IAppState> {
     handleUserSignout = (e: React.MouseEvent) => {
         e.preventDefault()
         OtherAPI.Signout().then(res => {
-            this.props.dispatch(fetchAction('oauth/auth'))
+            window.location.reload()
         }).catch(err => {
             message.error(NetworkErrorMsg)
         })
     }
 
-    componentDidUpdate(prevProps: IAppProps, prevState: IAppState) {
-        if(prevProps.isAuth === true && this.props.isAuth === false) {
-            window.location.reload()
-        }
+    componentDidMount() {
+        this.signinToken = Emitter.addListener('openSigninModal', () => this.openModal('signin'))
+    }
+
+    componentWillUnmount() {
+        this.signinToken.removeAllListeners()
     }
 
     render() {
