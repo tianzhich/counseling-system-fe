@@ -20,7 +20,7 @@ function* fetchData(config: IConfig, key: ApiKey, option?: AxiosRequestConfig) {
             params
         })
         const successAction: IFetchSucessAction = {
-            data: fetchData.data,
+            response: fetchData.data,
             type: `${key}_success`
         }
         yield put(successAction)

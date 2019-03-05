@@ -7,21 +7,12 @@ import './SignModal.less';
 import { connect, Omit } from 'react-redux';
 import { Dispatch } from 'redux';
 import { fetchAction } from '@common/api/action';
-import { ApiKey } from '@common/api/config';
-import { NetworkStatus, NetworkErrorMsg } from '@common/api/reducer';
+import { ApiKey, NetworkErrorMsg, IApiResult } from '@common/api/config';
 
 export type SignModalType = 'signin' | 'signup'
 
 const signinKey: ApiKey = 'oauth/signin'
 const signupKey: ApiKey = 'oauth/signup'
-
-interface ISignRes {
-    status: NetworkStatus
-    data: {
-        code: number
-        message: string
-    }
-}
 
 interface ISignModalOwnProps {
     type: SignModalType
@@ -30,8 +21,8 @@ interface ISignModalOwnProps {
 
 interface ISignModalProps extends ISignModalOwnProps {
     dispatch: Dispatch
-    signinRes: ISignRes
-    signupRes: ISignRes
+    signinRes: IApiResult
+    signupRes: IApiResult
 }
 
 interface ISignModalState {
@@ -63,13 +54,13 @@ class SignModal extends React.Component<ISignModalProps, ISignModalState> {
         // 登录结果(登录成功后进行验证)
         if (prevProps.signinRes.status === 'loading') {
             if (this.props.signinRes.status === 'success') {
-                if (this.props.signinRes.data.code === 1) {
+                if (this.props.signinRes.response.code === 1) {
                     this.props.dispatch(fetchAction('oauth/auth'))
                     this.setState({
                         showModal: false
                     })
-                } else if (this.props.signinRes.data.code === 0) {
-                    message.error(this.props.signinRes.data.message)
+                } else if (this.props.signinRes.response.code === 0) {
+                    message.error(this.props.signinRes.response.message)
                 }
             } else if(this.props.signinRes.status === 'failed') {
                 message.error(NetworkErrorMsg)
@@ -79,13 +70,13 @@ class SignModal extends React.Component<ISignModalProps, ISignModalState> {
         // 注册结果
         if (prevProps.signupRes.status === 'loading') {
             if (this.props.signupRes.status === 'success') {
-                if (this.props.signupRes.data.code === 1) {
+                if (this.props.signupRes.response.code === 1) {
                     this.setState({
                         showModal: false
                     })
-                    message.success(this.props.signupRes.data.message)
-                } else if (this.props.signupRes.data.code === 0) {
-                    message.warning(this.props.signupRes.data.message)
+                    message.success(this.props.signupRes.response.message)
+                } else if (this.props.signupRes.response.code === 0) {
+                    message.warning(this.props.signupRes.response.message)
                 }
             } else if(this.props.signupRes.status === 'failed') {
                 message.error(NetworkErrorMsg)

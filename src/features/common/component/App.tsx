@@ -6,10 +6,8 @@ import SignModal, { SignModalType } from './SignModal';
 
 import './App.less'
 import { connect } from 'react-redux';
-import { ApiKey, OtherAPI } from '@common/api/config';
-import { NetworkErrorMsg } from '@common/api/reducer';
+import { ApiKey, OtherAPI, NetworkErrorMsg } from '@common/api/config';
 import { Dispatch } from 'redux';
-import { fetchAction } from '@common/api/action';
 import Emitter from '@utils/events';
 import { EventEmitter } from 'events';
 

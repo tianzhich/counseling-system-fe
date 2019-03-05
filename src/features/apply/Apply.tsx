@@ -1,5 +1,5 @@
 import React from 'react';
-import { Steps, Icon, Button } from 'antd'
+import { Steps, Icon, Button, message } from 'antd'
 import Agreements from "./component/Agreements";
 import Info from "./component/Info";
 import Credit from "./component/Credit";
@@ -7,7 +7,7 @@ import Settings from "./component/Settings";
 
 import './Apply.less';
 import { connect } from 'react-redux';
-import { ApiKey } from '@common/api/config';
+import { ApiKey, NetworkErrorMsg, IApiResult } from '@common/api/config';
 import { Redirect } from 'react-router';
 import { fetchAction } from '@common/api/action';
 import { Dispatch } from 'redux';
@@ -15,10 +15,12 @@ import { Dispatch } from 'redux';
 const Step = Steps.Step;
 
 const authKey: ApiKey = 'oauth/auth'
+const applyKey: ApiKey = 'oauth/apply'
 
 interface IApplyProps {
     isAuth: boolean
     dispatch: Dispatch
+    applyRes: IApiResult
 }
 
 interface IApplyState {
@@ -55,6 +57,19 @@ class Apply extends React.Component<IApplyProps, IApplyState> {
         if (prevState.countdown === 0) {
             clearInterval(this.countdownInterval)
         }
+
+        // 申请回调结果
+        if (prevProps.applyRes.status === 'loading') {
+            if (this.props.applyRes.status === 'success') {
+                if (this.props.applyRes.response.code === 1) {
+                    message.success(this.props.applyRes.response.message)
+                } else {
+                    message.error(this.props.applyRes.response.message)
+                }
+            } else if (this.props.applyRes.status === 'failed') {
+                message.error(NetworkErrorMsg)
+            }
+        }
     }
 
     componentWillUnmount() {
@@ -90,7 +105,6 @@ class Apply extends React.Component<IApplyProps, IApplyState> {
             ...this.state.personInfo, ...settings
         }
 
-        // api
         this.props.dispatch(fetchAction('oauth/apply', { data }))
     }
 
@@ -152,7 +166,8 @@ class Apply extends React.Component<IApplyProps, IApplyState> {
 }
 
 const mapState = (state: any) => ({
-    isAuth: state[authKey].data ? state[authKey].data.code === 0 ? false : true : false
+    isAuth: state[authKey].data ? state[authKey].data.code === 0 ? false : true : false,
+    applyRes: state[applyKey]
 })
 
 export default connect(mapState)(Apply)

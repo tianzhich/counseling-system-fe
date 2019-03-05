@@ -8,6 +8,21 @@ export type IApiConfig = {
     [key in ApiKey]: IConfig 
 }
 
+export type NetworkStatus = 'loading' | 'success' | 'failed'
+
+export const NetworkErrorMsg = '网络错误，请稍后重试！'
+
+export interface IApiResponse {
+    code: number
+    data: any | null
+    message: string
+}
+
+export interface IApiResult {
+    status: NetworkStatus
+    response: IApiResponse
+}
+
 export interface IConfig {
     method: 'POST' | 'GET'
     isPage?: boolean // 分页请求
