@@ -118,7 +118,7 @@ class App extends React.Component<IAppProps, IAppState> {
 }
 
 const mapState = (state: any) => ({
-    isAuth: state[authKey].data ? state[authKey].data.code === 0 ? false : true : false
+    isAuth: state[authKey].response ? state[authKey].response.code === 0 ? false : true : false
 })
 
 export default connect(mapState)(App)

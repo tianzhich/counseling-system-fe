@@ -67,7 +67,7 @@ class Counseling extends React.Component<ICounselingProps, ICounselingState> {
 }
 
 const mapState = (state: any) => ({
-    isAuth: state[authKey].data ? state[authKey].data.code === 0 ? false : true : false
+    isAuth: state[authKey].response ? state[authKey].response.code === 0 ? false : true : false
 })
 
 export default connect(mapState)(Counseling)
