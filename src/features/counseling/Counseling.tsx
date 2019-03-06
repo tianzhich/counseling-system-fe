@@ -13,6 +13,7 @@ import Emitter from '@utils/events';
 
 interface ICounselingProps {
     isAuth: boolean
+    isCounselor: boolean
 }
 
 interface ICounselingState { }
@@ -42,6 +43,10 @@ class Counseling extends React.Component<ICounselingProps, ICounselingState> {
                     size="large"
                     className="apply-button"
                     onClick={() => {
+                        if (this.props.isCounselor) {
+                            message.warning("您已入驻咨询师！")
+                            return
+                        }
                         if (this.isAuth()) {
                             history.push('/apply')
                         }
@@ -67,7 +72,8 @@ class Counseling extends React.Component<ICounselingProps, ICounselingState> {
 }
 
 const mapState = (state: any) => ({
-    isAuth: state[authKey].response ? state[authKey].response.code === 0 ? false : true : false
+    isAuth: state[authKey].response ? state[authKey].response.code === 0 ? false : true : false,
+    isCounselor: state[authKey].response ? state[authKey].response.data.userType === 1 ? true : false : false, 
 })
 
 export default connect(mapState)(Counseling)

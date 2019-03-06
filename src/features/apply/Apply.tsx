@@ -19,6 +19,7 @@ const applyKey: ApiKey = 'oauth/apply'
 
 interface IApplyProps {
     isAuth: boolean
+    isCounselor: boolean // 是否咨询师账户
     dispatch: Dispatch
     applyRes: IApiResult
 }
@@ -63,6 +64,9 @@ class Apply extends React.Component<IApplyProps, IApplyState> {
             if (this.props.applyRes.status === 'success') {
                 if (this.props.applyRes.response.code === 1) {
                     message.success(this.props.applyRes.response.message)
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 1500); 
                 } else {
                     message.error(this.props.applyRes.response.message)
                 }
@@ -109,7 +113,7 @@ class Apply extends React.Component<IApplyProps, IApplyState> {
     }
 
     render() {
-        if (this.props.isAuth === false) {
+        if (!this.props.isAuth || this.props.isCounselor) {
             return <Redirect to="/" />
         }
 
@@ -166,7 +170,8 @@ class Apply extends React.Component<IApplyProps, IApplyState> {
 }
 
 const mapState = (state: any) => ({
-    isAuth: state[authKey].data ? state[authKey].data.code === 0 ? false : true : false,
+    isAuth: state[authKey].response ? state[authKey].response.code === 0 ? false : true : false,
+    isCounselor: state[authKey].response ? state[authKey].response.data.userType === 1 ? true : false : false, 
     applyRes: state[applyKey]
 })
 
