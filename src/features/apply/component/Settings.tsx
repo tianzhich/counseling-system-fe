@@ -134,7 +134,8 @@ export default class Settings extends React.Component<ISettingsProps, ISettingsS
                                 options={cities}
                                 expandTrigger="hover"
                                 displayRender={(label) => label[label.length - 1]}
-                                onChange={(value) => this.handleSetFtf('city', value[value.length - 1])}
+                                onChange={(value) => this.handleSetFtf('city', value[value.length - 1].replace('市', ''))}
+                                placeholder="请选择"
                             />
                         </div>
                     </div>
