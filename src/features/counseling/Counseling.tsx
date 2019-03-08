@@ -10,10 +10,13 @@ import { withRouter, Redirect } from 'react-router';
 import { ApiKey } from '@common/api/config';
 import { connect } from 'react-redux';
 import Emitter from '@utils/events';
+import { Dispatch } from 'redux';
+import { push } from 'connected-react-router';
 
 interface ICounselingProps {
     isAuth: boolean
     isCounselor: boolean
+    dispatch: Dispatch
 }
 
 interface ICounselingState { }
@@ -28,7 +31,7 @@ class Counseling extends React.Component<ICounselingProps, ICounselingState> {
 
     isAuth = () => {
         if (this.props.isAuth === false) {
-            Emitter.emit('openSigninModal')
+            Emitter.emit('openSigninModal', { ref: "/apply" })
             return false
         } else {
             return true
@@ -36,7 +39,7 @@ class Counseling extends React.Component<ICounselingProps, ICounselingState> {
     }
 
     render() {
-        const ApplyButton = withRouter(({ history }) => (
+        const ApplyButton = () => (
             <div className="apply-button-wrapper">
                 <Button
                     type="primary"
@@ -48,14 +51,14 @@ class Counseling extends React.Component<ICounselingProps, ICounselingState> {
                             return
                         }
                         if (this.isAuth()) {
-                            history.push('/apply')
+                            this.props.dispatch(push('/apply'))
                         }
                     }}
                 >
                     <Icon type="edit" />咨询师入驻
                 </Button>
             </div>
-        ))
+        )
 
         return (
             <div className="pcs-counseling-wrapper">
