@@ -171,7 +171,7 @@ class Apply extends React.Component<IApplyProps, IApplyState> {
 
 const mapState = (state: any) => ({
     isAuth: state[authKey].response ? state[authKey].response.code === 0 ? false : true : false,
-    isCounselor: state[authKey].response ? state[authKey].response.data.userType === 1 ? true : false : false, 
+    isCounselor: state[authKey].response && state[authKey].response.data ? state[authKey].response.data.userType === 1 ? true : false : false, 
     applyRes: state[applyKey]
 })
 

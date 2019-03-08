@@ -1,26 +1,33 @@
 import React from 'react';
 import {
-    Form, Input, Select, Upload, Radio, InputNumber, Divider, Icon, Tooltip, Button
+    Form, Input, Select, Upload, Radio, InputNumber, Divider, Icon, Tooltip, Button, Tag, message
 } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
+import { RadioChangeEvent } from 'antd/lib/radio';
 
 const { Option } = Select;
 const { TextArea } = Input
 
 let genId = 0;
 
-interface IRegistrationFormProps {
+interface IInfoProps {
     form: WrappedFormUtils
     onSubmitInfo: (values: any) => void
 }
 
-interface IRegistrationFormState {
+interface IInfoState {
     confirmDirty: boolean
     autoCompleteResult: any[]
+
+    // 其他领域
+    haveOtherTopic: boolean
+    topicTags: string[]
+    inputVisible: boolean
+    inputValue: string
 }
 
 const GuideItem = (props: { title: string, content: React.ReactNode }) =>
-    <div style={{marginBottom: "10px"}}>
+    <div style={{ marginBottom: "10px" }}>
         <div>{`【${props.title}】`}</div>
         <div>{props.content}</div>
     </div>
@@ -45,12 +52,19 @@ const DetailGuide = () => <div className="detail-guide">
     <GuideItem title="其他" content="" />
 </div>
 
-class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistrationFormState> {
-    constructor(props: IRegistrationFormProps) {
+class Info extends React.Component<IInfoProps, IInfoState> {
+    saveTagRef: React.RefObject<any>
+    constructor(props: IInfoProps) {
         super(props);
+        this.saveTagRef = React.createRef()
         this.state = {
             confirmDirty: false,
             autoCompleteResult: [],
+
+            haveOtherTopic: false,
+            topicTags: [],
+            inputVisible: false,
+            inputValue: ""
         }
     }
 
@@ -58,7 +72,12 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
         let isValidate: boolean;
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                isValidate = true
+                // 校验otherTopic tag
+                if (values.topic === "其他" && this.state.topicTags.length === 0) {
+                    message.error('请至少选择或输入一个您擅长的领域！')
+                    isValidate = false
+                    return isValidate
+                }
 
                 // 表单处理和上传
                 const data = {
@@ -67,11 +86,14 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
                     description: values.description,
                     motto: values.motto,
                     workYears: values.workYears,
+                    topic: values.topic,
+                    otherTopic: values.topic === "其他" ? this.state.topicTags.join(",") : "",
                     detail: values.keys.map((k: any) => ({
                         title: values.title[k],
                         content: values.content[k]
                     }))
                 }
+                isValidate = true
                 this.props.onSubmitInfo(data)
             } else {
                 isValidate = false
@@ -103,8 +125,43 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
         });
     }
 
+    handleClose = (removedTag: string) => {
+        const topicTags = this.state.topicTags.filter(tag => tag !== removedTag);
+        this.setState({ topicTags });
+    }
+
+    showInput = () => {
+        this.setState({ inputVisible: true }, () => this.saveTagRef.current.focus());
+    }
+
+    handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({ inputValue: e.target.value });
+    }
+
+    handleInputConfirm = () => {
+        const state = this.state;
+        const inputValue = state.inputValue;
+        let topicTags = state.topicTags;
+        if (inputValue && topicTags.indexOf(inputValue) === -1) {
+            topicTags = [...topicTags, inputValue];
+        }
+        this.setState({
+            topicTags,
+            inputVisible: false,
+            inputValue: '',
+        });
+    }
+
+    handleTopicChange = (e: RadioChangeEvent) => {
+        this.setState({
+            haveOtherTopic: e.target.value === "其他"
+        })
+    }
+
     render() {
         const { getFieldDecorator, getFieldValue } = this.props.form;
+
+        const { topicTags, inputVisible, inputValue } = this.state
 
         const formItemLayout = {
             labelCol: {
@@ -203,6 +260,62 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
                 </Form.Item>
                 <Form.Item
                     {...formItemLayout}
+                    label="擅长领域"
+                >
+                    {getFieldDecorator('topic', {
+                        rules: [{
+                            required: true, message: '请选择您擅长的领域'
+                        }]
+                    })(
+                        <Radio.Group onChange={this.handleTopicChange}>
+                            <Radio.Button value="个人成长">个人成长</Radio.Button>
+                            <Radio.Button value="恋爱婚姻">恋爱婚姻</Radio.Button>
+                            <Radio.Button value="老年心理">老年心理</Radio.Button>
+                            <Radio.Button value="其他">其他</Radio.Button>
+                        </Radio.Group>
+                    )}
+                </Form.Item>
+                <Form.Item
+                    {...formItemLayout}
+                    label="其他领域"
+                    style={{ display: this.state.haveOtherTopic ? "block" : "none" }}
+                >
+                    {getFieldDecorator('otherTopic')(
+                        <div>
+                            {topicTags.map(tag => {
+                                const isLongTag = tag.length > 20;
+                                const tagElem = (
+                                    <Tag key={tag} afterClose={() => this.handleClose(tag)}>
+                                        {isLongTag ? `${tag.slice(0, 20)}...` : tag}
+                                    </Tag>
+                                );
+                                return isLongTag ? <Tooltip title={tag} key={tag}>{tagElem}</Tooltip> : tagElem;
+                            })}
+                            {inputVisible && (
+                                <Input
+                                    ref={this.saveTagRef}
+                                    type="text"
+                                    size="small"
+                                    style={{ width: 78 }}
+                                    value={inputValue}
+                                    onChange={this.handleInputChange}
+                                    onBlur={this.handleInputConfirm}
+                                    onPressEnter={this.handleInputConfirm}
+                                />
+                            )}
+                            {!inputVisible && (
+                                <Tag
+                                    onClick={this.showInput}
+                                    style={{ background: '#fff', borderStyle: 'dashed' }}
+                                >
+                                    <Icon type="plus" /> New Tag
+                                </Tag>
+                            )}
+                        </div>
+                    )}
+                </Form.Item>
+                <Form.Item
+                    {...formItemLayout}
                     label="个人头衔"
                 >
                     {getFieldDecorator('description', {
@@ -228,7 +341,7 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
                     })(
                         <TextArea
                             placeholder="限50个字符。&#10;方向1：可以写咨询师对咨询的理解（价值观）。示例：有阴影的地方就有阳光。咨询师，就是要让来访者看到更整体、全面的东西。&#10;方向2：咨询师想要对来访者说的话。示例：星洲易渡，心河难逾，与你共觅心河之舟。&#10;方向3：咨询师最想要来访者了解的讯息。示例：十年正念结合心理学实践经验，致力于推动正念禅修结合心理学。"
-                            style={{height: "150px"}}
+                            style={{ height: "150px" }}
                         />
                     )}
                 </Form.Item>
@@ -240,7 +353,7 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
                     </Tooltip>
                 </div>
                 {detailItems}
-                <Form.Item wrapperCol={{ span: 24 }} style={{textAlign: "center"}}>
+                <Form.Item wrapperCol={{ span: 24 }} style={{ textAlign: "center" }}>
                     <Button type="dashed" onClick={this.addDetailItem} style={{ width: '60%' }}>
                         <Icon type="plus" /> 添加一项
                     </Button>
@@ -251,4 +364,4 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
     }
 }
 
-export default Form.create()(RegistrationForm);
+export default Form.create()(Info);
