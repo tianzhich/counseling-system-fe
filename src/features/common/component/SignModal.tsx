@@ -8,9 +8,12 @@ import { connect, Omit } from 'react-redux';
 import { Dispatch } from 'redux';
 import { fetchAction } from '@common/api/action';
 import { ApiKey, NetworkErrorMsg, IApiResult } from '@common/api/config';
+import { RouteComponentProps, withRouter } from 'react-router';
+import { push, replace } from 'connected-react-router';
 
 export type SignModalType = 'signin' | 'signup'
 
+// store key
 const signinKey: ApiKey = 'oauth/signin'
 const signupKey: ApiKey = 'oauth/signup'
 
@@ -27,6 +30,9 @@ interface ISignModalProps extends ISignModalOwnProps {
 
 interface ISignModalState {
     showModal: boolean
+
+    // ref, 登陆跳转
+    ref?: string
 }
 
 class SignModal extends React.Component<ISignModalProps, ISignModalState> {
@@ -37,9 +43,10 @@ class SignModal extends React.Component<ISignModalProps, ISignModalState> {
         };
     }
 
-    openModal = () => {
+    openModal = (ref?: string) => {
         this.setState({
-            showModal: true
+            showModal: true,
+            ref
         })
     }
 
@@ -55,18 +62,26 @@ class SignModal extends React.Component<ISignModalProps, ISignModalState> {
         if (prevProps.signinRes.status === 'loading') {
             if (this.props.signinRes.status === 'success') {
                 if (this.props.signinRes.response.code === 1) {
-                    this.props.dispatch(fetchAction('oauth/auth'))
                     this.setState({
                         showModal: false
                     })
+                    // reload
+                    if (this.state.ref) {
+                        this.props.dispatch(fetchAction('oauth/auth'))
+                        setTimeout(() => {
+                            this.props.dispatch(replace(this.state.ref))
+                        }, 800);
+                    } else {
+                        window.location.reload()
+                    }
                 } else if (this.props.signinRes.response.code === 0) {
                     message.error(this.props.signinRes.response.message)
                 }
-            } else if(this.props.signinRes.status === 'failed') {
+            } else if (this.props.signinRes.status === 'failed') {
                 message.error(NetworkErrorMsg)
             }
         }
-        
+
         // 注册结果
         if (prevProps.signupRes.status === 'loading') {
             if (this.props.signupRes.status === 'success') {
@@ -75,10 +90,14 @@ class SignModal extends React.Component<ISignModalProps, ISignModalState> {
                         showModal: false
                     })
                     message.success(this.props.signupRes.response.message)
+                    // reload
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 1500);
                 } else if (this.props.signupRes.response.code === 0) {
                     message.warning(this.props.signupRes.response.message)
                 }
-            } else if(this.props.signupRes.status === 'failed') {
+            } else if (this.props.signupRes.status === 'failed') {
                 message.error(NetworkErrorMsg)
             }
         }

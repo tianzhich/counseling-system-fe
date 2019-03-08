@@ -13,7 +13,7 @@ import { EventEmitter } from 'events';
 
 const { Header, Content, Footer } = Layout;
 
-interface IAppProps extends RouteComponentProps {
+interface IAppProps {
     isAuth: boolean
     dispatch: Dispatch
 }
@@ -36,10 +36,10 @@ class App extends React.Component<IAppProps, IAppState> {
         }
     }
 
-    openModal = (type: SignModalType) => {
+    openModal = (type: SignModalType, ref?: string) => {
         this.setState({
             signModal: type
-        }, this.signModalRef.current.openModal())
+        }, this.signModalRef.current.openModal(ref))
     }
 
     handleChangeModal = (type: SignModalType) => {
@@ -57,8 +57,12 @@ class App extends React.Component<IAppProps, IAppState> {
         })
     }
 
+    handleLoginWithRef = (payload: any) => {
+        this.openModal('signin', payload.ref)
+    }
+
     componentDidMount() {
-        this.signinToken = Emitter.addListener('openSigninModal', () => this.openModal('signin'))
+        this.signinToken = Emitter.addListener('openSigninModal', this.handleLoginWithRef)
     }
 
     componentWillUnmount() {

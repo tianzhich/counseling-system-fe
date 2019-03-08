@@ -6,7 +6,6 @@ import CounselingPanel from './component/CounselingPanel';
 import { newlyExperts } from '../common/fakeData';
 
 import './Counseling.less';
-import { withRouter, Redirect } from 'react-router';
 import { ApiKey } from '@common/api/config';
 import { connect } from 'react-redux';
 import Emitter from '@utils/events';
