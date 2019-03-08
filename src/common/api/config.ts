@@ -2,7 +2,10 @@ import Axios from "axios";
 
 export const baseURL = `${window.location.origin}/api/`;
 
-export type ApiKey = 'oauth/signin' | 'oauth/signup' | 'oauth/auth' | 'oauth/apply'
+type oAuthKey = 'oauth/signin' | 'oauth/signup' | 'oauth/auth' | 'oauth/apply'
+type infoKey = 'info/counselingFilters'
+
+export type ApiKey = oAuthKey | infoKey
 
 export type IApiConfig = {
     [key in ApiKey]: IConfig 
@@ -42,6 +45,9 @@ export const apiConfig: IApiConfig = {
     },
     'oauth/apply': {
         method: 'POST'
+    },
+    'info/counselingFilters': {
+        method: 'GET'
     }
 }
 

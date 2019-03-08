@@ -10,6 +10,7 @@ import { ApiKey, OtherAPI, NetworkErrorMsg } from '@common/api/config';
 import { Dispatch } from 'redux';
 import Emitter from '@utils/events';
 import { EventEmitter } from 'events';
+import { fetchAction } from '@common/api/action';
 
 const { Header, Content, Footer } = Layout;
 
@@ -63,6 +64,9 @@ class App extends React.Component<IAppProps, IAppState> {
 
     componentDidMount() {
         this.signinToken = Emitter.addListener('openSigninModal', this.handleLoginWithRef)
+
+        // info api
+        this.props.dispatch(fetchAction('info/counselingFilters'))
     }
 
     componentWillUnmount() {
