@@ -18,7 +18,7 @@ export interface IFetchSucessAction {
 
 export interface IFetchFailedAction {
     type: string // 'ApiKey_failed'
-    error: any
+    err: any
 }
 
 export const fetchAction = (key: ApiKey, options?: AxiosRequestConfig) => {

@@ -1,4 +1,4 @@
-import { IApiConfig, ApiKey, apiConfig, NetworkStatus } from "./config";
+import { IApiConfig, ApiKey, apiConfig, NetworkStatus, IApiResult } from "./config";
 import { Reducer } from "redux";
 import { IApiAction, IFetchSucessAction, IFetchFailedAction } from "./action";
 
@@ -10,7 +10,7 @@ interface IApiState {
     totalNum?: number
     currentPageNum?: number
     pageSize?: number
-    data?: any
+    response?: IApiResult
     err?: any
 }
 
@@ -19,7 +19,7 @@ const defaultState: IApiState = {
     pageSize: 10
 }
 
-const genReducer: reducerGenerator = (key, isPage) => (state: IApiState = isPage ? defaultState : {}, action: IApiAction) => {
+const genReducer: reducerGenerator = (key, isPage) => (state: IApiState = isPage ? defaultState : {}, action: IApiAction): IApiState => {
     const { type } = action
     switch (type) {
         case `${key}_fetching`:
@@ -49,10 +49,10 @@ const genReducer: reducerGenerator = (key, isPage) => (state: IApiState = isPage
                     response,
                 }
         case `${key}_failed`:
-            const { error } = action as IFetchFailedAction
+            const { err } = action as IFetchFailedAction
             return {
                 ...state,
-                error,
+                err,
                 status: 'failed'
             }
         default:

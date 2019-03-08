@@ -24,13 +24,13 @@ function* fetchData(config: IConfig, key: ApiKey, option?: AxiosRequestConfig) {
             type: `${key}_success`
         }
         yield put(successAction)
-    } catch (error) {
+    } catch (err) {
         if (process.env.NODE_ENV === 'development') {
-            console.log(error);
+            console.log(err);
         }
         const failedAction: IFetchFailedAction = {
             type: `${key}_failed`,
-            error
+            err
         }
         yield put(failedAction)
     }
