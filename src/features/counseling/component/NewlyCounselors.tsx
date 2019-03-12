@@ -60,7 +60,7 @@ class Newlycounselors extends React.Component<INewlyCounselorsProps, {}> {
         if (pageSize * pageNum < total) {
             this.props.dispatch(fetchAction('query/newlyCounselors'))
         } else {
-            message.warning('最近没有新加入的专家了！')
+            this.props.dispatch(fetchAction('query/newlyCounselors', { params: { pageSize: 4, pageNum: 1 } }))
         }
     }
     render() {
