@@ -4,9 +4,9 @@ import { Counselor } from "@types";
 import './NewlyCounselors.less';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { IApiStore } from '@common/api/reducer';
+import { IApiStore, IPageInfo } from '@common/api/reducer';
 import { fetchAction } from '@common/api/action';
-import { ApiKey, pagination, NetworkStatus } from '@common/api/config';
+import { ApiKey, NetworkStatus } from '@common/api/config';
 import { avatarURL } from '@features/common/fakeData';
 
 const { Meta } = Card;
@@ -16,10 +16,16 @@ const newlClsActionKey: ApiKey = 'query/newlyCounselors'
 interface INewlyCounselorsProps {
     // store mapping
     dispatch: Dispatch
-    counselorsState?: pagination & {
-        list: Counselor[]
-    }
+    counselors: Counselor[]
+    pageInfo: IPageInfo
     loadingStatus: NetworkStatus
+}
+
+const initialPageInfo: IPageInfo = {
+    currentPageNum: 0,
+    totalNum: 0,
+    pageSize: 4,
+    totalPageNum: 0
 }
 
 function Description(props: Partial<Counselor>) {
@@ -51,20 +57,17 @@ class Newlycounselors extends React.Component<INewlyCounselorsProps, {}> {
         this.props.dispatch(fetchAction('query/newlyCounselors', { params: { pageSize: 4 } }))
     }
     loadMore = () => {
-        if (!this.props.counselorsState) {
-            return
-        }
-        const pageSize = this.props.counselorsState.pageSize
-        const pageNum = this.props.counselorsState.pageNum
-        const total = this.props.counselorsState.total
-        if (pageSize * pageNum < total) {
+        const pageSize = this.props.pageInfo.pageSize
+        const pageNum = this.props.pageInfo.currentPageNum
+        const totalPageNum = this.props.pageInfo.totalPageNum
+        if (pageNum < totalPageNum) {
             this.props.dispatch(fetchAction('query/newlyCounselors'))
         } else {
-            this.props.dispatch(fetchAction('query/newlyCounselors', { params: { pageSize: 4, pageNum: 1 } }))
+            this.props.dispatch(fetchAction('query/newlyCounselors', { params: { pageSize, pageNum: 1 } }))
         }
     }
     render() {
-        const counselors = this.props.counselorsState ? this.props.counselorsState.list : []
+        const counselors = this.props.counselors
         return (
             <div className="newly-counselors">
                 <div className="newly-counselors-header">
@@ -90,8 +93,9 @@ class Newlycounselors extends React.Component<INewlyCounselorsProps, {}> {
 }
 
 const mapState = (state: IApiStore) => ({
-    counselorsState: state[newlClsActionKey].response ? state[newlClsActionKey].response.data : undefined,
-    loadingStatus: state[newlClsActionKey].status
+    counselors: state[newlClsActionKey].response ? state[newlClsActionKey].response.data.list : [],
+    loadingStatus: state[newlClsActionKey].status,
+    pageInfo: state[newlClsActionKey].pageInfo ? state[newlClsActionKey].pageInfo : initialPageInfo,
 })
 
 export default connect(mapState)(Newlycounselors)

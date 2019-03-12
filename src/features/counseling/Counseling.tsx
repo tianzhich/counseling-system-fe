@@ -1,7 +1,7 @@
 import React from 'react';
 import Newlycounselors from './component/NewlyCounselors';
 import { Button, Icon, message } from "antd";
-import CounselingPanel from './component/CounselingPanel';
+import CounselorsPanel from './component/CounselorsPanel';
 import './Counseling.less';
 import Emitter from '@utils/events';
 import { push } from 'connected-react-router';
@@ -64,7 +64,7 @@ class Counseling extends React.Component<ICounselingProps, ICounselingState> {
                     <ApplyButton />
                 </div>
                 <div className="pcs-counseling">
-                    <CounselingPanel />
+                    <CounselorsPanel />
                 </div>
             </div>
         )

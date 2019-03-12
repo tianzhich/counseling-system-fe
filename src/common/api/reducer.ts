@@ -6,12 +6,16 @@ type reducerGenerator = (key: ApiKey, isPage?: boolean) => Reducer
 
 export interface IApiState {
     status?: NetworkStatus
-    totalPageNum?: number
-    totalNum?: number
-    currentPageNum?: number
-    pageSize?: number
+    pageInfo?: IPageInfo
     response?: IApiResponse
     err?: any
+}
+
+export interface IPageInfo {
+    totalPageNum?: number
+    pageSize: number
+    totalNum?: number
+    currentPageNum: number
 }
 
 export type IApiStore = {
@@ -19,8 +23,10 @@ export type IApiStore = {
 }
 
 const defaultState: IApiState = {
-    currentPageNum: 0,
-    pageSize: 6
+    pageInfo: {
+        currentPageNum: 0,
+        pageSize: 10
+    }
 }
 
 const genReducer: reducerGenerator = (key, isPage) => (state: IApiState = isPage ? defaultState : {}, action: IApiAction): IApiState => {
@@ -43,10 +49,12 @@ const genReducer: reducerGenerator = (key, isPage) => (state: IApiState = isPage
                     ...state,
                     status: 'success',
                     response,
-                    currentPageNum,
-                    totalNum,
-                    totalPageNum,
-                    pageSize
+                    pageInfo: {
+                        currentPageNum,
+                        totalNum,
+                        totalPageNum,
+                        pageSize
+                    }
                 } : {
                     ...state,
                     status: 'success',

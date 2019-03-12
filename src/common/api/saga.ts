@@ -18,8 +18,8 @@ function* fetchData(config: IConfig, key: ApiKey, option?: AxiosRequestConfig) {
     // pagination
     if (config.isPage) {
         const state = store.getState()[key] as IApiState
-        pageNum = option && option.params && option.params.pageNum ? option.params.pageNum : state.currentPageNum + 1
-        pageSize = option && option.params && option.params.pageSize ? option.params.pageSize : state.pageSize
+        pageNum = option && option.params && option.params.pageNum ? option.params.pageNum : state.pageInfo.currentPageNum + 1
+        pageSize = option && option.params && option.params.pageSize ? option.params.pageSize : state.pageInfo.pageSize
     }
 
     let fetchData: { data: IApiResponse }

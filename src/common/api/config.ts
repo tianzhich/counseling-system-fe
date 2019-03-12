@@ -14,12 +14,6 @@ export type IApiConfig = {
 
 export type NetworkStatus = 'loading' | 'success' | 'failed'
 
-export interface pagination {
-    pageSize: number
-    pageNum: number
-    total?: number
-}
-
 export const NetworkErrorMsg = '网络错误，请稍后重试！'
 
 export interface IApiResponse {

@@ -1,14 +1,15 @@
 import React from 'react';
 import { Card, Avatar, Button, Input, Icon, Pagination } from "antd";
-import { Expert, Counselor } from '@types';
+import { Counselor } from '@types';
 
 import './CounselorList.less';
 import { avatarURL } from '@features/common/fakeData';
+import { PaginationProps } from 'antd/lib/pagination';
 
 const { Meta } = Card;
 const Search = Input.Search;
 
-function ExpertListItem(props: Counselor) {
+function CounselorListItem(props: Counselor) {
     const Title = (titleProps: Partial<Counselor>) =>
         <React.Fragment>
             <span className="name">{titleProps.name}</span>
@@ -48,16 +49,17 @@ function ExpertListItem(props: Counselor) {
     )
 }
 
-interface IExpertListProps {
+interface ICounselorListProps {
     counselors: Counselor[]
+    pagination: PaginationProps
 }
 
-interface IExpertListState {
+interface ICounselorListState {
     queryName: string // 查询条件
 }
 
-export default class ExpertList extends React.Component<IExpertListProps, IExpertListState> {
-    constructor(props: IExpertListProps) {
+export default class CounselorList extends React.Component<ICounselorListProps, ICounselorListState> {
+    constructor(props: ICounselorListProps) {
         super(props);
         this.state = {
             queryName: ''
@@ -70,19 +72,19 @@ export default class ExpertList extends React.Component<IExpertListProps, IExper
 
     render() {
         return (
-            <div className="expert-list-wrapper">
+            <div className="counselor-list-wrapper">
                 <div className="query-bar">
                     <span>今日推荐</span>
                     <Search placeholder="搜索专家名字" enterButton />
                 </div>
-                <div className="expert-list">
+                <div className="counselor-list">
                     {
                         this.props.counselors.map(c =>
-                            <ExpertListItem key={c.uid} {...c} />
+                            <CounselorListItem key={c.uid} {...c} />
                         )
                     }
                     <div className="pagination-wrapper">
-                        <Pagination total={120} />
+                        <Pagination {...this.props.pagination}/>
                     </div>
                 </div>
             </div>
