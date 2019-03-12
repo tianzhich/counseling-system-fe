@@ -1,12 +1,12 @@
 import React from 'react';
-import { Card, Avatar } from "antd";
+import { Card, Avatar, message, Spin } from "antd";
 import { Counselor } from "@types";
 import './NewlyCounselors.less';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { IApiStore } from '@common/api/reducer';
 import { fetchAction } from '@common/api/action';
-import { ApiKey } from '@common/api/config';
+import { ApiKey, pagination, NetworkStatus } from '@common/api/config';
 import { avatarURL } from '@features/common/fakeData';
 
 const { Meta } = Card;
@@ -16,7 +16,10 @@ const newlClsActionKey: ApiKey = 'query/newlyCounselors'
 interface INewlyCounselorsProps {
     // store mapping
     dispatch: Dispatch
-    counselors: Counselor[]
+    counselorsState?: pagination & {
+        list: Counselor[]
+    }
+    loadingStatus: NetworkStatus
 }
 
 function Description(props: Partial<Counselor>) {
@@ -45,33 +48,50 @@ function Title(props: Partial<Counselor>) {
 
 class Newlycounselors extends React.Component<INewlyCounselorsProps, {}> {
     componentDidMount() {
-        this.props.dispatch(fetchAction('query/newlyCounselors'))
+        this.props.dispatch(fetchAction('query/newlyCounselors', { params: { pageSize: 4 } }))
+    }
+    loadMore = () => {
+        if (!this.props.counselorsState) {
+            return
+        }
+        const pageSize = this.props.counselorsState.pageSize
+        const pageNum = this.props.counselorsState.pageNum
+        const total = this.props.counselorsState.total
+        if (pageSize * pageNum < total) {
+            this.props.dispatch(fetchAction('query/newlyCounselors'))
+        } else {
+            message.warning('最近没有新加入的专家了！')
+        }
     }
     render() {
+        const counselors = this.props.counselorsState ? this.props.counselorsState.list : []
         return (
             <div className="newly-counselors">
-                <div className="newly-counselors-header">新加入的专家</div>
+                <div className="newly-counselors-header">
+                    新加入的专家 {this.props.loadingStatus === 'loading' ? <Spin /> : null}
+                </div>
                 <div className="newly-counselors-content">
                     {
-                        this.props.counselors.map(c=>
-                            <Card key={c.id}>
+                        counselors.map(c =>
+                            <Card key={c.uid}>
                                 <Meta
                                     avatar={<Avatar src={c.avatar ? c.avatar : avatarURL} />}
-                                    title={<Title name={c.name} goodRate={c.goodRate}/>}
+                                    title={<Title name={c.name} goodRate={c.goodRate} />}
                                     description={<Description description={c.description} workYears={c.workYears} />}
                                 />
                             </Card>
                         )
                     }
                 </div>
-                <div className="newly-counselors-footer">换一批 ></div>
+                <div className="newly-counselors-footer" onClick={this.loadMore}>换一批 ></div>
             </div>
         )
     }
 }
 
 const mapState = (state: IApiStore) => ({
-    counselors: state[newlClsActionKey].response ? state[newlClsActionKey].response.data.list : []
+    counselorsState: state[newlClsActionKey].response ? state[newlClsActionKey].response.data : undefined,
+    loadingStatus: state[newlClsActionKey].status
 })
 
 export default connect(mapState)(Newlycounselors)

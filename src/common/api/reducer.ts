@@ -20,7 +20,7 @@ export type IApiStore = {
 
 const defaultState: IApiState = {
     currentPageNum: 0,
-    pageSize: 10
+    pageSize: 6
 }
 
 const genReducer: reducerGenerator = (key, isPage) => (state: IApiState = isPage ? defaultState : {}, action: IApiAction): IApiState => {

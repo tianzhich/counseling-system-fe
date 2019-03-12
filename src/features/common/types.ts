@@ -8,7 +8,7 @@ export interface DictInfo {
 
 // Info about Counselor
 export interface Counselor {
-    id: number
+    uid: number
     name: string
     gender: number
     avatar?: string

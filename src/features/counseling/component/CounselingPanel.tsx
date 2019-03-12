@@ -3,11 +3,10 @@ import { Menu, Tag, Skeleton } from "antd";
 import CounselorList from './CounselorList';
 
 import './CounselingPanel.less';
-import { newlyExperts } from '@features/common/fakeData';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { fetchAction } from '@common/api/action';
-import { ApiKey, pagination } from '@common/api/config';
+import { ApiKey } from '@common/api/config';
 import { IApiStore } from '@common/api/reducer';
 import { Counselor } from '@features/common/types';
 

@@ -78,7 +78,7 @@ export default class ExpertList extends React.Component<IExpertListProps, IExper
                 <div className="expert-list">
                     {
                         this.props.counselors.map(c =>
-                            <ExpertListItem key={c.id} {...c} />
+                            <ExpertListItem key={c.uid} {...c} />
                         )
                     }
                     <div className="pagination-wrapper">
