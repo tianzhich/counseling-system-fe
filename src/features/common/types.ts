@@ -1,6 +1,30 @@
-import { articleTopicMap } from "./map";
+import { articleTopicMap, topicMap } from "./map";
 
-// Info about Expert
+// Info in dict db
+export interface DictInfo {
+    id: number
+    name: number
+}
+
+// Info about Counselor
+export interface Counselor {
+    id: number
+    name: string
+    gender: number
+    avatar: string
+    description: string
+    workYears: number
+    goodRate: number | null
+    motto: string // 格言
+    audioPrice: number
+    videoPrice: number
+    ftfPrice: number
+    city: DictInfo | null
+    topic: DictInfo
+    topicOther: string
+}
+
+// deprecated fake expert
 export interface Expert {
     id: string
     name: string
@@ -9,7 +33,7 @@ export interface Expert {
     workYears: number
     goodRate?: number
     motto: string // 格言
-    price: number // 咨询价格
+    price: number
 }
 
 // article topic

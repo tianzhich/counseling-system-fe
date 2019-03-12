@@ -1,4 +1,4 @@
-import { ApiKey, IApiResult } from './config'
+import { ApiKey, IApiResponse } from './config'
 import { AxiosRequestConfig } from 'axios';
 
 export interface IFetchAction {
@@ -9,7 +9,7 @@ export interface IFetchAction {
 
 export interface IFetchSucessAction {
     type: string // 'ApiKey_success'
-    response: IApiResult
+    response: IApiResponse
     currentPageNum?: number
     totalPageNum?: number
     totalNum?: number

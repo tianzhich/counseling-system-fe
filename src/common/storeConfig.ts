@@ -11,7 +11,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 const middlewares = [router, sagaMiddleware, logger]
 
-export default function configureStore(initialState: any) {
+function configureStore(initialState: any) {
     const store = createStore(
         rootReducer,
         initialState,
@@ -22,3 +22,5 @@ export default function configureStore(initialState: any) {
     sagaMiddleware.run(rootSaga)
     return store;
 }
+
+export default configureStore({})

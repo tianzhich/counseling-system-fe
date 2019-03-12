@@ -1,37 +1,37 @@
 import React from 'react';
 import { Card, Avatar, Button, Input, Icon, Pagination } from "antd";
-import { Expert } from '@types';
+import { Expert, Counselor } from '@types';
 
-import './ExpertList.less';
+import './CounselorList.less';
 
 const { Meta } = Card;
 const Search = Input.Search;
 
-function ExpertListItem(props: Expert) {
-    const Title = (props: Partial<Expert>) =>
+function ExpertListItem(props: Counselor) {
+    const Title = (titleProps: Partial<Counselor>) =>
         <React.Fragment>
-            <span className="name">{props.name}</span>
-            <span className="description">{props.description}</span>
+            <span className="name">{titleProps.name}</span>
+            <span className="description">{titleProps.description}</span>
             <Button className="button-reservation" type="primary">预约</Button>
         </React.Fragment>;
 
-    const Description = (prosp: Partial<Expert>) =>
+    const Description = (descProps: Partial<Counselor>) =>
         <React.Fragment>
-            <div className="motto">{props.motto}</div>
+            <div className="motto">{descProps.motto}</div>
             <div className="footer">
                 <span className="workYears">
                     <Icon type="idcard" />&nbsp;
-                    从业年限 <span className="number-color">{props.workYears}</span>
+                    从业年限 <span className="number-color">{descProps.workYears}</span>
                 </span>
                 {
-                    props.goodRate ? <span className="goodRate">
+                    descProps.goodRate ? <span className="goodRate">
                         <Icon type="like" />&nbsp;
-                        好评率 <span className="number-color">{props.goodRate}%</span>
+                        好评率 <span className="number-color">{descProps.goodRate}%</span>
                     </span> : null
                 }
                 <span className="price">
                     <Icon type="dollar" />&nbsp;
-                    价格 <span className="number-color">{prosp.price}</span>/次
+                    价格 <span className="number-color">{descProps.audioPrice}</span>/次
                 </span>
             </div>
         </React.Fragment>;
@@ -48,7 +48,7 @@ function ExpertListItem(props: Expert) {
 }
 
 interface IExpertListProps {
-    experts: Expert[]
+    counselors: Counselor[]
 }
 
 interface IExpertListState {
@@ -64,7 +64,7 @@ export default class ExpertList extends React.Component<IExpertListProps, IExper
     }
 
     componentDidMount() {
-        // Todo: get all expert list
+        // Todo: get all counselorlist
     }
 
     render() {
@@ -76,8 +76,8 @@ export default class ExpertList extends React.Component<IExpertListProps, IExper
                 </div>
                 <div className="expert-list">
                     {
-                        this.props.experts.map(expert =>
-                            <ExpertListItem key={expert.id} {...expert} />
+                        this.props.counselors.map(c =>
+                            <ExpertListItem key={c.id} {...c} />
                         )
                     }
                     <div className="pagination-wrapper">

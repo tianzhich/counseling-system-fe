@@ -11,6 +11,7 @@ import { ApiKey, NetworkErrorMsg, IApiResult } from '@common/api/config';
 import { Redirect } from 'react-router';
 import { fetchAction } from '@common/api/action';
 import { Dispatch } from 'redux';
+import { IApiStore } from '@common/api/reducer';
 
 const Step = Steps.Step;
 
@@ -169,7 +170,7 @@ class Apply extends React.Component<IApplyProps, IApplyState> {
     }
 }
 
-const mapState = (state: any) => ({
+const mapState = (state: IApiStore) => ({
     isAuth: state[authKey].response ? state[authKey].response.code === 0 ? false : true : false,
     isCounselor: state[authKey].response && state[authKey].response.data ? state[authKey].response.data.userType === 1 ? true : false : false, 
     applyRes: state[applyKey]

@@ -11,6 +11,7 @@ import { Dispatch } from 'redux';
 import Emitter from '@utils/events';
 import { EventEmitter } from 'events';
 import { fetchAction } from '@common/api/action';
+import { IApiStore } from '@common/api/reducer';
 
 const { Header, Content, Footer } = Layout;
 
@@ -125,7 +126,7 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 }
 
-const mapState = (state: any) => ({
+const mapState = (state: IApiStore) => ({
     isAuth: state[authKey].response ? state[authKey].response.code === 0 ? false : true : false
 })
 

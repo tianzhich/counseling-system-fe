@@ -1,12 +1,26 @@
 import React from 'react';
 import { Menu, Tag, Skeleton } from "antd";
-import { topicMap, methodMap, cityMap } from '@features/common/map';
-import ExpertList from './ExpertList';
+import CounselorList from './CounselorList';
 
 import './CounselingPanel.less';
 import { newlyExperts } from '@features/common/fakeData';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import { fetchAction } from '@common/api/action';
+import { ApiKey, pagination } from '@common/api/config';
+import { IApiStore } from '@common/api/reducer';
+import { Counselor } from '@features/common/types';
 
 const { CheckableTag } = Tag;
+
+const filtersKey: ApiKey = 'info/counselingFilters'
+const ListActionKey: ApiKey = 'query/counselorList'
+
+const initialFilters: Filters = {
+    city: [],
+    method: [],
+    topic: []
+}
 
 type onConditionChange = <K extends keyof ICondition>(key: K, value: ICondition[K]) => void
 
@@ -15,7 +29,7 @@ interface Filter {
     name: string
 }
 
-export interface Filters {
+interface Filters {
     city: Filter[]
     method: Filter[]
     topic: Filter[]
@@ -29,10 +43,14 @@ interface ICondition {
 }
 
 interface ICounselingPanelProps {
+    // store map
+    dispatch: Dispatch
     filters: Filters
+    counselorList: Counselor[]
 }
 
 interface ICounselingPanelState {
+    // 筛选条件
     condition: ICondition
 }
 
@@ -45,10 +63,11 @@ class ConditionPanel extends React.Component<IConditionPanelProps, {}> {
     onConditionChange: onConditionChange = (key, value) => {
         this.props.onConditionChange(key, value)
     }
+    
     render() {
         let { city, method, topic } = this.props.filters
         const selectedTopic = this.props.topic.toString()
-        
+
         city = [{
             id: -1,
             name: '不限'
@@ -136,7 +155,7 @@ class ConditionPanel extends React.Component<IConditionPanelProps, {}> {
     }
 }
 
-export default class CounselingPanel extends React.Component<ICounselingPanelProps, ICounselingPanelState> {
+class CounselingPanel extends React.Component<ICounselingPanelProps, ICounselingPanelState> {
     constructor(props: ICounselingPanelProps) {
         super(props);
         this.state = {
@@ -156,8 +175,17 @@ export default class CounselingPanel extends React.Component<ICounselingPanelPro
         })
     }
 
+    componentDidMount() {
+        // 咨询师搜索查找过滤条件
+        this.props.dispatch(fetchAction('info/counselingFilters'))
+
+        // 咨询师列表
+        this.props.dispatch(fetchAction('query/counselorList'))
+    }
+
     render() {
         const filters = this.props.filters
+        const counselorList = this.props.counselorList
         return (
             <div className="counseling-panel">
                 <ConditionPanel
@@ -168,8 +196,15 @@ export default class CounselingPanel extends React.Component<ICounselingPanelPro
                     onConditionChange={this.handleConditionChange}
                     filters={filters}
                 />
-                <ExpertList experts={newlyExperts} />
+                <CounselorList counselors={counselorList} />
             </div>
         )
     }
 }
+
+const mapState = (state: IApiStore) => ({ 
+    filters: state[filtersKey].response && state[filtersKey].response.data ? state[filtersKey].response.data : initialFilters,
+    counselorList: state[ListActionKey].response && state[ListActionKey].response.data ? state[ListActionKey].response.data.list : []
+})
+
+export default connect(mapState)(CounselingPanel)

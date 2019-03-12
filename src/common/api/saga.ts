@@ -1,23 +1,37 @@
 import { IConfig, ApiKey, apiConfig, baseURL } from "./config";
 import Axios, { AxiosRequestConfig } from "axios";
 import { IFetchSucessAction, IFetchFailedAction, IFetchAction } from "./action";
-import { put, fork, take, takeEvery } from "redux-saga/effects";
+import { put, fork, take } from "redux-saga/effects";
+import store from "@common/storeConfig";
+import { IApiState } from "./reducer";
 
 function* fetchData(config: IConfig, key: ApiKey, option?: AxiosRequestConfig) {
-    const { method } = config
+    const { method = 'GET' } = config
     let data: any, params: any
+    let pageNum, pageSize
+
     if (option) {
         data = option.data
         params = option.params
     }
-    let fetchData
 
+    // pagination
+    if (config.isPage) {
+        const state = store.getState()[key] as IApiState
+        pageNum = option && option.params && option.params.pageNum ? option.params.pageNum : state.currentPageNum + 1
+        pageSize = option && option.params && option.params.pageSize ? option.params.pageSize : 6
+    }
+
+    let fetchData
     try {
         fetchData = yield Axios({
             url: baseURL + key,
             method,
             data,
-            params
+            params: {
+                ...params,
+                pageNum, pageSize
+            }
         })
         const successAction: IFetchSucessAction = {
             response: fetchData.data,

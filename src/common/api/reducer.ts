@@ -1,17 +1,21 @@
-import { IApiConfig, ApiKey, apiConfig, NetworkStatus, IApiResult } from "./config";
+import { IApiConfig, ApiKey, apiConfig, NetworkStatus, IApiResult, IApiResponse } from "./config";
 import { Reducer } from "redux";
 import { IApiAction, IFetchSucessAction, IFetchFailedAction } from "./action";
 
 type reducerGenerator = (key: ApiKey, isPage?: boolean) => Reducer
 
-interface IApiState {
+export interface IApiState {
     status?: NetworkStatus
     totalPageNum?: number
     totalNum?: number
     currentPageNum?: number
     pageSize?: number
-    response?: IApiResult
+    response?: IApiResponse
     err?: any
+}
+
+export type IApiStore = {
+    [key in ApiKey]: IApiState
 }
 
 const defaultState: IApiState = {

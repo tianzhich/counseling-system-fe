@@ -10,6 +10,7 @@ import { fetchAction } from '@common/api/action';
 import { ApiKey, NetworkErrorMsg, IApiResult } from '@common/api/config';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { push, replace } from 'connected-react-router';
+import { IApiStore } from '@common/api/reducer';
 
 export type SignModalType = 'signin' | 'signup'
 
@@ -138,7 +139,7 @@ class SignModal extends React.Component<ISignModalProps, ISignModalState> {
     }
 }
 
-const mapState = (state: any) => ({
+const mapState = (state: IApiStore) => ({
     signinRes: state[signinKey],
     signupRes: state[signupKey]
 })

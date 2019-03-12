@@ -4,8 +4,9 @@ export const baseURL = `${window.location.origin}/api/`;
 
 type oAuthKey = 'oauth/signin' | 'oauth/signup' | 'oauth/auth' | 'oauth/apply'
 type infoKey = 'info/counselingFilters'
+type queryKey = 'query/counselorList' | 'query/newlyCounselors'
 
-export type ApiKey = oAuthKey | infoKey
+export type ApiKey = oAuthKey | infoKey | queryKey
 
 export type IApiConfig = {
     [key in ApiKey]: IConfig 
@@ -13,11 +14,17 @@ export type IApiConfig = {
 
 export type NetworkStatus = 'loading' | 'success' | 'failed'
 
+export interface pagination {
+    pageSize: number
+    pageNum: number
+    total?: number
+}
+
 export const NetworkErrorMsg = '网络错误，请稍后重试！'
 
 export interface IApiResponse {
     code: number
-    data: any | null
+    data: any
     message: string
 }
 
@@ -27,7 +34,7 @@ export interface IApiResult {
 }
 
 export interface IConfig {
-    method: 'POST' | 'GET'
+    method?: 'POST' | 'GET' // default get
     isPage?: boolean // 分页请求
     processor?: (res: any) => any // 数据额外加工
     initState?: any
@@ -40,14 +47,17 @@ export const apiConfig: IApiConfig = {
     'oauth/signup': {
         method: 'POST'
     },
-    'oauth/auth': {
-        method: 'GET'
-    },
+    'oauth/auth': {},
     'oauth/apply': {
         method: 'POST'
     },
-    'info/counselingFilters': {
-        method: 'GET'
+    'info/counselingFilters': {},
+    'query/counselorList': {
+        method: 'POST',
+        isPage: true
+    },
+    'query/newlyCounselors': {
+        isPage: true
     }
 }
 
