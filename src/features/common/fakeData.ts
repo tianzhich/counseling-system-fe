@@ -1,5 +1,7 @@
 import { Expert, Article } from "@types";
 
+export const avatarURL = 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
+
 export const newlyExperts: Expert[] = [{
     id: '1',
     name: '凌一',

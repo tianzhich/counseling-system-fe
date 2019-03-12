@@ -3,6 +3,7 @@ import { Card, Avatar, Button, Input, Icon, Pagination } from "antd";
 import { Expert, Counselor } from '@types';
 
 import './CounselorList.less';
+import { avatarURL } from '@features/common/fakeData';
 
 const { Meta } = Card;
 const Search = Input.Search;
@@ -39,7 +40,7 @@ function ExpertListItem(props: Counselor) {
     return (
         <Card>
             <Meta
-                avatar={<Avatar src={props.avatar} shape="square" />}
+                avatar={<Avatar src={props.avatar ? props.avatar : avatarURL} shape="square" />}
                 title={<Title {...props} />}
                 description={<Description {...props} />}
             />

@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { IApiStore } from '@common/api/reducer';
 import { fetchAction } from '@common/api/action';
 import { ApiKey } from '@common/api/config';
+import { avatarURL } from '@features/common/fakeData';
 
 const { Meta } = Card;
 
@@ -55,7 +56,7 @@ class Newlycounselors extends React.Component<INewlyCounselorsProps, {}> {
                         this.props.counselors.map(c=>
                             <Card key={c.id}>
                                 <Meta
-                                    avatar={<Avatar src={c.avatar} />}
+                                    avatar={<Avatar src={c.avatar ? c.avatar : avatarURL} />}
                                     title={<Title name={c.name} goodRate={c.goodRate}/>}
                                     description={<Description description={c.description} workYears={c.workYears} />}
                                 />

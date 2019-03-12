@@ -11,7 +11,7 @@ export interface Counselor {
     id: number
     name: string
     gender: number
-    avatar: string
+    avatar?: string
     description: string
     workYears: number
     goodRate: number | null
