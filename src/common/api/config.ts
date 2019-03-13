@@ -4,7 +4,7 @@ export const baseURL = `${window.location.origin}/api/`;
 
 type oAuthKey = 'oauth/signin' | 'oauth/signup' | 'oauth/auth' | 'oauth/apply'
 type infoKey = 'info/counselingFilters'
-type queryKey = 'query/counselorList' | 'query/newlyCounselors'
+type queryKey = 'query/counselorList' | 'query/newlyCounselors' | 'query/counselor'
 
 export type ApiKey = oAuthKey | infoKey | queryKey
 
@@ -52,7 +52,8 @@ export const apiConfig: IApiConfig = {
     },
     'query/newlyCounselors': {
         isPage: true
-    }
+    },
+    'query/counselor': {}
 }
 
 export const OtherAPI = {
