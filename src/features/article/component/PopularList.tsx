@@ -28,7 +28,7 @@ function ListItem(props: Pick<Article, "author" | "title" | "date" | "excerpt"> 
 export default class PopularList extends React.Component<IPopularListProps, {}> {
     render() {
         return (
-            <Affix offsetTop={30}>
+            <Affix offsetTop={100}>
                 <div className="popular-list">
                     <div className="title-bar">阅读最多</div>
                     <ol>
