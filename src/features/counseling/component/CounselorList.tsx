@@ -52,6 +52,7 @@ function CounselorListItem(props: Counselor) {
 interface ICounselorListProps {
     counselors: Counselor[]
     pagination: PaginationProps
+    onSearchCounselor: (likeStr: string) => void
 }
 
 interface ICounselorListState {
@@ -66,16 +67,12 @@ export default class CounselorList extends React.Component<ICounselorListProps, 
         };
     }
 
-    componentDidMount() {
-        // Todo: get all counselorlist
-    }
-
     render() {
         return (
             <div className="counselor-list-wrapper">
                 <div className="query-bar">
                     <span>今日推荐</span>
-                    <Search placeholder="搜索专家名字" enterButton />
+                    <Search placeholder="搜索专家名字" enterButton onSearch={this.props.onSearchCounselor} />
                 </div>
                 <div className="counselor-list">
                     {

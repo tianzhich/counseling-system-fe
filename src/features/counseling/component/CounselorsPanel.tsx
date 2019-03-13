@@ -30,6 +30,13 @@ const initialPageInfo: IPageInfo = {
     currentPageNum: 0
 }
 
+const initialCondition: ICondition = {
+    sCity: -1,
+    sTopic: -1,
+    isOnline: false,
+    sMethod: -1
+}
+
 interface ICounselorPanelProps {
     // store map
     dispatch: Dispatch
@@ -48,12 +55,7 @@ class CounselorPanel extends React.Component<ICounselorPanelProps, ICounselorPan
         super(props);
         this.state = {
             // 初始化查询条件
-            condition: {
-                sCity: -1,
-                sTopic: -1,
-                isOnline: false,
-                sMethod: -1
-            }
+            condition: initialCondition
         };
     }
 
@@ -82,7 +84,13 @@ class CounselorPanel extends React.Component<ICounselorPanelProps, ICounselorPan
 
         this.setState({
             condition: { ...this.state.condition, [key]: value }
-        }, () => this.loadMoreByCondition({pageSize, currentPageNum: 1}))
+        }, () => this.loadMoreByCondition({ pageSize, currentPageNum: 1 }))
+    }
+
+    handleSearchCounselor = (like: string) => {
+        this.setState({
+            condition: initialCondition
+        }, () => this.props.dispatch(fetchAction('query/counselorList', { params: { like: like.trim(), pageNum: 1 } })))   
     }
 
     componentDidMount() {
@@ -100,7 +108,7 @@ class CounselorPanel extends React.Component<ICounselorPanelProps, ICounselorPan
             current: this.props.pageInfo.currentPageNum,
             pageSize: this.props.pageInfo.pageSize,
             total: this.props.pageInfo.totalNum,
-            onChange: (currentPageNum) => this.loadMoreByCondition({pageSize, currentPageNum})
+            onChange: (currentPageNum) => this.loadMoreByCondition({ pageSize, currentPageNum })
         }
         return (
             <div className="counselors-panel">
@@ -109,7 +117,7 @@ class CounselorPanel extends React.Component<ICounselorPanelProps, ICounselorPan
                     onConditionChange={this.handleConditionChange}
                     filters={filters}
                 />
-                <CounselorList counselors={counselorList} pagination={pagination}/>
+                <CounselorList counselors={counselorList} pagination={pagination} onSearchCounselor={this.handleSearchCounselor} />
             </div>
         )
     }
