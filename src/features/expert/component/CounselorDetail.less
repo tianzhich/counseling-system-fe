@@ -1,4 +1,34 @@
 .tab {
     margin: 40px;
     width: 800px;
+
+    .tab-basics {
+        padding: 20px;
+
+        .info {
+            display: flex;
+            height: 200px;
+
+            img {
+                width: 100px;
+                height: 100px;
+                margin-right: 40px;
+            }
+
+            .content>span {
+                font-size: 16px;
+                color: rgba(0, 0, 0, 0.52);
+            }
+        }
+    }
+
+    .tab-letters {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .ant-btn.load-more {
+            width: 100px;
+        }
+    }
 }

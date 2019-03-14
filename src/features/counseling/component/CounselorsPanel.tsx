@@ -11,6 +11,7 @@ import { IApiStore, IPageInfo } from '@common/api/reducer';
 import { Counselor } from '@features/common/types';
 import FiltersPanel, { Filters, ICondition, onConditionChange } from './FiltersPanel';
 import { PaginationProps } from 'antd/lib/pagination';
+import { push } from 'connected-react-router';
 
 const filtersKey: ApiKey = 'info/counselingFilters'
 const ListActionKey: ApiKey = 'query/counselorList'
@@ -93,6 +94,10 @@ class CounselorPanel extends React.Component<ICounselorPanelProps, ICounselorPan
         }, () => this.props.dispatch(fetchAction('query/counselorList', { params: { like: like.trim(), pageNum: 1 } })))   
     }
 
+    toExpertHomepage = (id: number) => {
+        this.props.dispatch(push(`/expert/${id}`))
+    }
+
     componentDidMount() {
         // 咨询师搜索查找过滤条件
         this.props.dispatch(fetchAction('info/counselingFilters'))
@@ -117,7 +122,7 @@ class CounselorPanel extends React.Component<ICounselorPanelProps, ICounselorPan
                     onConditionChange={this.handleConditionChange}
                     filters={filters}
                 />
-                <CounselorList counselors={counselorList} pagination={pagination} onSearchCounselor={this.handleSearchCounselor} />
+                <CounselorList counselors={counselorList} pagination={pagination} onSearchCounselor={this.handleSearchCounselor} onToExpertPage={this.toExpertHomepage} />
             </div>
         )
     }

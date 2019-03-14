@@ -3,7 +3,7 @@ import { articleTopicMap, topicMap } from "./map";
 // Info in dict db
 export interface DictInfo {
     id: number
-    name: number
+    name: string
 }
 
 // Info about Counselor

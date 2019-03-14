@@ -8,6 +8,7 @@ import { IApiStore, IPageInfo } from '@common/api/reducer';
 import { fetchAction } from '@common/api/action';
 import { ApiKey, NetworkStatus } from '@common/api/config';
 import { avatarURL } from '@features/common/fakeData';
+import { push } from 'connected-react-router';
 
 const { Meta } = Card;
 
@@ -28,6 +29,10 @@ const initialPageInfo: IPageInfo = {
     totalPageNum: 0
 }
 
+interface InfoProps extends Partial<Counselor> {
+    onClick: () => void
+}
+
 function Description(props: Partial<Counselor>) {
     const description = props.description;
     const workYears = props.workYears;
@@ -40,13 +45,13 @@ function Description(props: Partial<Counselor>) {
     );
 }
 
-function Title(props: Partial<Counselor>) {
+function Title(props: InfoProps) {
     const name = props.name;
     const rate = props.goodRate;
 
     return (
         <React.Fragment>
-            <span className="name">{name}</span>
+            <span className="name" onClick={props.onClick} >{name}</span>
             <span className="rate">{rate ? <span>好评率 <span className="number-color">{`${rate}%`}</span></span> : null}</span>
         </React.Fragment>
     )
@@ -66,6 +71,10 @@ class Newlycounselors extends React.Component<INewlyCounselorsProps, {}> {
             this.props.dispatch(fetchAction('query/newlyCounselors', { params: { pageSize, pageNum: 1 } }))
         }
     }
+    toExpertHomepage = (id: number) => {
+        this.props.dispatch(push(`/expert/${id}`))
+    }
+
     render() {
         const counselors = this.props.counselors
         return (
@@ -76,10 +85,14 @@ class Newlycounselors extends React.Component<INewlyCounselorsProps, {}> {
                 <div className="newly-counselors-content">
                     {
                         counselors.map(c =>
-                            <Card key={c.uid}>
+                            <Card key={c.id}>
                                 <Meta
-                                    avatar={<Avatar src={c.avatar ? c.avatar : avatarURL} />}
-                                    title={<Title name={c.name} goodRate={c.goodRate} />}
+                                    avatar={
+                                        <div onClick={(e) => this.toExpertHomepage(c.id)}>
+                                            <Avatar src={c.avatar ? c.avatar : avatarURL} />
+                                        </div>
+                                    }
+                                    title={<Title name={c.name} goodRate={c.goodRate} onClick={() => this.toExpertHomepage(c.id)} />}
                                     description={<Description description={c.description} workYears={c.workYears} />}
                                 />
                             </Card>

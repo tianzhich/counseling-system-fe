@@ -2,6 +2,10 @@ import React from 'react';
 import { Card } from 'antd';
 
 import "./CounselorDetail.less"
+import Basics from './DetailTab/Basics';
+import { Counselor } from '@features/common/types';
+import Letters from './DetailTab/Letters';
+import Process from './DetailTab/Process'
 
 const tabListTitle = [{
     key: 'basics',
@@ -20,7 +24,9 @@ const tabListTitle = [{
     tab: '咨询流程',
 }];
 
-interface ICounselorDetailProps { }
+interface ICounselorDetailProps {
+    couselor: Counselor
+}
 
 interface ICounselorDetailState {
     activeTab: string
@@ -42,11 +48,11 @@ export default class CounselorDetail extends React.Component<ICounselorDetailPro
 
     render() {
         const contentList = {
-            basics: <div>基本信息</div>,
-            letters: <div>感谢信</div>,
+            basics: <Basics couselor={this.props.couselor} />,
+            letters: <Letters />,
             column: <div>专栏</div>,
             intro: <div>个人简介</div>,
-            process: <div>咨询流程</div>,
+            process: <Process />,
         }
         return (
             <div className="tab">

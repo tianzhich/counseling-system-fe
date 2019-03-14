@@ -9,10 +9,14 @@ import { PaginationProps } from 'antd/lib/pagination';
 const { Meta } = Card;
 const Search = Input.Search;
 
-function CounselorListItem(props: Counselor) {
+interface ICounselorListItemProps extends Counselor {
+    onClick: () => void
+}
+
+function CounselorListItem(props: ICounselorListItemProps) {
     const Title = (titleProps: Partial<Counselor>) =>
         <React.Fragment>
-            <span className="name">{titleProps.name}</span>
+            <span className="name" onClick={(e) => props.onClick()}>{titleProps.name}</span>
             <span className="description">{titleProps.description}</span>
             <Button className="button-reservation" type="primary">预约</Button>
         </React.Fragment>;
@@ -41,7 +45,11 @@ function CounselorListItem(props: Counselor) {
     return (
         <Card>
             <Meta
-                avatar={<Avatar src={props.avatar ? props.avatar : avatarURL} shape="square" />}
+                avatar={
+                    <div onClick={(e) => props.onClick()}>
+                        <Avatar src={props.avatar ? props.avatar : avatarURL} shape="square" />
+                    </div>
+                }
                 title={<Title {...props} />}
                 description={<Description {...props} />}
             />
@@ -53,6 +61,7 @@ interface ICounselorListProps {
     counselors: Counselor[]
     pagination: PaginationProps
     onSearchCounselor: (likeStr: string) => void
+    onToExpertPage: (id: number) => void
 }
 
 interface ICounselorListState {
@@ -77,11 +86,11 @@ export default class CounselorList extends React.Component<ICounselorListProps, 
                 <div className="counselor-list">
                     {
                         this.props.counselors.map(c =>
-                            <CounselorListItem key={c.uid} {...c} />
+                            <CounselorListItem key={c.uid} {...c} onClick={() => this.props.onToExpertPage(c.id)} />
                         )
                     }
                     <div className="pagination-wrapper">
-                        <Pagination {...this.props.pagination}/>
+                        <Pagination {...this.props.pagination} />
                     </div>
                 </div>
             </div>

@@ -2,5 +2,42 @@
     width: 100%;
     margin-top: 1px;
     background-color: #fff;
-    height: 2000px;
+
+    .float-card-wrapper {
+        @media (max-width: 1300px) {
+            display: none
+        }
+    }
+
+    .drawer-action {
+        position: fixed;
+        top: 400px;
+        width: 25px;
+        height: 50px;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: -6px 7px 20px 0px rgba(18, 74, 157, 0.1);
+        cursor: pointer;
+
+        .anticon > svg {
+            height: 20px;
+            width: 20px;
+        }
+
+        @media (min-width: 1301px) {
+            display: none
+        }
+    }
+
+    .ant-drawer {
+        .ant-drawer-content-wrapper {
+            height: 429px;
+            top: 250px;
+        }
+        .ant-drawer-body {
+            padding: 0;
+        }
+    }
 }
