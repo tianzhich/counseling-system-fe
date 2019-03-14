@@ -54,7 +54,7 @@ function Title(props: Partial<Counselor>) {
 
 class Newlycounselors extends React.Component<INewlyCounselorsProps, {}> {
     componentDidMount() {
-        this.props.dispatch(fetchAction('query/newlyCounselors', { params: { pageSize: 4 } }))
+        this.props.dispatch(fetchAction('query/newlyCounselors', { params: { pageSize: 4, pageNum: 1 } }))
     }
     loadMore = () => {
         const pageSize = this.props.pageInfo.pageSize

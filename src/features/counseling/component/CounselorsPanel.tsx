@@ -98,7 +98,7 @@ class CounselorPanel extends React.Component<ICounselorPanelProps, ICounselorPan
         this.props.dispatch(fetchAction('info/counselingFilters'))
 
         // 咨询师列表
-        this.props.dispatch(fetchAction('query/counselorList', { params: { pageSize } }))
+        this.props.dispatch(fetchAction('query/counselorList', { params: { pageSize, pageNum: 1 } }))
     }
 
     render() {
