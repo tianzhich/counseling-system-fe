@@ -97,7 +97,8 @@ module.exports = {
       '@utils': path.resolve(paths.appSrc, 'utils'),
       '@types': path.resolve(paths.appSrc, 'features/common/types.ts'),
       '@fakeData': path.resolve(paths.appSrc, 'features/common/fakeData.ts'),
-      '@map': path.resolve(paths.appSrc, 'features/common/map.ts')
+      '@map': path.resolve(paths.appSrc, 'features/common/map.ts'),
+      '@images': path.resolve(paths.appSrc, 'images')
     },
     plugins: [
       // Prevents users from importing files from outside of src/ (or node_modules/).
@@ -152,34 +153,15 @@ module.exports = {
             exclude: /node_modules/
           },
           {
-            test: /\.less$/,
-            use: ['style-loader', {
-              loader: "css-loader",
-              options: {
-                sourceMap: true
-              }
-            }, {
-              loader: "less-loader",
-              options: {
-                javascriptEnabled: true,
-                sourceMap: true
-              }
-            }],
-          },
-          // "postcss" loader applies autoprefixer to our CSS.
-          // "css" loader resolves paths in CSS and adds assets as dependencies.
-          // "style" loader turns CSS into JS modules that inject <style> tags.
-          // In production, we use a plugin to extract that CSS to a file, but
-          // in development "style" loader enables hot editing of CSS.
-          {
-            test: /\.css$/,
+            test: /\.(less|css)$/,
             use: [
-              require.resolve('style-loader'),
+              'style-loader',
               {
-                loader: require.resolve('css-loader'),
+                loader: "css-loader",
                 options: {
+                  sourceMap: true,
                   importLoaders: 1,
-                },
+                }
               },
               {
                 loader: require.resolve('postcss-loader'),
@@ -201,6 +183,31 @@ module.exports = {
                   ],
                 },
               },
+              {
+                loader: "less-loader",
+                options: {
+                  javascriptEnabled: true,
+                  sourceMap: true
+                }
+              }
+            ],
+          },
+          // "postcss" loader applies autoprefixer to our CSS.
+          // "css" loader resolves paths in CSS and adds assets as dependencies.
+          // "style" loader turns CSS into JS modules that inject <style> tags.
+          // In production, we use a plugin to extract that CSS to a file, but
+          // in development "style" loader enables hot editing of CSS.
+          {
+            test: /\.css$/,
+            use: [
+              require.resolve('style-loader'),
+              {
+                loader: require.resolve('css-loader'),
+                options: {
+                  
+                },
+              },
+              
             ],
           },
           // "file" loader makes sure those assets get served by WebpackDevServer.
