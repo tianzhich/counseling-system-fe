@@ -1,15 +1,18 @@
-@import "~@src/styles/global.less";
+@import "~@styles/global.less";
+
 .article-list {
     background-color: @bg-color-white;
     border-radius: @border-radius;
     overflow: auto;
     width: 650px;
+
     .ant-menu {
         border-bottom: none;
         border-radius: @border-radius;
         height: 70px;
         line-height: 70px;
         text-align: center;
+
         .ant-menu-item {
             border-bottom: none;
         }
@@ -22,37 +25,47 @@
 
 .article-item-wrapper {
     margin-bottom: 40px;
+
     article {
         padding: 0 20px;
         display: flex;
+
         .title {
             font-size: 18px;
         }
+
         .content {
             flex-grow: 1;
+
             .excerpt {
                 min-height: 30px;
                 margin-bottom: 10px;
                 padding-right: 20px;
             }
+
             .footer {
                 color: rgba(0, 0, 0, 0.45);
                 height: 40px;
                 display: flex;
                 align-items: center;
+
                 .author {
                     min-width: 60px;
                 }
+
                 .date {
                     width: 90px;
                 }
+
                 .views {
                     min-width: 80px;
                 }
             }
         }
+
         .thumbnail {
             display: inline-flex;
+
             img {
                 width: 120px;
                 height: 120px;

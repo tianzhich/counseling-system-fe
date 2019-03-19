@@ -3,7 +3,7 @@ const _ = require('lodash/string')
 const path = require('path')
 
 const project = new Project();
-const srcDir = path.join(__dirname, '..', 'src', 'common');
+const srcDir = path.join(__dirname, '..', '..', 'src', 'common');
 
 async function addRoute(featureName) {
   const FeatureName = _.upperFirst(featureName);

@@ -7,7 +7,7 @@ const commander = require('commander')
 const ast = require('./ts-ast')
 
 const templatesDir = path.join(__dirname, 'templates');
-const targetDir = path.join(__dirname, '..', 'src', 'features');
+const targetDir = path.join(__dirname, '..', '..', 'src', 'features');
 
 async function addFeatureItem(srcPath, targetPath, option) {
     let res;
@@ -20,7 +20,7 @@ async function addFeatureItem(srcPath, targetPath, option) {
         if(exists) {
             console.log(`${targetPath} is already added!`);
             return
-        }
+        }2
 
         await fse.outputFile(targetPath, _.template(res)(option), {
             encoding: "utf-8"
@@ -51,7 +51,7 @@ async function addFeature(name) {
 }
 
 commander
-    .version(require('../package.json').version)
+    .version(require('../../package.json').version)
     .command('add <feature>')
     .action((featureName) => {
         // add features

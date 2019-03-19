@@ -4,7 +4,7 @@ import Root from "./Root";
 import store from './common/storeConfig';
 import routes from './common/routeConfig';
 
-import '@src/styles/index.less';
+import '@styles/index.less';
 
 
 function renderApp(app: any) {
