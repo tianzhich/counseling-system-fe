@@ -153,10 +153,16 @@ module.exports = {
           },
           {
             test: /\.less$/,
-            use: ['style-loader', 'css-loader', {
+            use: ['style-loader', {
+              loader: "css-loader",
+              options: {
+                sourceMap: true
+              }
+            }, {
               loader: "less-loader",
               options: {
-                javascriptEnabled: true
+                javascriptEnabled: true,
+                sourceMap: true
               }
             }],
           },
