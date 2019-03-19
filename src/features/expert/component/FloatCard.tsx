@@ -18,9 +18,9 @@ export default class FloatCard extends React.Component<IFloatCardProps, {}> {
         return (
             <Card className="float-card">
                 <div className="main">
-                    <div className="method"><img src="/assets/phone.svg" alt="" />语音咨询<span className="price">{audioPrice}</span></div>
-                    <div className="method"><img src="/assets/web_camera.svg" alt="" />视频咨询<span className="price">{videoPrice}</span></div>
-                    <div className="method"><img src="/assets/face.svg" alt="" />面对面咨询<span className="price">{ftfPrice}</span></div>
+                    <div className="method"><img src={require('@images/phone.svg')} alt="" />语音咨询<span className="price">{audioPrice}</span></div>
+                    <div className="method"><img src={require('@images/web_camera.svg')} alt="" />视频咨询<span className="price">{videoPrice}</span></div>
+                    <div className="method"><img src={require('@images/face.svg')} alt="" />面对面咨询<span className="price">{ftfPrice}</span></div>
                 </div>
                 <Button shape="round" type="primary" icon="team">立即预约</Button>
                 <div className="assurance">

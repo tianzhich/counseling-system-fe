@@ -13,7 +13,7 @@ export default class Basics extends React.Component<IBasicsProps, {}> {
         return (
             <div className="tab-basics">
                 <div className="info veri">
-                    <img src="/assets/verification.svg" alt="" />
+                    <img src={require('@images/verification.svg')} alt="" />
                     <div>
                         <h2 className="info-title">认证资质</h2>
                         <div className="content">
@@ -24,7 +24,7 @@ export default class Basics extends React.Component<IBasicsProps, {}> {
                     </div>
                 </div>
                 <div className="info topic">
-                    <img src="/assets/tag.svg" alt="" />
+                    <img src={require('@images/tag.svg')} alt="" />
                     <div>
                         <h2 className="info-title">擅长方向</h2>
                         <div className="content">
