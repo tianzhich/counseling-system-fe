@@ -4,8 +4,8 @@ import { Card } from 'antd';
 import "./CounselorDetail.less"
 import Basics from './DetailTab/Basics';
 import { Counselor } from '@features/common/types';
-import Letters from './DetailTab/Letters';
 import Process from './DetailTab/Process'
+import Letters from './DetailTab/Letters';
 
 const tabListTitle = [{
     key: 'basics',
