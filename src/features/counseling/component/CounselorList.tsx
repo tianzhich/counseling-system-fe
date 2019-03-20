@@ -5,12 +5,14 @@ import { Counselor } from '@types';
 import './CounselorList.less';
 import { avatarURL } from '@features/common/fakeData';
 import { PaginationProps } from 'antd/lib/pagination';
+import Emitter from '@utils/events';
 
 const { Meta } = Card;
 const Search = Input.Search;
 
 interface ICounselorListItemProps extends Counselor {
     onClick: () => void
+    onAppoint: () => void
 }
 
 function CounselorListItem(props: ICounselorListItemProps) {
@@ -18,7 +20,7 @@ function CounselorListItem(props: ICounselorListItemProps) {
         <React.Fragment>
             <span className="name" onClick={(e) => props.onClick()}>{titleProps.name}</span>
             <span className="description">{titleProps.description}</span>
-            <Button className="button-reservation" type="primary">预约</Button>
+            <Button className="button-reservation" type="primary" onClick={props.onAppoint}>预约</Button>
         </React.Fragment>;
 
     const Description = (descProps: Partial<Counselor>) =>
@@ -58,6 +60,7 @@ function CounselorListItem(props: ICounselorListItemProps) {
 }
 
 interface ICounselorListProps {
+    isAuth: boolean
     counselors: Counselor[]
     pagination: PaginationProps
     onSearchCounselor: (likeStr: string) => void
@@ -76,6 +79,14 @@ export default class CounselorList extends React.Component<ICounselorListProps, 
         };
     }
 
+    handleAppoint = (counselor: Counselor) => {
+        if (!this.props.isAuth) {
+            Emitter.emit('openSigninModal')
+        } else {
+            Emitter.emit('openAppointMntModal', { counselor })
+        }
+    }
+
     render() {
         return (
             <div className="counselor-list-wrapper">
@@ -86,7 +97,10 @@ export default class CounselorList extends React.Component<ICounselorListProps, 
                 <div className="counselor-list">
                     {
                         this.props.counselors.map(c =>
-                            <CounselorListItem key={c.uid} {...c} onClick={() => this.props.onToExpertPage(c.id)} />
+                            <CounselorListItem key={c.uid} {...c}
+                                onClick={() => this.props.onToExpertPage(c.id)}
+                                onAppoint={() => this.handleAppoint(c)}
+                            />
                         )
                     }
                     <div className="pagination-wrapper">

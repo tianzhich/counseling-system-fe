@@ -44,6 +44,8 @@ interface ICounselorPanelProps {
     filters: Filters
     counselorList: Counselor[]
     pageInfo: IPageInfo
+
+    isAuth: boolean
 }
 
 interface ICounselorPanelState {
@@ -115,6 +117,7 @@ class CounselorPanel extends React.Component<ICounselorPanelProps, ICounselorPan
             total: this.props.pageInfo.totalNum,
             onChange: (currentPageNum) => this.loadMoreByCondition({ pageSize, currentPageNum })
         }
+        const isAuth = this.props.isAuth
         return (
             <div className="counselors-panel">
                 <FiltersPanel
@@ -122,7 +125,7 @@ class CounselorPanel extends React.Component<ICounselorPanelProps, ICounselorPan
                     onConditionChange={this.handleConditionChange}
                     filters={filters}
                 />
-                <CounselorList counselors={counselorList} pagination={pagination} onSearchCounselor={this.handleSearchCounselor} onToExpertPage={this.toExpertHomepage} />
+                <CounselorList isAuth={isAuth} counselors={counselorList} pagination={pagination} onSearchCounselor={this.handleSearchCounselor} onToExpertPage={this.toExpertHomepage} />
             </div>
         )
     }

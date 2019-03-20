@@ -1,3 +1,148 @@
 .appointmnt-modal {
-    
+    top: 0;
+
+    .ant-modal-body {
+        background: #f8f8f8;
+
+        &>div {
+            background-color: #fff;
+            padding: 20px;
+            border-bottom: 1px solid #d6d6d6;
+        }
+    }
+
+    .title {
+        margin-top: 10px;
+
+        .expert {
+            display: flex;
+            padding: 0 10px 10px;
+            align-items: center;
+            position: relative;
+
+            .name {
+                font-size: 18px;
+                position: relative;
+                left: 10px;
+            }
+
+            .ant-avatar {
+                border: 1px solid #ddd;
+                border-radius: 3px;
+            }
+
+            .ant-btn {
+                position: absolute;
+                right: 0;
+            }
+        }
+
+    }
+
+    .price-panel {
+        h3>span {
+            font-size: 14px;
+            color: #909090;
+        }
+
+        .ant-radio-group {
+            margin: 5px 0 20px;
+        }
+
+        .time {
+            line-height: 50px;
+        }
+
+        .discount {
+            position: relative;
+            line-height: 30px;
+
+            .right {
+                position: absolute;
+                right: 20px;
+            }
+        }
+
+        .total {
+            text-align: right;
+            position: relative;
+            right: 20px;
+            line-height: 30px;
+            font-size: 20px;
+        }
+
+    }
+
+    .card-title {
+        font-size: 20px;
+        position: relative;
+        margin-bottom: 10px;
+
+        .extra {
+            font-size: 14px;
+            position: absolute;
+            right: 0;
+            bottom: 3px;
+        }
+    }
+
+    .infos {
+        &>div:not(:last-of-type) {
+            margin-bottom: 25px;
+        }
+
+        .infos-basic {
+            &>* {
+                margin-bottom: 10px;
+            }
+        }
+
+        .infos-contact {
+            &>* {
+                margin-bottom: 10px;
+            }
+        }
+
+        .infos-desc {
+            textarea {
+                height: 150px;
+            }
+
+            .counters {
+                text-align: right;
+                position: relative;
+                right: 10px;
+                top: 5px;
+            }
+        }
+    }
+
+    .ant-modal-footer {
+        position: sticky;
+        bottom: 0;
+        background: #fff;
+    }
+
+    .footer {
+        display: inline-flex;
+        align-items: center;
+        position: relative;
+        width: 100%;
+
+        .left {
+            position: relative;
+            left: 20px;
+
+            .total {
+                font-size: 28px;
+                color: red;
+                padding-right: 10px;
+            }
+        }
+
+        .ant-btn {
+            position: absolute;
+            right: 0;
+        }
+    }
 }

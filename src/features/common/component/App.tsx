@@ -12,6 +12,7 @@ import Emitter from '@utils/events';
 import { EventEmitter } from 'events';
 import { fetchAction } from '@common/api/action';
 import { IApiStore } from '@common/api/reducer';
+import AppointMntModal from './AppointMntModal';
 
 const { Header, Content, Footer } = Layout;
 
@@ -28,11 +29,13 @@ const authKey: ApiKey = 'oauth/auth'
 
 class App extends React.Component<IAppProps, IAppState> {
     signModalRef: React.RefObject<any>
-    signinToken: EventEmitter
+    appointMntModalRef: React.RefObject<any>
+    openModalToken: EventEmitter
 
     constructor(props: IAppProps) {
         super(props);
-        this.signModalRef = React.createRef();
+        this.signModalRef = React.createRef()
+        this.appointMntModalRef = React.createRef()
         this.state = {
             signModal: 'signin'
         }
@@ -59,19 +62,30 @@ class App extends React.Component<IAppProps, IAppState> {
         })
     }
 
-    handleLoginWithRef = (payload: any) => {
-        this.openModal('signin', payload.ref)
+    handleLoginWithRef = (payload?: any) => {
+        if (payload) {
+            this.openModal('signin', payload.ref)
+        } else {
+            this.openModal('signin')
+        }
+        
+    }
+
+    // 预约咨询师弹窗
+    handleAppoint = (payload: any) => {
+        this.appointMntModalRef.current.openModal(payload.counselor)
     }
 
     componentDidMount() {
-        this.signinToken = Emitter.addListener('openSigninModal', this.handleLoginWithRef)
+        this.openModalToken = Emitter.addListener('openSigninModal', this.handleLoginWithRef)
+        this.openModalToken = Emitter.addListener('openAppointMntModal', this.handleAppoint)
 
         // info api
         this.props.dispatch(fetchAction('info/counselingFilters'))
     }
 
     componentWillUnmount() {
-        this.signinToken.removeAllListeners()
+        this.openModalToken.removeAllListeners()
     }
 
     render() {
@@ -121,6 +135,7 @@ class App extends React.Component<IAppProps, IAppState> {
                     </Footer>
                 </Layout>
                 <SignModal type={this.state.signModal} onChangeModal={this.handleChangeModal} ref={this.signModalRef} />
+                <AppointMntModal ref={this.appointMntModalRef} />
             </div>
         )
     }

@@ -36,6 +36,7 @@ class Counseling extends React.Component<ICounselingProps, ICounselingState> {
     }
 
     render() {
+        const isAuth = this.props.isAuth
         const ApplyButton = () => (
             <div className="apply-button-wrapper">
                 <Button
@@ -64,7 +65,7 @@ class Counseling extends React.Component<ICounselingProps, ICounselingState> {
                     <ApplyButton />
                 </div>
                 <div className="pcs-counseling">
-                    <CounselorsPanel />
+                    <CounselorsPanel isAuth={isAuth} />
                 </div>
             </div>
         )
