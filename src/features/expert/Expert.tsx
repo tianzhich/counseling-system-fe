@@ -12,13 +12,16 @@ import { fetchAction } from '@common/api/action';
 import { Spin, Alert, Empty, Affix, Drawer, Icon } from 'antd';
 import CounselorDetail from './component/CounselorDetail';
 import FloatCard from './component/FloatCard';
+import Emitter from '@utils/events';
 
 const cslInfoActionKey: ApiKey = 'query/counselor'
+const authKey: ApiKey = 'oauth/auth'
 
 interface IExpertProps extends RouteComponentProps<{ expertId: string }> {
     counselor: Counselor
     dispatch: Dispatch
     status: NetworkStatus
+    isAuth: boolean
 }
 
 interface IExpertState {
@@ -50,6 +53,16 @@ class Expert extends React.Component<IExpertProps, IExpertState> {
         })
     }
 
+    handleAppoint = () => {
+        const counselor = this.props.counselor
+        this.closeDrawer()
+        if (!this.props.isAuth) {
+            Emitter.emit('openSigninModal')
+        } else {
+            Emitter.emit('openAppointMntModal', { counselor })
+        }
+    }
+
     render() {
         const { status, counselor } = this.props
         if (!status || status === 'loading') {
@@ -59,13 +72,19 @@ class Expert extends React.Component<IExpertProps, IExpertState> {
         } else if (status === "success" && !counselor) {
             return <Redirect to="/" />
         }
-        
+
         return (
             <div className="pcs-expert">
                 <Header {...counselor} />
                 <CounselorDetail couselor={counselor} />
                 <Affix offsetTop={100} style={{ position: 'absolute', top: "450px", right: "100px" }} className="float-card-wrapper">
-                    <FloatCard cid={counselor.id} audioPrice={counselor.audioPrice} videoPrice={counselor.videoPrice} ftfPrice={counselor.ftfPrice} />
+                    <FloatCard
+                        cid={counselor.id}
+                        audioPrice={counselor.audioPrice}
+                        videoPrice={counselor.videoPrice}
+                        ftfPrice={counselor.ftfPrice}
+                        onAppoint={this.handleAppoint}
+                    />
                 </Affix>
                 <div className="drawer-action" onClick={this.toggleDrawer}>
                     <Icon type="caret-left" />
@@ -77,7 +96,13 @@ class Expert extends React.Component<IExpertProps, IExpertState> {
                     getContainer=".pcs-expert"
                     width={400}
                 >
-                    <FloatCard cid={counselor.id} audioPrice={counselor.audioPrice} videoPrice={counselor.videoPrice} ftfPrice={counselor.ftfPrice} />
+                    <FloatCard
+                        cid={counselor.id}
+                        audioPrice={counselor.audioPrice}
+                        videoPrice={counselor.videoPrice}
+                        ftfPrice={counselor.ftfPrice}
+                        onAppoint={this.handleAppoint}
+                    />
                 </Drawer>
             </div>
         )
@@ -85,6 +110,7 @@ class Expert extends React.Component<IExpertProps, IExpertState> {
 }
 
 const mapState = (state: IApiStore) => ({
+    isAuth: state[authKey].response ? state[authKey].response.code === 0 ? false : true : false,
     counselor: state[cslInfoActionKey].response ? state[cslInfoActionKey].response.data : null,
     status: state[cslInfoActionKey].status
 })

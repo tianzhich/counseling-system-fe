@@ -8,6 +8,7 @@ interface IFloatCardProps {
     audioPrice: number
     videoPrice: number
     ftfPrice: number
+    onAppoint: () => void
 }
 
 export default class FloatCard extends React.Component<IFloatCardProps, {}> {
@@ -22,7 +23,7 @@ export default class FloatCard extends React.Component<IFloatCardProps, {}> {
                     <div className="method"><img src={require('@images/web_camera.svg')} alt="" />视频咨询<span className="price">{videoPrice}</span></div>
                     <div className="method"><img src={require('@images/face.svg')} alt="" />面对面咨询<span className="price">{ftfPrice}</span></div>
                 </div>
-                <Button shape="round" type="primary" icon="team">立即预约</Button>
+                <Button shape="round" type="primary" icon="team" onClick={this.props.onAppoint}>立即预约</Button>
                 <div className="assurance">
                     <div className="item">
                         <Icon type="check-circle" theme="filled" />
