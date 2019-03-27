@@ -1,21 +1,16 @@
 import React from 'react';
-import { Layout, Modal, Button, Badge, Avatar, message, Icon, Dropdown, Menu, Anchor } from 'antd';
-import { RouteComponentProps, Link, withRouter } from 'react-router-dom';
-import Navigator from './Navigator';
+import { Layout, message } from 'antd';
 import SignModal, { SignModalType } from './SignModal';
-
-import './App.less'
-import { connect } from 'react-redux';
 import { ApiKey, OtherAPI, NetworkErrorMsg } from '@common/api/config';
 import { Dispatch } from 'redux';
 import Emitter from '@utils/events';
 import { EventEmitter } from 'events';
-import { fetchAction } from '@common/api/action';
-import { IApiStore } from '@common/api/reducer';
 import AppointMntModal from './AppointMntModal';
-import { IStore } from '@common/storeConfig';
+import AppHeader from './AppHeader';
 
-const { Header, Content, Footer } = Layout;
+import './App.less'
+
+const { Content, Footer } = Layout;
 
 interface IAppProps {
     isAuth: boolean
@@ -25,8 +20,6 @@ interface IAppProps {
 interface IAppState {
     signModal: SignModalType
 }
-
-const authKey: ApiKey = 'oauth/auth'
 
 class App extends React.Component<IAppProps, IAppState> {
     signModalRef: React.RefObject<any>
@@ -69,7 +62,7 @@ class App extends React.Component<IAppProps, IAppState> {
         } else {
             this.openModal('signin')
         }
-        
+
     }
 
     // 预约咨询师弹窗
@@ -81,8 +74,9 @@ class App extends React.Component<IAppProps, IAppState> {
         this.openModalToken = Emitter.addListener('openSigninModal', this.handleLoginWithRef)
         this.openModalToken = Emitter.addListener('openAppointMntModal', this.handleAppoint)
 
-        // info api
-        this.props.dispatch(fetchAction('info/counselingFilters'))
+        // global info api
+
+
     }
 
     componentWillUnmount() {
@@ -90,44 +84,10 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     render() {
-        const UserOverlay = (
-            <Menu>
-                <Menu.Item>
-                    <Link to="" ><Icon type="user" /> 我的主页</Link>
-                </Menu.Item>
-                <Menu.Item>
-                    <Link to="" ><Icon type="setting" /> 设置</Link>
-                </Menu.Item>
-                <Menu.Item>
-                    <Link to="" onClick={this.handleUserSignout} ><Icon type="poweroff" /> 退出</Link>
-                </Menu.Item>
-            </Menu>
-        )
-        const UserViewer = (
-            <div className="user-viewer">
-                <Badge count={1}><Icon type="message" style={{ fontSize: "25px" }} /></Badge>
-                <Badge dot><Icon type="bell" style={{ fontSize: "25px" }} /></Badge>
-                <Dropdown overlay={UserOverlay}>
-                    <Badge count={1} style={{cursor: "pointer"}}><Avatar shape="square" icon="user" /></Badge>
-                </Dropdown>
-            </div>
-        )
-        const SignButtonGroup = (
-            <div className="sign-button-group">
-                <Button type="primary" ghost onClick={() => this.openModal('signin')}>登录</Button>
-                <Button type="primary" onClick={() => this.openModal('signup')}>加入智心理</Button>
-            </div>
-        )
-
         return (
             <div className="pcs-app">
                 <Layout>
-                    <Header>
-                        <Navigator />
-                        {
-                            this.props.isAuth ? UserViewer : SignButtonGroup
-                        }
-                    </Header>
+                    <AppHeader onUserSignout={this.handleUserSignout} onOpenSignModal={this.openModal} />
                     <Content>
                         <div className="pcs-content">{this.props.children}</div>
                     </Content>
@@ -142,8 +102,4 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 }
 
-const mapState = (state: IStore) => ({
-    isAuth: state['@global'].auth.isAuth,
-})
-
-export default connect(mapState)(App)
+export default App

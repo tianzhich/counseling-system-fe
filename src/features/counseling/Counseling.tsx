@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { ApiKey } from '@common/api/config';
 import { IApiStore } from '@common/api/reducer';
 import { IStore } from '@common/storeConfig';
+import { fetchAction } from '@common/api/action';
 
 interface ICounselingProps {
     isAuth: boolean
@@ -34,6 +35,10 @@ class Counseling extends React.Component<ICounselingProps, ICounselingState> {
         } else {
             return true
         }
+    }
+
+    componentDidMount() {
+        this.props.dispatch(fetchAction('info/counselingFilters'))
     }
 
     render() {
