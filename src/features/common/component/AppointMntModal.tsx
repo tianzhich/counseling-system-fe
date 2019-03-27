@@ -4,6 +4,11 @@ import { avatarURL } from '../fakeData';
 import { Counselor } from '../types';
 
 import "./AppointMntModal.less";
+import { IApiState, IApiStore } from '@common/api/reducer';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import { fetchAction } from '@common/api/action';
+import { IApiResponse } from '@common/api/config';
 
 const Header = (props: { counselor?: Counselor }) => {
     const name = props.counselor ? props.counselor.name : ''
@@ -131,7 +136,14 @@ const Agreement = (props: AgreementProps) => (
     <Checkbox checked={props.isAgree} onChange={props.onToggleAgree} >同意<a>《心理咨询预约协议》</a>与<a>《知情同意书》</a></Checkbox>
 )
 
-interface IAppointMntModalProps { }
+interface IAppointMntModalConnProps {
+    dispatch: Dispatch
+    appointRes: IApiState
+}
+
+interface IAppointMntModalOwnProps {}
+
+type Props = IAppointMntModalOwnProps & IAppointMntModalConnProps
 
 interface IAppointMntModalState {
     visible: boolean
@@ -143,8 +155,8 @@ interface IAppointMntModalState {
     counselor?: Counselor // 打开Modal时payload传进来
 }
 
-export default class AppointMntModal extends React.Component<IAppointMntModalProps, IAppointMntModalState> {
-    constructor(props: IAppointMntModalProps) {
+class AppointMntModal extends React.Component<Props, IAppointMntModalState> {
+    constructor(props: Props) {
         super(props);
         this.state = {
             visible: false,
@@ -202,6 +214,10 @@ export default class AppointMntModal extends React.Component<IAppointMntModalPro
         const times = this.state.times
         const isAgree = this.state.isAgree
 
+        if (!this.state.counselor) {
+            return
+        }
+
         // check method, times
         if (!method || times === 0) {
             message.warning('请至少选择一种咨询方式和一次咨询！')
@@ -222,20 +238,44 @@ export default class AppointMntModal extends React.Component<IAppointMntModalPro
             return
         }
 
+        // data 
+        const data = {
+            cID: this.state.counselor.id,
+            method: JSON.stringify(method),
+            times,
+            ...infos,
+            status: 0
+        }
+
         // handle payment
         message.loading('支付中，请稍后', 2.5).then(() => {
-            message.success('支付成功', 1)
+            // post record
+            this.props.dispatch(fetchAction('operation/appoint', { data }))
             this.closeModal()
         }, () => {
             message.error('支付失败，请稍后重试', 1)
-        }).then(() => {
-            notification.open({
-                message: '预约成功！',
-                description: '您已成功预约咨询师，咨询师将在两小时内与您确认，请留意站内短信。',
-                icon: <Icon type="smile" style={{ color: '#108ee9' }} />,
-                duration: null
-            });
         })
+    }
+
+    componentDidUpdate(prevProps: Props, prevState: IAppointMntModalState) {
+        // appoint callback
+        if (prevProps.appointRes.status === 'loading') {
+            const resp = this.props.appointRes.response
+            if (this.props.appointRes.status === 'success' && resp && resp.code === 1) {
+                notification.open({
+                    message: '预约成功！',
+                    description: '您已成功预约咨询师，咨询师将在两小时内与您确认，请留意站内短信。',
+                    icon: <Icon type="smile" style={{ color: '#108ee9' }} />,
+                    duration: null
+                });
+            } else if (this.props.appointRes.status === 'failed') {
+                notification.error({
+                    message: '预约失败！',
+                    description: '网络错误，请尝试稍后重新预约。',
+                    duration: null
+                });
+            }
+        }
     }
 
     render() {
@@ -251,7 +291,7 @@ export default class AppointMntModal extends React.Component<IAppointMntModalPro
             <div className="footer">
                 <div className="left">
                     <span className="total">{priceTotal === 0 ? '' : `￥${priceTotal}`}</span>
-                    <span className="method">{method && times !== 0 ? `${method.name}X${times}` : ''}</span>
+                    <span className="method">{method && times && times !== 0 ? `${method.name}X${times}` : ''}</span>
                 </div>
                 <Button type="primary" onClick={this.handlePayment} >去支付</Button>
             </div>
@@ -271,3 +311,9 @@ export default class AppointMntModal extends React.Component<IAppointMntModalPro
         )
     }
 }
+
+const mapState = (state: IApiStore) => ({
+    appointRes: state['operation/appoint']
+})
+
+export default connect(mapState, null, null, { forwardRef: true })(AppointMntModal as React.ComponentClass<IAppointMntModalOwnProps>)
