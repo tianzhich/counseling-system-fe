@@ -9,6 +9,7 @@ import { fetchAction } from '@common/api/action';
 import { ApiKey, NetworkStatus } from '@common/api/config';
 import { avatarURL } from '@features/common/fakeData';
 import { push } from 'connected-react-router';
+import { IStore } from '@common/storeConfig';
 
 const { Meta } = Card;
 
@@ -105,7 +106,7 @@ class Newlycounselors extends React.Component<INewlyCounselorsProps, {}> {
     }
 }
 
-const mapState = (state: IApiStore) => ({
+const mapState = (state: IStore) => ({
     counselors: state[newlClsActionKey].response ? state[newlClsActionKey].response.data.list : [],
     loadingStatus: state[newlClsActionKey].status,
     pageInfo: state[newlClsActionKey].pageInfo ? state[newlClsActionKey].pageInfo : initialPageInfo,

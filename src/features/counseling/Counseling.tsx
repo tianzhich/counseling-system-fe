@@ -9,6 +9,7 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { ApiKey } from '@common/api/config';
 import { IApiStore } from '@common/api/reducer';
+import { IStore } from '@common/storeConfig';
 
 interface ICounselingProps {
     isAuth: boolean
@@ -72,10 +73,10 @@ class Counseling extends React.Component<ICounselingProps, ICounselingState> {
     }
 }
 
-const mapState = (state: IApiStore) => ({
+const mapState = (state: IStore) => ({
     // auth
-    isAuth: state[authKey].response ? state[authKey].response.code === 0 ? false : true : false,
-    isCounselor: state[authKey].response && state[authKey].response.data ? state[authKey].response.data.userType === 1 ? true : false : false, 
+    isAuth: state['@global'].auth.isAuth,
+    isCounselor: state['@global'].auth.authType === 1,
 })
 
 export default connect(mapState)(Counseling)

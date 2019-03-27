@@ -12,6 +12,7 @@ import { Counselor } from '@features/common/types';
 import FiltersPanel, { Filters, ICondition, onConditionChange } from './FiltersPanel';
 import { PaginationProps } from 'antd/lib/pagination';
 import { push } from 'connected-react-router';
+import { IStore } from '@common/storeConfig';
 
 const filtersKey: ApiKey = 'info/counselingFilters'
 const ListActionKey: ApiKey = 'query/counselorList'
@@ -131,7 +132,7 @@ class CounselorPanel extends React.Component<ICounselorPanelProps, ICounselorPan
     }
 }
 
-const mapState = (state: IApiStore) => ({
+const mapState = (state: IStore) => ({
     filters: state[filtersKey].response && state[filtersKey].response.data ? state[filtersKey].response.data : initialFilters,
     counselorList: state[ListActionKey].response && state[ListActionKey].response.data ? state[ListActionKey].response.data.list : [],
     pageInfo: state[ListActionKey].pageInfo ? state[ListActionKey].pageInfo : initialPageInfo

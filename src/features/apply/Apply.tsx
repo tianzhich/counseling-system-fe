@@ -12,6 +12,7 @@ import { Redirect } from 'react-router';
 import { fetchAction } from '@common/api/action';
 import { Dispatch } from 'redux';
 import { IApiStore } from '@common/api/reducer';
+import { IStore } from '@common/storeConfig';
 
 const Step = Steps.Step;
 
@@ -170,9 +171,9 @@ class Apply extends React.Component<IApplyProps, IApplyState> {
     }
 }
 
-const mapState = (state: IApiStore) => ({
-    isAuth: state[authKey].response ? state[authKey].response.code === 0 ? false : true : false,
-    isCounselor: state[authKey].response && state[authKey].response.data ? state[authKey].response.data.userType === 1 ? true : false : false, 
+const mapState = (state: IStore) => ({
+    isAuth: state['@global'].auth.isAuth,
+    isCounselor: state['@global'].auth.authType === 1,
     applyRes: state[applyKey]
 })
 

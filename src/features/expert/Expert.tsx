@@ -13,6 +13,7 @@ import { Spin, Alert, Empty, Affix, Drawer, Icon } from 'antd';
 import CounselorDetail from './component/CounselorDetail';
 import FloatCard from './component/FloatCard';
 import Emitter from '@utils/events';
+import { IStore } from '@common/storeConfig';
 
 const cslInfoActionKey: ApiKey = 'query/counselor'
 const authKey: ApiKey = 'oauth/auth'
@@ -109,8 +110,8 @@ class Expert extends React.Component<IExpertProps, IExpertState> {
     }
 }
 
-const mapState = (state: IApiStore) => ({
-    isAuth: state[authKey].response ? state[authKey].response.code === 0 ? false : true : false,
+const mapState = (state: IStore) => ({
+    isAuth: state['@global'].auth.isAuth,
     counselor: state[cslInfoActionKey].response ? state[cslInfoActionKey].response.data : null,
     status: state[cslInfoActionKey].status
 })

@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { fetchAction } from '@common/api/action';
 import { IApiResponse } from '@common/api/config';
+import { IStore } from '@common/storeConfig';
 
 const Header = (props: { counselor?: Counselor }) => {
     const name = props.counselor ? props.counselor.name : ''
@@ -312,7 +313,7 @@ class AppointMntModal extends React.Component<Props, IAppointMntModalState> {
     }
 }
 
-const mapState = (state: IApiStore) => ({
+const mapState = (state: IStore) => ({
     appointRes: state['operation/appoint']
 })
 

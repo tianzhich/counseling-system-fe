@@ -13,6 +13,7 @@ import { EventEmitter } from 'events';
 import { fetchAction } from '@common/api/action';
 import { IApiStore } from '@common/api/reducer';
 import AppointMntModal from './AppointMntModal';
+import { IStore } from '@common/storeConfig';
 
 const { Header, Content, Footer } = Layout;
 
@@ -141,8 +142,8 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 }
 
-const mapState = (state: IApiStore) => ({
-    isAuth: state[authKey].response ? state[authKey].response.code === 0 ? false : true : false
+const mapState = (state: IStore) => ({
+    isAuth: state['@global'].auth.isAuth,
 })
 
 export default connect(mapState)(App)

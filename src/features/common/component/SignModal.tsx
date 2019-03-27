@@ -11,6 +11,7 @@ import { ApiKey, NetworkErrorMsg, IApiResult } from '@common/api/config';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { push, replace } from 'connected-react-router';
 import { IApiStore } from '@common/api/reducer';
+import { IStore } from '@common/storeConfig';
 
 export type SignModalType = 'signin' | 'signup'
 
@@ -139,7 +140,7 @@ class SignModal extends React.Component<ISignModalProps, ISignModalState> {
     }
 }
 
-const mapState = (state: IApiStore) => ({
+const mapState = (state: IStore) => ({
     signinRes: state[signinKey],
     signupRes: state[signupKey]
 })
