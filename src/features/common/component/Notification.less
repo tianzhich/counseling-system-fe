@@ -1,0 +1,58 @@
+.notif-overlay {
+    position: absolute;
+    top: 70px;
+    right: 60px;
+    background: #fff;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+    width: 340px;
+
+    .ant-tabs-bar.ant-tabs-top-bar {
+        margin: 0;
+    }
+
+    .ant-tabs-tab {
+        &:first-of-type {
+            margin-right: 12px;
+        }
+
+        &:last-of-type {
+            margin-left: 12px;
+        }
+    }
+
+    .ant-list {
+        .ant-list-item {
+            padding: 12px;
+            .ant-list-item-meta {
+                align-items: center;
+            }
+            h4 {
+                text-align: start;
+            }
+            .ant-list-item-action {
+                margin-left: 15px;
+            }
+        }
+    }
+
+    .action {
+        height: 40px;
+        line-height: 40px;
+        border-top: 1px solid #e8e8e8;
+        display: flex;
+
+        &>div {
+            width: 50%;
+
+            &:hover {
+                color: rgba(0, 0, 0, .85);
+            }
+        }
+
+        &>div:first-of-type {
+            border-right: 1px solid #e8e8e8;
+        }
+    }
+}

@@ -9,6 +9,8 @@ import AppointMntModal from './AppointMntModal';
 import AppHeader from './AppHeader';
 
 import './App.less'
+import { fetchAction } from '@common/api/action';
+import { connect } from 'react-redux';
 
 const { Content, Footer } = Layout;
 
@@ -75,8 +77,7 @@ class App extends React.Component<IAppProps, IAppState> {
         this.openModalToken = Emitter.addListener('openAppointMntModal', this.handleAppoint)
 
         // global info api
-
-
+        this.props.dispatch(fetchAction('query/notifications', { params: { preview: 1 } }))
     }
 
     componentWillUnmount() {
@@ -102,4 +103,4 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 }
 
-export default App
+export default connect()(App)
