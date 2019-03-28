@@ -32,6 +32,7 @@ interface INotificationProps {
         notifCount: number
         msgCount: number
     }
+    onMarkReadNotif: (id?: number, markAll?: boolean) => void
 }
 
 interface INotificationState {
@@ -71,7 +72,7 @@ export default class Notification extends React.Component<INotificationProps, IN
                             itemLayout="horizontal"
                             dataSource={notifications}
                             renderItem={(item: INotification) => (
-                                <List.Item actions={[<a>标为已读</a>]}>
+                                <List.Item actions={[<a onClick={() => this.props.onMarkReadNotif(item.id)}>标为已读</a>]}>
                                     <List.Item.Meta
                                         avatar={iconMap[item.type]}
                                         title={item.title}
@@ -84,7 +85,9 @@ export default class Notification extends React.Component<INotificationProps, IN
                     <TabPane tab={`消息（${count.msgCount}）`} key="2">Content of Tab Pane 2</TabPane>
                 </Tabs>
                 <div className="action">
-                    <div>清空 {tabKey == '1' ? '通知' : '消息'}</div>
+                    <div onClick={tabKey == '1' ? () => this.props.onMarkReadNotif(null, true) : () => { }}>
+                        清空 {tabKey == '1' ? '通知' : '消息'}
+                    </div>
                     <div>查看 更多</div>
                 </div>
             </div>

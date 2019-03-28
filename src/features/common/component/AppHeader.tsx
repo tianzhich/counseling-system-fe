@@ -20,14 +20,35 @@ interface IAppHeaderProps {
 
 interface IAppHeaderState {
     showNotif: boolean
+    readNotifs: INotification['id'][]
 }
 
 class AppHeader extends React.Component<IAppHeaderProps, IAppHeaderState> {
     constructor(props: IAppHeaderProps) {
         super(props)
         this.state = {
-            showNotif: false
+            showNotif: false,
+            readNotifs: []
         }
+    }
+
+    markReadNotifs =  (id?: number, markAll?: boolean) => {
+        // mark all
+        if (markAll) {
+            this.setState({
+                readNotifs: this.props.notifications.map(n => n.id)
+            })
+            return
+        }
+
+        if (this.state.readNotifs.find(iid => iid === id)) {
+            return
+        }
+        this.setState({
+            readNotifs: [...this.state.readNotifs, id]
+        })
+
+        // mark read api
     }
 
     toggleNotif = (e: React.MouseEvent) => {
@@ -50,7 +71,8 @@ class AppHeader extends React.Component<IAppHeaderProps, IAppHeaderState> {
     }
 
     render() {
-        const { notifications } = this.props
+        const readNotifs = this.state.readNotifs
+        const notifications = this.props.notifications.filter(n => !readNotifs.find(id => id === n.id))
         const countAll = notifications.length
         const count = {
             notifCount: notifications.length,
@@ -75,7 +97,7 @@ class AppHeader extends React.Component<IAppHeaderProps, IAppHeaderState> {
                 <Search placeholder="站内搜索" />
                 <div className="trigger trigger-notif" onClick={this.toggleNotif} >
                     <Badge count={countAll}><Icon type="bell" style={{ fontSize: "20px" }} /></Badge>
-                    {this.state.showNotif ? <Notification notifications={notifications} count={count} /> : null}
+                    {this.state.showNotif ? <Notification notifications={notifications} count={count} onMarkReadNotif={this.markReadNotifs} /> : null}
                 </div>
                 <Dropdown overlay={UserOverlay}>
                     <div className="trigger trigger-user">
