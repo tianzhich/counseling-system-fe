@@ -9,6 +9,7 @@ import { AsyncComponentLoader } from "@common/routeConfig";
 import Loading from "./features/common/component/Loading";
 import { fetchAction } from "@common/api/action";
 import { ApiKey } from "@common/api/config";
+import Axios from "axios";
 
 const authKey: ApiKey = 'oauth/auth'
 

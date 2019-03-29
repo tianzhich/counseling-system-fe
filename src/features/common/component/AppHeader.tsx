@@ -82,7 +82,7 @@ class AppHeader extends React.Component<IAppHeaderProps, IAppHeaderState> {
         const UserOverlay = (
             <Menu>
                 <Menu.Item>
-                    <Link to="" ><Icon type="user" /> 我的主页</Link>
+                    <Link to="/profile" ><Icon type="user" /> 我的主页</Link>
                 </Menu.Item>
                 <Menu.Item>
                     <Link to="" ><Icon type="setting" /> 设置</Link>

@@ -29,6 +29,9 @@ interface IExpertState {
     cardVisible: boolean
 }
 
+/**
+ * Expert(访客视角)
+ */
 class Expert extends React.Component<IExpertProps, IExpertState> {
     constructor(props: IExpertProps) {
         super(props);
