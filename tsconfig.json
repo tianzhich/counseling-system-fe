@@ -18,7 +18,6 @@
             "@styles/*": ["styles/*"],
             "@utils/*": ["utils/*"],
             "@fakeData": ["features/common/fakeData.ts"],
-            "@map": ["features/common/map.ts"],
             "@types": ["features/common/types.ts"],
             "@images/*": ["images/*"]
         },

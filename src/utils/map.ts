@@ -11,13 +11,13 @@ export const topicMap = {
     geriatric: '老年心理',
 }
 
-export const methodMap = {
-    all: '不限',
-    faceToFace: '面对面咨询',
-    video: '视频咨询',
-    phone: '电话咨询'
+export const CounselingMethodMap = {
+    ftf: '面对面',
+    video: '视频',
+    audio: '语音'
 }
 
+// not use
 export const cityMap = {
     all: '不限',
     beijing: '北京',
@@ -34,4 +34,12 @@ export const articleTopicMap = {
     growth: "成长学习",
     workSkill: "职场技能",
     hotTopic: "热点"
+}
+
+export const CounselingRecordStatusMap = {
+    'cancel': '已取消',
+    'wait_contact': '待协商',
+    'wait_counsling': '待咨询',
+    'wait_comment': '待评论',
+    'finish': '已完成'
 }

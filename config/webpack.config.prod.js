@@ -94,7 +94,6 @@ module.exports = {
       '@utils': path.resolve(paths.appSrc, 'utils'),
       '@types': path.resolve(paths.appSrc, 'features/common/types.ts'),
       '@fakeData': path.resolve(paths.appSrc, 'features/common/fakeData.ts'),
-      '@map': path.resolve(paths.appSrc, 'features/common/map.ts'),
       '@images': path.resolve(paths.appSrc, 'images')
     },
     plugins: [

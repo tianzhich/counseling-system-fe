@@ -1,7 +1,7 @@
 import React from 'react';
 import { Menu, Tag } from "antd";
 import { ArticleTopic, Article } from '@types';
-import { articleTopicMap } from '@map';
+import { articleTopicMap } from '@utils/map';
 
 import './ArticleList.less'
 

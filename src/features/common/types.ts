@@ -1,4 +1,4 @@
-import { articleTopicMap, topicMap } from "./map";
+import { articleTopicMap, topicMap } from "@utils/map";
 
 // Info in dict db
 export interface DictInfo {
