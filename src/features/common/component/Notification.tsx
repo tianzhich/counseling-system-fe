@@ -82,13 +82,13 @@ export default class Notification extends React.Component<INotificationProps, IN
                             )}
                         />
                     </TabPane>
-                    <TabPane tab={`消息（${count.msgCount}）`} key="2">Content of Tab Pane 2</TabPane>
+                    <TabPane tab={`留言（${count.msgCount}）`} key="2">Content of Tab Pane 2</TabPane>
                 </Tabs>
                 <div className="action">
                     <div onClick={tabKey == '1' ? () => this.props.onMarkReadNotif(null, true) : () => { }}>
-                        清空 {tabKey == '1' ? '通知' : '消息'}
+                        清空 {tabKey == '1' ? '通知' : '留言'}
                     </div>
-                    <div>查看 更多</div>
+                    <div>查看 详情</div>
                 </div>
             </div>
         )
