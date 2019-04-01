@@ -1,20 +1,39 @@
 .pcs-profile {
-    .header, .main, .right {
+
+    .header,
+    .main,
+    .right {
         background: #fff;
         border-radius: 2px;
-        box-shadow: 0 1px 3px rgba(26,26,26,.1);
+        box-shadow: 0 1px 3px rgba(26, 26, 26, .1);
     }
+
     .header {
         margin-top: 10px;
         width: 800px;
         height: 300px;
     }
+
     .content {
         margin-top: 10px;
     }
+
     .main {
+        min-width: 940px;
+
         .ant-tabs-nav-container {
             padding: 0 20px;
+        }
+
+        .ant-tabs-content {
+            .tab-counseling {
+                padding: 10px 40px;
+
+                .ant-input-search {
+                    margin-bottom: 10px;
+                    width: 200px;
+                }
+            }
         }
     }
 }

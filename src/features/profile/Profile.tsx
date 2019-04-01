@@ -7,28 +7,16 @@ import './Profile.less'
 import { Tabs } from 'antd';
 import { Dispatch } from 'redux';
 import { fetchAction } from '@common/api/action';
-import { INotification } from '@features/common/component/Notification';
 import { push } from 'connected-react-router';
+import CounselingTab, { ICounselingRecord } from './ProfileTab/CounselingTab';
 
 const TabPane = Tabs.TabPane
 
-type TabKey = 'counseling' | 'ask' | 'article' | 'notification' | 'message'
-
-interface ITabInfo {
-    'counseling'?: {}[]
-    'notification'?: INotification[]
-    'article'?: {}[]
-    'ask'?: {}[]
-    'message'?: {}[]
-}
-
-const initTabInfo: ITabInfo = {
-    'notification': []
-}
+type TabKey = 'counseling' | 'ask' | 'article' | 'message'
 
 interface IProfileProps extends RouteComponentProps<{ activeTab: TabKey }> {
     isAuth: boolean
-    tabInfo: ITabInfo
+    counselingRecords: ICounselingRecord[]
     dispatch: Dispatch
 }
 
@@ -39,16 +27,31 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
         super(props);
     }
 
-    componentDidMount() {
-        this.props.dispatch(fetchAction('query/profileAll'))
-    }
-
-    componentDidUpdate() {
-        
-    }
-
     toggleAvtiveTab = (activeTab: TabKey) => {
         this.props.dispatch(push(`./${activeTab}`))
+    }
+
+    fetchTabData = () => {
+        const activeTab = this.props.match.params.activeTab
+        switch (activeTab) {
+            case 'counseling':
+                this.props.dispatch(fetchAction('query/counselingRecords'))
+                break;
+        
+            default:
+                break;
+        }
+    }
+
+    componentDidMount() {
+        this.fetchTabData()
+    }
+
+    componentDidUpdate(prevProps: IProfileProps) {
+        // location更新后数据重新fetch
+        if (prevProps.match.params.activeTab !== this.props.match.params.activeTab) {
+            this.fetchTabData()
+        }
     }
 
     render() {
@@ -56,11 +59,8 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
             return <Redirect to='/' />
         }
 
-        const { notification } = this.props.tabInfo
-        const notifCount = notification ? notification.length : undefined
-
         const activeTab = this.props.match.params.activeTab
-        console.log(activeTab)
+        const counselingRecords = this.props.counselingRecords.map(r => ({ ...r, method: JSON.parse(r.method).id }))
 
         return (
             <div className="pcs-profile">
@@ -75,12 +75,13 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
                 </div>
                 <div className="content">
                     <div className="main">
-                        <Tabs activeKey={activeTab} onChange={this.toggleAvtiveTab}>
-                            <TabPane tab={`咨询`} key="counseling">Content of Tab Pane 1</TabPane>
+                        <Tabs defaultActiveKey={activeTab} activeKey={activeTab} onChange={this.toggleAvtiveTab}>
+                            <TabPane tab={`咨询`} key="counseling">
+                                <CounselingTab data={counselingRecords} />
+                            </TabPane>
                             <TabPane tab={`文章`} key="article">Content of Tab Pane 2</TabPane>
                             <TabPane tab={`问答`} key="ask"></TabPane>
-                            <TabPane tab={`通知 ${notifCount}`} key="notification"></TabPane>
-                            <TabPane tab={`消息`} key="message"></TabPane>
+                            <TabPane tab={`留言`} key="message"></TabPane>
                         </Tabs>
                     </div>
                     <div className="right"></div>
@@ -92,7 +93,7 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
 
 const mapState = (state: IStore) => ({
     isAuth: state['@global'].auth.isAuth,
-    tabInfo: state['query/profileAll'].response && state['query/profileAll'].response.data ? state['query/profileAll'].response.data : initTabInfo
+    counselingRecords: state['query/counselingRecords'].response && state['query/counselingRecords'].response.data ? state['query/counselingRecords'].response.data : []
 })
 
 export default connect(mapState)(Profile)
