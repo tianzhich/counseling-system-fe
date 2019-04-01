@@ -1,8 +1,6 @@
 import React from 'react';
 import { Divider, List, Comment, Tooltip, Button } from 'antd';
-import moment from "moment";
-
-moment.locale('zh-cn');
+import moment from "@utils/moment";
 
 const data = [
     {

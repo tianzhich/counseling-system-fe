@@ -10,6 +10,8 @@ import Loading from "./features/common/component/Loading";
 import { fetchAction } from "@common/api/action";
 import { ApiKey } from "@common/api/config";
 import Axios from "axios";
+import { LocaleProvider } from "antd";
+import zh_CN from 'antd/lib/locale-provider/zh_CN';
 
 const authKey: ApiKey = 'oauth/auth'
 
@@ -80,9 +82,11 @@ export default class Root extends React.Component<IRootProps, {}> {
     }
     render() {
         return (
-            <Provider store={this.props.store}>
-                <ConnectedRouter history={history}>{renderRouteConfig(this.props.routes)}</ConnectedRouter>
-            </Provider>
+            <LocaleProvider locale={zh_CN}>
+                <Provider store={this.props.store}>
+                    <ConnectedRouter history={history}>{renderRouteConfig(this.props.routes)}</ConnectedRouter>
+                </Provider>
+            </LocaleProvider>
         )
     }
 }
