@@ -227,7 +227,7 @@ class AppointMntModal extends React.Component<Props, IAppointMntModalState> {
 
         // check infos
         const keys = Object.keys(infos)
-        const notpass = keys.some(k => !infos[k] || infos[k] === '' ? true : false)
+        const notpass = keys.some(k => infos[k] === undefined || infos[k] === '' ? true : false)
         if (keys.length !== 8 || notpass) {
             message.warning('请完善相关信息！')
             return
@@ -245,7 +245,6 @@ class AppointMntModal extends React.Component<Props, IAppointMntModalState> {
             method: JSON.stringify(method),
             times,
             ...infos,
-            status: 0
         }
 
         // handle payment
