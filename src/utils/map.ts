@@ -39,6 +39,7 @@ export const articleTopicMap = {
 export const CounselingRecordStatusMap = {
     'cancel': '已取消',
     'wait_contact': '待协商',
+    'wait_confirm': '待确定',
     'wait_counsling': '待咨询',
     'wait_comment': '待评论',
     'finish': '已完成'
