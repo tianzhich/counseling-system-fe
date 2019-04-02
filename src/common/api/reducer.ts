@@ -67,6 +67,14 @@ const genReducer: reducerGenerator = (key, isPage) => (state: IApiState = isPage
                 err,
                 status: 'failed'
             }
+        case `${key}_remove`: 
+            return {
+                ...state,
+                response: {
+                    ...state.response,
+                    data: null
+                }
+            }
         default:
             return state
     }

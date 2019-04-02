@@ -33,6 +33,7 @@ interface INotificationProps {
         msgCount: number
     }
     onMarkReadNotif: (id?: number, markAll?: boolean) => void
+    seeDetail: (type: string) => void
 }
 
 interface INotificationState {
@@ -68,11 +69,13 @@ export default class Notification extends React.Component<INotificationProps, IN
                 <Tabs defaultActiveKey={tabKey} onChange={this.toggleTabPane} >
                     <TabPane tab={`通知（${count.notifCount}）`} key="1">
                         <List
-                            locale={{ emptyText: "通知为空" }}
                             itemLayout="horizontal"
                             dataSource={notifications}
                             renderItem={(item: INotification) => (
-                                <List.Item actions={[<a onClick={() => this.props.onMarkReadNotif(item.id)}>标为已读</a>]}>
+                                <List.Item
+                                    onClick={() => this.props.seeDetail(item.type)}
+                                    actions={[<a onClick={() => this.props.onMarkReadNotif(item.id)}>标为已读</a>]}
+                                >
                                     <List.Item.Meta
                                         avatar={iconMap[item.type]}
                                         title={item.title}
@@ -85,10 +88,12 @@ export default class Notification extends React.Component<INotificationProps, IN
                     <TabPane tab={`留言（${count.msgCount}）`} key="2">Content of Tab Pane 2</TabPane>
                 </Tabs>
                 <div className="action">
-                    <div onClick={tabKey == '1' ? () => this.props.onMarkReadNotif(null, true) : () => { }}>
-                        清空 {tabKey == '1' ? '通知' : '留言'}
+                    <div onClick={tabKey === '1' ? () => this.props.onMarkReadNotif(null, true) : () => { }}>
+                        清空 {tabKey === '1' ? '通知' : '留言'}
                     </div>
-                    <div>查看 详情</div>
+                    <div onClick={() => this.props.seeDetail(tabKey === '1' ? 'counseling' : 'message')} >
+                        查看 详情
+                    </div>
                 </div>
             </div>
         )

@@ -75,7 +75,7 @@ export default class CounselingTab extends React.Component<ICounselingTabProps, 
     }, {
         dataIndex: 'createTime',
         title: '创建时间',
-        sorter: (rowA, rowB) => moment(rowA.createTime).valueOf() - moment(rowB.createTime).valueOf(),
+        sorter: (rowA, rowB) => moment(rowB.createTime).valueOf() - moment(rowA.createTime).valueOf(),
         render: (val) => moment(val).fromNow(),
     }]
     constructor(props: ICounselingTabProps) {

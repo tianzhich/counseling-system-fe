@@ -7,6 +7,10 @@ import { connect } from 'react-redux';
 import { IStore } from '@common/storeConfig';
 import { SignModalType } from './SignModal';
 import Notification, { INotification } from './Notification';
+import { OtherAPI } from '@common/api/config';
+import { Dispatch } from 'redux';
+import { fetchAction } from '@common/api/action';
+import { push } from 'connected-react-router';
 
 const Header = Layout.Header
 const Search = Input.Search
@@ -16,6 +20,7 @@ interface IAppHeaderProps {
     onOpenSignModal: (t: SignModalType) => void
     isAuth: boolean
     notifications: INotification[]
+    dispatch: Dispatch
 }
 
 interface IAppHeaderState {
@@ -32,23 +37,23 @@ class AppHeader extends React.Component<IAppHeaderProps, IAppHeaderState> {
         }
     }
 
-    markReadNotifs =  (id?: number, markAll?: boolean) => {
-        // mark all
+    markReadNotifs = (id?: number, markAll?: boolean) => {
+        let ids: number[]
         if (markAll) {
+            ids = this.props.notifications.map(n => n.id)
             this.setState({
-                readNotifs: this.props.notifications.map(n => n.id)
+                readNotifs: ids
             })
-            return
+        } else {
+            if (this.state.readNotifs.find(iid => iid === id)) {
+                return
+            }
+            this.setState({
+                readNotifs: [...this.state.readNotifs, id]
+            })
+            ids = [id]
         }
-
-        if (this.state.readNotifs.find(iid => iid === id)) {
-            return
-        }
-        this.setState({
-            readNotifs: [...this.state.readNotifs, id]
-        })
-
-        // mark read api
+        OtherAPI.MarkReadNotifiction(ids).then(() => this.props.dispatch(fetchAction('query/notifications')))
     }
 
     toggleNotif = (e: React.MouseEvent) => {
@@ -97,7 +102,15 @@ class AppHeader extends React.Component<IAppHeaderProps, IAppHeaderState> {
                 <Search placeholder="站内搜索" />
                 <div className="trigger trigger-notif" onClick={this.toggleNotif} >
                     <Badge count={countAll}><Icon type="bell" style={{ fontSize: "20px" }} /></Badge>
-                    {this.state.showNotif ? <Notification notifications={notifications} count={count} onMarkReadNotif={this.markReadNotifs} /> : null}
+                    {
+                        this.state.showNotif ?
+                            <Notification
+                                notifications={notifications}
+                                count={count}
+                                onMarkReadNotif={this.markReadNotifs}
+                                seeDetail={(type: string) => this.props.dispatch(push(`/profile/${type}`))}
+                            /> : null
+                    }
                 </div>
                 <Dropdown overlay={UserOverlay}>
                     <div className="trigger trigger-user">
