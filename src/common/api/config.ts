@@ -5,7 +5,7 @@ export const baseURL = `${window.location.origin}/api/`;
 type oAuthKey = 'oauth/signin' | 'oauth/signup' | 'oauth/auth' | 'oauth/apply'
 type infoKey = 'info/counselingFilters'
 type queryKey = 'query/counselorList' | 'query/newlyCounselors' | 'query/counselor' | 'query/notifications' | 'query/counselingRecords'
-type operationKey = 'operation/appoint'
+type operationKey = 'operation/appoint' | 'operation/addMessage'
 
 export type ApiKey = oAuthKey | infoKey | queryKey | operationKey
 
@@ -16,6 +16,7 @@ export type IApiConfig = {
 export type NetworkStatus = 'loading' | 'success' | 'failed'
 
 export const NetworkErrorMsg = '网络错误，请稍后重试！'
+export const ServerErrorMsg = '服务器内部错误，请稍后重试！'
 
 export interface IApiResponse {
     code: number
@@ -59,7 +60,10 @@ export const apiConfig: IApiConfig = {
         method: 'POST'
     },
     'query/notifications': {},
-    'query/counselingRecords': {}
+    'query/counselingRecords': {},
+    'operation/addMessage': {
+        method: 'POST'
+    }
 }
 
 export const OtherAPI = {

@@ -11,6 +11,7 @@ import AppHeader from './AppHeader';
 import './App.less'
 import { fetchAction } from '@common/api/action';
 import { connect } from 'react-redux';
+import MessageModal from './MessageModal';
 
 const { Content, Footer } = Layout;
 
@@ -26,12 +27,14 @@ interface IAppState {
 class App extends React.Component<IAppProps, IAppState> {
     signModalRef: React.RefObject<any>
     appointMntModalRef: React.RefObject<any>
+    messageModalRef: React.RefObject<any>
     openModalToken: EventEmitter
 
     constructor(props: IAppProps) {
         super(props);
         this.signModalRef = React.createRef()
         this.appointMntModalRef = React.createRef()
+        this.messageModalRef = React.createRef()
         this.state = {
             signModal: 'signin'
         }
@@ -72,9 +75,14 @@ class App extends React.Component<IAppProps, IAppState> {
         this.appointMntModalRef.current.openModal(payload.counselor)
     }
 
+    handleLeaveMessage = (payload: any) => {
+        this.messageModalRef.current.openModal(payload.receiverId, payload.receiverName)
+    }
+
     componentDidMount() {
         this.openModalToken = Emitter.addListener('openSigninModal', this.handleLoginWithRef)
         this.openModalToken = Emitter.addListener('openAppointMntModal', this.handleAppoint)
+        this.openModalToken = Emitter.addListener('openMessageModal', this.handleLeaveMessage)
 
         // global info api
         this.props.dispatch(fetchAction('query/notifications', { params: { preview: 1 } }))
@@ -98,6 +106,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 </Layout>
                 <SignModal type={this.state.signModal} onChangeModal={this.handleChangeModal} ref={this.signModalRef} />
                 <AppointMntModal ref={this.appointMntModalRef} />
+                <MessageModal ref={this.messageModalRef} />
             </div>
         )
     }

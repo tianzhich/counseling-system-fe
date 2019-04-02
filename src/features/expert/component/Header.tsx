@@ -4,11 +4,13 @@ import { Counselor } from '@features/common/types';
 import { avatarURL } from '@features/common/fakeData';
 import { Button } from 'antd';
 
-interface IHeaderProps extends Counselor { }
+interface IHeaderProps extends Counselor {
+    onLeaveMessage: () => void
+}
 
 export default class Header extends React.Component<IHeaderProps, {}> {
     render() {
-        const { avatar = avatarURL, name, description, city } = this.props
+        const { avatar = avatarURL, name, description, city, onLeaveMessage } = this.props
         return (
             <div className="header">
                 <div className="bg-banner" />
@@ -32,7 +34,7 @@ export default class Header extends React.Component<IHeaderProps, {}> {
                         </div>
                         <div className="action">
                             <Button shape="round" icon="plus" >关注</Button>
-                            <Button shape="round" icon="mail" >私信</Button>
+                            <Button shape="round" icon="mail" onClick={onLeaveMessage} >私信</Button>
                         </div>
                     </div>
                 </div>

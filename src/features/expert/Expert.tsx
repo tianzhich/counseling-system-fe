@@ -67,6 +67,14 @@ class Expert extends React.Component<IExpertProps, IExpertState> {
         }
     }
 
+    handleLeaveMessage = () => {
+        const counselor = this.props.counselor
+        const receiverId = counselor.uid
+        const receiverName = counselor.name
+
+        Emitter.emit('openMessageModal', { receiverId, receiverName })
+    }
+
     render() {
         const { status, counselor } = this.props
         if (!status || status === 'loading') {
@@ -79,7 +87,7 @@ class Expert extends React.Component<IExpertProps, IExpertState> {
 
         return (
             <div className="pcs-expert">
-                <Header {...counselor} />
+                <Header {...counselor} onLeaveMessage={this.handleLeaveMessage} />
                 <CounselorDetail couselor={counselor} />
                 <Affix offsetTop={100} style={{ position: 'absolute', top: "450px", right: "100px" }} className="float-card-wrapper">
                     <FloatCard

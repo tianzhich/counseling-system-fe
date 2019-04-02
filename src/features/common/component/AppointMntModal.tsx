@@ -8,10 +8,15 @@ import { IApiState, IApiStore } from '@common/api/reducer';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { fetchAction } from '@common/api/action';
-import { IApiResponse } from '@common/api/config';
 import { IStore } from '@common/storeConfig';
+import Emitter from '@utils/events';
 
-const Header = (props: { counselor?: Counselor }) => {
+interface HeaderProps {
+    counselor?: Counselor
+    onLeaveMessage: () => void
+}
+
+const Header = (props: HeaderProps) => {
     const name = props.counselor ? props.counselor.name : ''
     return (
         <div className="title">
@@ -19,7 +24,7 @@ const Header = (props: { counselor?: Counselor }) => {
             <div className="expert">
                 <Avatar shape="square" size={80} src={avatarURL} />
                 <div className="name">{name}</div>
-                <Button icon="mail">私信</Button>
+                <Button icon="mail" onClick={props.onLeaveMessage} >私信</Button>
             </div>
         </div>
     )
@@ -257,6 +262,10 @@ class AppointMntModal extends React.Component<Props, IAppointMntModalState> {
         })
     }
 
+    handleLeaveMessage = (receiverId: number, receiverName: string) => {
+        Emitter.emit('openMessageModal', { receiverId, receiverName })
+    }
+
     componentDidUpdate(prevProps: Props, prevState: IAppointMntModalState) {
         // appoint callback
         if (prevProps.appointRes.status === 'loading') {
@@ -303,7 +312,7 @@ class AppointMntModal extends React.Component<Props, IAppointMntModalState> {
                 onCancel={this.closeModal}
                 footer={Footer}
             >
-                <Header counselor={counselor} />
+                <Header counselor={counselor} onLeaveMessage={() => this.handleLeaveMessage(counselor.uid, counselor.name)} />
                 <PricePanel counselor={counselor} method={method} total={priceTotal} times={times} onSetTimes={this.handleSetTimes} onSetMethod={this.handleSetMethod} />
                 <Infos infos={infos} canInputLen={canInputLen} onChangeInfos={this.handleChangeInfos} />
                 <Agreement isAgree={isAgree} onToggleAgree={() => this.setState({ isAgree: !this.state.isAgree })} />

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Modal, Row, Col, Input } from 'antd';
+import { Table, Modal, Row, Col, Input, Divider } from 'antd';
 import { ColumnProps } from 'antd/lib/table';
 import moment from "@utils/moment";
 import { CounselingRecordStatusMap, CounselingMethodMap } from '@utils/map';
@@ -41,7 +41,8 @@ export default class CounselingTab extends React.Component<ICounselingTabProps, 
             title: '年龄'
         }, {
             dataIndex: 'gender',
-            title: '性别'
+            title: '性别',
+            render: (val) => val === 0 ? '女' : '男'
         }, {
             dataIndex: 'phone',
             title: '电话'
@@ -74,9 +75,19 @@ export default class CounselingTab extends React.Component<ICounselingTabProps, 
         render: (val) => CounselingRecordStatusMap[val]
     }, {
         dataIndex: 'createTime',
-        title: '创建时间',
+        title: '申请时间',
         sorter: (rowA, rowB) => moment(rowB.createTime).valueOf() - moment(rowA.createTime).valueOf(),
         render: (val) => moment(val).fromNow(),
+    }, {
+        title: '操作',
+        key: 'action',
+        render: (text, record) => (
+            <span>
+                <a href="javascript:;">聊天</a>
+                <Divider type="vertical" />
+                <a href="javascript:;">其他</a>
+            </span>
+        ),
     }]
     constructor(props: ICounselingTabProps) {
         super(props);
