@@ -10,13 +10,20 @@ import AppHeader from './AppHeader';
 
 import './App.less'
 import { fetchAction } from '@common/api/action';
-import { connect } from 'react-redux';
 import MessageModal from './MessageModal';
+import { connect } from 'react-redux';
+import { IStore } from '@common/storeConfig';
+import { INotification, IMessage } from './Notification';
+import { ProfileTabKey } from '@features/profile/Profile';
+import { push } from 'connected-react-router';
 
 const { Content, Footer } = Layout;
 
 interface IAppProps {
     isAuth: boolean
+    notifications: INotification[]
+    messages: IMessage[]
+    onload: boolean
     dispatch: Dispatch
 }
 
@@ -67,7 +74,6 @@ class App extends React.Component<IAppProps, IAppState> {
         } else {
             this.openModal('signin')
         }
-
     }
 
     // 预约咨询师弹窗
@@ -76,7 +82,20 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     handleLeaveMessage = (payload: any) => {
-        this.messageModalRef.current.openModal(payload.receiverId, payload.receiverName)
+        this.messageModalRef.current.openModal(payload.receiverId, payload.receiverName, payload.srcMsg)
+    }
+
+    initRequest = () => {
+        this.loadNotifications()
+    }
+
+    loadNotifications = () => {
+        this.props.dispatch(fetchAction('query/notifications'))
+        this.props.dispatch(fetchAction('query/messages'))
+    }
+
+    gotoProfile = (type: ProfileTabKey) => {
+        this.props.dispatch(push(`/profile/${type}`))
     }
 
     componentDidMount() {
@@ -84,19 +103,37 @@ class App extends React.Component<IAppProps, IAppState> {
         this.openModalToken = Emitter.addListener('openAppointMntModal', this.handleAppoint)
         this.openModalToken = Emitter.addListener('openMessageModal', this.handleLeaveMessage)
 
-        // global info api
-        this.props.dispatch(fetchAction('query/notifications', { params: { preview: 1 } }))
+        // init request
+        if (this.props.isAuth) {
+            this.loadNotifications()
+        }
     }
 
     componentWillUnmount() {
         this.openModalToken.removeAllListeners()
     }
 
+    componentDidUpdate(prevProps: IAppProps) {
+        if (!prevProps.isAuth && this.props.isAuth) {
+            this.initRequest()
+        }
+    }
+
     render() {
+        const { isAuth, notifications, messages, onload } = this.props
         return (
             <div className="pcs-app">
                 <Layout>
-                    <AppHeader onUserSignout={this.handleUserSignout} onOpenSignModal={this.openModal} />
+                    <AppHeader
+                        isAuth={isAuth}
+                        notifications={notifications}
+                        messages={messages}
+                        dataOnload={onload}
+                        onUserSignout={this.handleUserSignout}
+                        onOpenSignModal={this.openModal}
+                        reloadNotifications={this.loadNotifications}
+                        gotoProfile={this.gotoProfile}
+                    />
                     <Content>
                         <div className="pcs-content">{this.props.children}</div>
                     </Content>
@@ -112,4 +149,14 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 }
 
-export default connect()(App)
+const mapState = (state: IStore) => ({
+    // 权限
+    isAuth: state['@global'].auth.isAuth,
+
+    // 数据
+    notifications: state['query/notifications'].response && state['query/notifications'].response.data ? state['query/notifications'].response.data : [],
+    messages: state['query/messages'].response && state['query/messages'].response.data ? state['query/messages'].response.data : [],
+    onload: state['query/messages'].status === 'loading' || state['query/notifications'].status === 'loading'
+})
+
+export default connect(mapState)(App)

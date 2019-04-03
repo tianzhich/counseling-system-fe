@@ -1,16 +1,11 @@
 import React from 'react';
-import { Menu, Layout, Icon, Tabs, Input, Badge, Dropdown, Avatar, Button, List, notification } from "antd";
+import { Menu, Layout, Icon, Input, Badge, Dropdown, Avatar, Button, List, notification, message } from "antd";
 import { NavLink, Route, Link } from 'react-router-dom';
 
 import './AppHeader.less'
-import { connect } from 'react-redux';
-import { IStore } from '@common/storeConfig';
 import { SignModalType } from './SignModal';
-import Notification, { INotification } from './Notification';
+import Notification, { INotification, IMessage, NotificationTabKey } from './Notification';
 import { OtherAPI } from '@common/api/config';
-import { Dispatch } from 'redux';
-import { fetchAction } from '@common/api/action';
-import { push } from 'connected-react-router';
 
 const Header = Layout.Header
 const Search = Input.Search
@@ -20,40 +15,49 @@ interface IAppHeaderProps {
     onOpenSignModal: (t: SignModalType) => void
     isAuth: boolean
     notifications: INotification[]
-    dispatch: Dispatch
+    messages: IMessage[]
+    dataOnload: boolean
+    reloadNotifications: () => void
+    gotoProfile: (type: string) => void
 }
 
 interface IAppHeaderState {
     showNotif: boolean
     readNotifs: INotification['id'][]
+    readMsgs: IMessage['id'][]
 }
 
-class AppHeader extends React.Component<IAppHeaderProps, IAppHeaderState> {
+export default class AppHeader extends React.Component<IAppHeaderProps, IAppHeaderState> {
     constructor(props: IAppHeaderProps) {
         super(props)
         this.state = {
             showNotif: false,
-            readNotifs: []
+            readNotifs: [],
+            readMsgs: []
         }
     }
 
-    markReadNotifs = (id?: number, markAll?: boolean) => {
+    markRead = (type: NotificationTabKey, id?: number, markAll?: boolean) => {
         let ids: number[]
+        const data = type === 'notification' ? this.props.notifications : this.props.messages
+        const state = type === 'notification' ? 'readNotifs' : 'readMsgs'
         if (markAll) {
-            ids = this.props.notifications.map(n => n.id)
+            ids = (data as { id: number }[]).map(d => d.id)
             this.setState({
-                readNotifs: ids
+                ...this.state,
+                [state]: ids
             })
         } else {
-            if (this.state.readNotifs.find(iid => iid === id)) {
+            if (this.state[state].find(iid => iid === id)) {
                 return
             }
             this.setState({
-                readNotifs: [...this.state.readNotifs, id]
+                ...this.state,
+                [state]: [...this.state[state], id]
             })
             ids = [id]
         }
-        OtherAPI.MarkReadNotifiction(ids).then(() => this.props.dispatch(fetchAction('query/notifications')))
+        OtherAPI.MarkRead(ids, type).then(() => this.props.reloadNotifications())
     }
 
     toggleNotif = (e: React.MouseEvent) => {
@@ -78,10 +82,14 @@ class AppHeader extends React.Component<IAppHeaderProps, IAppHeaderState> {
     render() {
         const readNotifs = this.state.readNotifs
         const notifications = this.props.notifications.filter(n => !readNotifs.find(id => id === n.id))
-        const countAll = notifications.length
+        const readMsgs = this.state.readMsgs
+        const messages = this.props.messages.filter(m => !readMsgs.find(id => id === m.id))
+
+        const onload = this.props.dataOnload
+        const countAll = onload ? 0 : notifications.length + messages.length
         const count = {
             notifCount: notifications.length,
-            msgCount: 0
+            msgCount: messages.length
         }
 
         const UserOverlay = (
@@ -105,10 +113,11 @@ class AppHeader extends React.Component<IAppHeaderProps, IAppHeaderState> {
                     {
                         this.state.showNotif ?
                             <Notification
+                                messages={messages}
                                 notifications={notifications}
                                 count={count}
-                                onMarkReadNotif={this.markReadNotifs}
-                                seeDetail={(type: string) => this.props.dispatch(push(`/profile/${type}`))}
+                                onMarkRead={this.markRead}
+                                seeDetail={this.props.gotoProfile}
                             /> : null
                     }
                 </div>
@@ -152,10 +161,3 @@ class AppHeader extends React.Component<IAppHeaderProps, IAppHeaderState> {
         )
     }
 }
-
-const mapState = (state: IStore) => ({
-    isAuth: state['@global'].auth.isAuth,
-    notifications: state['query/notifications'].response && state['query/notifications'].response.data ? state['query/notifications'].response.data : []
-})
-
-export default connect(mapState)(AppHeader)

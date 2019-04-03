@@ -22,18 +22,40 @@
         }
     }
 
+    .ant-tabs-tabpane.message {
+        .ant-list-item-action {
+            position: absolute;
+            right: 4px;
+        }
+    }
+
     .ant-list {
         .ant-list-item {
             padding: 12px;
-            .ant-list-item-meta {
-                align-items: center;
+            transition: all .3s;
+
+            &:hover {
+                background: #e6f7ff;
             }
+
+            .ant-list-item-meta-description {
+                text-align: start;
+            }
+
             h4 {
                 text-align: start;
             }
+
             .ant-list-item-action {
                 margin-left: 15px;
             }
+        }
+    }
+
+    .ant-list.overflow {
+        .ant-spin-container {
+            height: 300px;
+            overflow: scroll;
         }
     }
 
@@ -41,18 +63,26 @@
         height: 40px;
         line-height: 40px;
         border-top: 1px solid #e8e8e8;
-        display: flex;
 
-        &>div {
-            width: 50%;
+        &.action1 {
+            display: flex;
 
-            &:hover {
-                color: rgba(0, 0, 0, .85);
+            &>div {
+                width: 50%;
+
+                &:hover {
+                    color: rgba(0, 0, 0, .85);
+                }
+            }
+
+            &>div:first-of-type {
+                border-right: 1px solid #e8e8e8;
             }
         }
 
-        &>div:first-of-type {
-            border-right: 1px solid #e8e8e8;
+        &.action2:hover {
+            color: rgba(0, 0, 0, .85);
         }
+
     }
 }

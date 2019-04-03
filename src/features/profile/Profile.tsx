@@ -12,9 +12,9 @@ import CounselingTab, { ICounselingRecord } from './ProfileTab/CounselingTab';
 
 const TabPane = Tabs.TabPane
 
-type TabKey = 'counseling' | 'ask' | 'article' | 'message'
+export type ProfileTabKey = 'counseling' | 'ask' | 'article' | 'message'
 
-interface IProfileProps extends RouteComponentProps<{ activeTab: TabKey }> {
+interface IProfileProps extends RouteComponentProps<{ activeTab: ProfileTabKey }> {
     isAuth: boolean
     counselingRecords: ICounselingRecord[]
     dispatch: Dispatch
@@ -27,7 +27,7 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
         super(props);
     }
 
-    toggleAvtiveTab = (activeTab: TabKey) => {
+    toggleAvtiveTab = (activeTab: ProfileTabKey) => {
         this.props.dispatch(push(`./${activeTab}`))
     }
 

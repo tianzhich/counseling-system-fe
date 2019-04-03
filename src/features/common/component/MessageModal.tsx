@@ -20,6 +20,7 @@ type Props = IMessageModalConnProps & IMessageModalOwnProps
 interface IMessageModalState {
     receiverName?: string
     receiverId?: number
+    srcMsg?: string // 针对回复的留言信息
     msg?: string
     visible: boolean
 }
@@ -32,11 +33,12 @@ class MessageModal extends React.Component<Props, IMessageModalState> {
         }
     }
 
-    openModal = (receiverId: number, receiverName: string) => {
+    openModal = (receiverId: number, receiverName: string, srcMsg?: string) => {
         this.setState({
             visible: true,
             receiverId,
-            receiverName
+            receiverName,
+            srcMsg
         })
     }
 
@@ -58,7 +60,7 @@ class MessageModal extends React.Component<Props, IMessageModalState> {
         }
 
         const msg = this.state.msg
-        if (msg === undefined || msg === '') {
+        if (msg === undefined || msg.trim() === '') {
             message.warning('请补充私信')
             return
         }
@@ -87,19 +89,31 @@ class MessageModal extends React.Component<Props, IMessageModalState> {
         }
     }
 
+    // 点击禁止冒泡，防止回复时notification overlay 关闭
+    stopPropagationForNotifOverlay = (e: React.MouseEvent) => {
+        e.stopPropagation()
+    }
+
     render() {
         return (
-            <Modal
-                className="message-modal"
-                title="私信"
-                onOk={this.handleSaveMessage}
-                visible={this.state.visible}
-                onCancel={this.closeModal}
-                destroyOnClose
-            >
-                <div className="title">给 <span>{this.state.receiverName}</span> 一条私信：</div>
-                <Input.TextArea onChange={(e) => this.handleInput(e.target.value)} />
-            </Modal>
+            <div id="message-modal-container" onClick={this.stopPropagationForNotifOverlay}>
+                <Modal
+                    getContainer={() => document.getElementById('message-modal-container')}
+                    className="message-modal"
+                    title="私信"
+                    onOk={this.handleSaveMessage}
+                    visible={this.state.visible}
+                    onCancel={this.closeModal}
+                    destroyOnClose
+                >
+                    <div className="src-msg">
+                        <p>{this.state.srcMsg}</p>
+                    </div>
+                    <div className="title">给 <span>{this.state.receiverName}</span> 一条私信：</div>
+                    <Input.TextArea onChange={(e) => this.handleInput(e.target.value)} />
+                </Modal>
+            </div>
+
         )
     }
 }

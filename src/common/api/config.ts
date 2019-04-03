@@ -1,16 +1,18 @@
 import Axios from "axios";
+import { NotificationTabKey } from "@features/common/component/Notification";
 
 export const baseURL = `${window.location.origin}/api/`;
 
 type oAuthKey = 'oauth/signin' | 'oauth/signup' | 'oauth/auth' | 'oauth/apply'
 type infoKey = 'info/counselingFilters'
-type queryKey = 'query/counselorList' | 'query/newlyCounselors' | 'query/counselor' | 'query/notifications' | 'query/counselingRecords'
+type queryKey = 'query/counselorList' | 'query/newlyCounselors' | 'query/counselor' | 'query/notifications' | 'query/counselingRecords' |
+    'query/messages'
 type operationKey = 'operation/appoint' | 'operation/addMessage'
 
 export type ApiKey = oAuthKey | infoKey | queryKey | operationKey
 
 export type IApiConfig = {
-    [key in ApiKey]: IConfig 
+    [key in ApiKey]: IConfig
 }
 
 export type NetworkStatus = 'loading' | 'success' | 'failed'
@@ -63,10 +65,11 @@ export const apiConfig: IApiConfig = {
     'query/counselingRecords': {},
     'operation/addMessage': {
         method: 'POST'
-    }
+    },
+    'query/messages': {}
 }
 
 export const OtherAPI = {
     'Signout': () => Axios.get(`${baseURL}oauth/signout`),
-    'MarkReadNotifiction': (ids: number[]) => Axios.get(`${baseURL}operation/markRead?ids=${ids.join(',')}`)
+    'MarkRead': (ids: number[], type: NotificationTabKey) => Axios.get(`${baseURL}operation/markRead?ids=${ids.join(',')}&type=${type}`)
 }

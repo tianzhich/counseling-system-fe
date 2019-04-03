@@ -2,11 +2,14 @@ import React from 'react';
 import { Tabs, Avatar, List } from "antd";
 
 import "./Notification.less"
+import { ProfileTabKey } from '@features/profile/Profile';
+import { avatarURL } from '../fakeData';
+import Emitter from '@utils/events';
 
 const TabPane = Tabs.TabPane
 
 type NotiType = 'counseling' | 'article' | 'ask'
-type TabKey = '1' | '2'
+export type NotificationTabKey = 'notification' | 'message'
 
 type IconMap = {
     [key in NotiType]: React.ReactNode
@@ -26,19 +29,28 @@ export interface INotification {
     type: NotiType
 }
 
+export interface IMessage {
+    id: number
+    senderName: string
+    senderId: number
+    detail: string
+    time: string
+}
+
 interface INotificationProps {
     notifications: INotification[]
+    messages: IMessage[]
     count: {
         notifCount: number
         msgCount: number
     }
-    onMarkReadNotif: (id?: number, markAll?: boolean) => void
-    seeDetail: (type: string) => void
+    onMarkRead: (type: NotificationTabKey, id?: number, markAll?: boolean) => void
+    seeDetail: (type: ProfileTabKey) => void
 }
 
 interface INotificationState {
     showNotif: boolean
-    tabKey: TabKey
+    tabKey: NotificationTabKey
 }
 
 export default class Notification extends React.Component<INotificationProps, INotificationState> {
@@ -46,7 +58,7 @@ export default class Notification extends React.Component<INotificationProps, IN
         super(props);
         this.state = {
             showNotif: false,
-            tabKey: '1'
+            tabKey: 'notification'
         }
     }
 
@@ -54,27 +66,41 @@ export default class Notification extends React.Component<INotificationProps, IN
         e.stopPropagation()
     }
 
-    toggleTabPane = (k: TabKey) => {
+    toggleTabPane = (k: NotificationTabKey) => {
         this.setState({
             tabKey: k
         })
     }
 
+    replyMessage = (receiverId: number, receiverName: string, srcMsg: string) => {
+        Emitter.emit('openMessageModal', { receiverId, receiverName, srcMsg })
+    }
+
+    markRead = () => {
+
+    }
+
     render() {
-        const { notifications, count } = this.props
+        const { notifications, count, messages } = this.props
         const tabKey = this.state.tabKey
 
         return (
             <div className="notif-overlay" onClick={this.stopNotifyPropagation} >
                 <Tabs defaultActiveKey={tabKey} onChange={this.toggleTabPane} >
-                    <TabPane tab={`通知（${count.notifCount}）`} key="1">
+                    <TabPane tab={`通知（${count.notifCount}）`} key='notification'>
                         <List
+                            className={notifications.length > 4 ? 'overflow' : ''}
                             itemLayout="horizontal"
                             dataSource={notifications}
                             renderItem={(item: INotification) => (
                                 <List.Item
-                                    onClick={() => this.props.seeDetail(item.type)}
-                                    actions={[<a onClick={() => this.props.onMarkReadNotif(item.id)}>标为已读</a>]}
+                                    onClick={(e) => this.props.seeDetail(item.type)}
+                                    actions={[
+                                        <a onClick={(e) => {
+                                            e.stopPropagation()
+                                            this.props.onMarkRead('notification', item.id)
+                                        }}>标为已读</a>
+                                    ]}
                                 >
                                     <List.Item.Meta
                                         avatar={iconMap[item.type]}
@@ -85,16 +111,47 @@ export default class Notification extends React.Component<INotificationProps, IN
                             )}
                         />
                     </TabPane>
-                    <TabPane tab={`留言（${count.msgCount}）`} key="2">Content of Tab Pane 2</TabPane>
+                    <TabPane tab={`私信（${count.msgCount}）`} key='message' className="message" >
+                        <List
+                            className={messages.length > 4 ? 'overflow' : ''}
+                            itemLayout="horizontal"
+                            dataSource={messages}
+                            renderItem={(item: IMessage) => (
+                                <List.Item
+                                    onClick={() => this.replyMessage(item.senderId, item.senderName, item.detail)}
+                                    actions={[
+                                        <a onClick={(e) => {
+                                            e.stopPropagation()
+                                            this.props.onMarkRead('message', item.id)
+                                        }}>标为已读</a>,
+                                        <a onClick={(e) => {
+                                            e.stopPropagation()
+                                            this.replyMessage(item.senderId, item.senderName, item.detail)
+                                        }}>回复</a>
+                                    ]}
+                                >
+                                    <List.Item.Meta
+                                        avatar={<Avatar src={avatarURL} />}
+                                        title={item.senderName}
+                                        description={item.detail.length > 100 ? `${item.detail.substr(0, 100)}...` : item.detail}
+                                    />
+                                </List.Item>
+                            )}
+                        />
+                    </TabPane>
                 </Tabs>
-                <div className="action">
-                    <div onClick={tabKey === '1' ? () => this.props.onMarkReadNotif(null, true) : () => { }}>
-                        清空 {tabKey === '1' ? '通知' : '留言'}
-                    </div>
-                    <div onClick={() => this.props.seeDetail(tabKey === '1' ? 'counseling' : 'message')} >
-                        查看 详情
-                    </div>
-                </div>
+                {
+                    tabKey === 'notification' ? (
+                        <div className="action action1">
+                            <div onClick={() => this.props.onMarkRead('notification', null, true)}>
+                                清空 通知
+                                </div>
+                            <div onClick={() => this.props.seeDetail('counseling')} >
+                                查看 详情
+                                </div>
+                        </div>
+                    ) : <div className="action action2" onClick={() => this.props.onMarkRead('message', null, true)}>清空 私信</div>
+                }
             </div>
         )
     }
