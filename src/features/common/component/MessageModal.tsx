@@ -22,6 +22,7 @@ interface IMessageModalState {
     receiverId?: number
     srcMsg?: string // 针对回复的留言信息
     msg?: string
+    callback?: Function
     visible: boolean
 }
 
@@ -33,12 +34,14 @@ class MessageModal extends React.Component<Props, IMessageModalState> {
         }
     }
 
-    openModal = (receiverId: number, receiverName: string, srcMsg?: string) => {
+    openModal = (receiverId: number, receiverName: string, srcMsg?: string, callback?: Function) => {
+        console.log(callback)
         this.setState({
             visible: true,
             receiverId,
             receiverName,
-            srcMsg
+            srcMsg,
+            callback
         })
     }
 
@@ -79,6 +82,10 @@ class MessageModal extends React.Component<Props, IMessageModalState> {
             if (addRes.status === 'success') {
                 if (addRes.response && addRes.response.code === 1) {
                     message.success('私信成功！')
+                    const callback = this.state.callback
+                    if (callback) {
+                        callback()
+                    }
                     this.closeModal()
                 } else {
                     message.error(addRes.response.message)

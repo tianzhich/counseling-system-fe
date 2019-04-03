@@ -72,12 +72,8 @@ export default class Notification extends React.Component<INotificationProps, IN
         })
     }
 
-    replyMessage = (receiverId: number, receiverName: string, srcMsg: string) => {
-        Emitter.emit('openMessageModal', { receiverId, receiverName, srcMsg })
-    }
-
-    markRead = () => {
-
+    replyMessage = (receiverId: number, receiverName: string, srcMsg: string, callback?: Function) => {
+        Emitter.emit('openMessageModal', { receiverId, receiverName, srcMsg, callback })
     }
 
     render() {
@@ -94,7 +90,7 @@ export default class Notification extends React.Component<INotificationProps, IN
                             dataSource={notifications}
                             renderItem={(item: INotification) => (
                                 <List.Item
-                                    onClick={(e) => this.props.seeDetail(item.type)}
+                                    onClick={() => this.props.seeDetail(item.type)}
                                     actions={[
                                         <a onClick={(e) => {
                                             e.stopPropagation()
@@ -118,7 +114,7 @@ export default class Notification extends React.Component<INotificationProps, IN
                             dataSource={messages}
                             renderItem={(item: IMessage) => (
                                 <List.Item
-                                    onClick={() => this.replyMessage(item.senderId, item.senderName, item.detail)}
+                                    onClick={() => this.replyMessage(item.senderId, item.senderName, item.detail, () => this.props.onMarkRead('message', item.id))}
                                     actions={[
                                         <a onClick={(e) => {
                                             e.stopPropagation()
@@ -126,7 +122,7 @@ export default class Notification extends React.Component<INotificationProps, IN
                                         }}>标为已读</a>,
                                         <a onClick={(e) => {
                                             e.stopPropagation()
-                                            this.replyMessage(item.senderId, item.senderName, item.detail)
+                                            this.replyMessage(item.senderId, item.senderName, item.detail, () => this.props.onMarkRead('message', item.id))
                                         }}>回复</a>
                                     ]}
                                 >

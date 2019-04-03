@@ -82,7 +82,7 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     handleLeaveMessage = (payload: any) => {
-        this.messageModalRef.current.openModal(payload.receiverId, payload.receiverName, payload.srcMsg)
+        this.messageModalRef.current.openModal(payload.receiverId, payload.receiverName, payload.srcMsg, payload.callback)
     }
 
     initRequest = () => {
