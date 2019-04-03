@@ -18,15 +18,17 @@ export interface IPageInfo {
     currentPageNum: number
 }
 
+export const defaultInitPageInfo: IPageInfo = {
+    currentPageNum: 0,
+    pageSize: 10
+}
+
 export type IApiStore = {
     [key in ApiKey]: IApiState
 }
 
 const defaultState: IApiState = {
-    pageInfo: {
-        currentPageNum: 0,
-        pageSize: 10
-    }
+    pageInfo: defaultInitPageInfo
 }
 
 const genReducer: reducerGenerator = (key, isPage) => (state: IApiState = isPage ? defaultState : {}, action: IApiAction): IApiState => {
@@ -67,7 +69,7 @@ const genReducer: reducerGenerator = (key, isPage) => (state: IApiState = isPage
                 err,
                 status: 'failed'
             }
-        case `${key}_remove`: 
+        case `${key}_remove`:
             return {
                 ...state,
                 response: {

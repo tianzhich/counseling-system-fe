@@ -2,32 +2,20 @@ import React from 'react';
 import { Card, Avatar, message, Spin } from "antd";
 import { Counselor } from "@types";
 import './NewlyCounselors.less';
-import { Dispatch } from 'redux';
-import { connect } from 'react-redux';
-import { IApiStore, IPageInfo } from '@common/api/reducer';
-import { fetchAction } from '@common/api/action';
-import { ApiKey, NetworkStatus } from '@common/api/config';
+import { defaultInitPageInfo, IApiState } from '@common/api/reducer';
 import { avatarURL } from '@features/common/fakeData';
-import { push } from 'connected-react-router';
-import { IStore } from '@common/storeConfig';
 
 const { Meta } = Card;
 
-const newlClsActionKey: ApiKey = 'query/newlyCounselors'
-
 interface INewlyCounselorsProps {
-    // store mapping
-    dispatch: Dispatch
-    counselors: Counselor[]
-    pageInfo: IPageInfo
-    loadingStatus: NetworkStatus
+    apiData: IApiState
+    fetchData: (params?: any) => void
+    gotoExpertHomepage: (e: number) => void
 }
 
-const initialPageInfo: IPageInfo = {
-    currentPageNum: 0,
-    totalNum: 0,
-    pageSize: 4,
-    totalPageNum: 0
+const initPageInfo = {
+    ...defaultInitPageInfo,
+    pageSize: 4
 }
 
 interface InfoProps extends Partial<Counselor> {
@@ -58,30 +46,26 @@ function Title(props: InfoProps) {
     )
 }
 
-class Newlycounselors extends React.Component<INewlyCounselorsProps, {}> {
-    componentDidMount() {
-        this.props.dispatch(fetchAction('query/newlyCounselors', { params: { pageSize: 4, pageNum: 1 } }))
-    }
+export default class Newlycounselors extends React.Component<INewlyCounselorsProps, {}> {
     loadMore = () => {
-        const pageSize = this.props.pageInfo.pageSize
-        const pageNum = this.props.pageInfo.currentPageNum
-        const totalPageNum = this.props.pageInfo.totalPageNum
+        const { pageInfo = initPageInfo } = this.props.apiData
+        const pageSize = pageInfo.pageSize
+        const pageNum = pageInfo.currentPageNum
+        const totalPageNum = pageInfo.totalPageNum
         if (pageNum < totalPageNum) {
-            this.props.dispatch(fetchAction('query/newlyCounselors'))
+            this.props.fetchData()
         } else {
-            this.props.dispatch(fetchAction('query/newlyCounselors', { params: { pageSize, pageNum: 1 } }))
+            this.props.fetchData({ pageSize, pageNum: 1 })
         }
-    }
-    toExpertHomepage = (id: number) => {
-        this.props.dispatch(push(`/expert/${id}`))
     }
 
     render() {
-        const counselors = this.props.counselors
+        const { response, status } = this.props.apiData
+        const counselors: Counselor[] = response && response.data ? response.data.list : []
         return (
             <div className="newly-counselors">
                 <div className="newly-counselors-header">
-                    新加入的专家 {this.props.loadingStatus === 'loading' ? <Spin /> : null}
+                    新加入的专家 {status === 'loading' ? <Spin /> : null}
                 </div>
                 <div className="newly-counselors-content">
                     {
@@ -89,11 +73,11 @@ class Newlycounselors extends React.Component<INewlyCounselorsProps, {}> {
                             <Card key={c.id}>
                                 <Meta
                                     avatar={
-                                        <div onClick={(e) => this.toExpertHomepage(c.id)}>
+                                        <div onClick={() => this.props.gotoExpertHomepage(c.id)}>
                                             <Avatar src={c.avatar ? c.avatar : avatarURL} />
                                         </div>
                                     }
-                                    title={<Title name={c.name} goodRate={c.goodRate} onClick={() => this.toExpertHomepage(c.id)} />}
+                                    title={<Title name={c.name} goodRate={c.goodRate} onClick={() => this.props.gotoExpertHomepage(c.id)} />}
                                     description={<Description description={c.description} workYears={c.workYears} />}
                                 />
                             </Card>
@@ -105,11 +89,3 @@ class Newlycounselors extends React.Component<INewlyCounselorsProps, {}> {
         )
     }
 }
-
-const mapState = (state: IStore) => ({
-    counselors: state[newlClsActionKey].response ? state[newlClsActionKey].response.data.list : [],
-    loadingStatus: state[newlClsActionKey].status,
-    pageInfo: state[newlClsActionKey].pageInfo ? state[newlClsActionKey].pageInfo : initialPageInfo,
-})
-
-export default connect(mapState)(Newlycounselors)

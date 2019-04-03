@@ -14,6 +14,7 @@ import CounselorDetail from './component/CounselorDetail';
 import FloatCard from './component/FloatCard';
 import Emitter from '@utils/events';
 import { IStore } from '@common/storeConfig';
+import Loading from '@features/common/component/Loading';
 
 const cslInfoActionKey: ApiKey = 'query/counselor'
 const authKey: ApiKey = 'oauth/auth'
@@ -78,7 +79,7 @@ class Expert extends React.Component<IExpertProps, IExpertState> {
     render() {
         const { status, counselor } = this.props
         if (!status || status === 'loading') {
-            return <Spin />
+            return <Loading />
         } else if (status === 'failed') {
             return <Empty description="加载失败，请稍后重试" />
         } else if (status === "success" && !counselor) {

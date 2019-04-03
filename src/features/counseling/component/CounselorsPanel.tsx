@@ -1,5 +1,4 @@
 import React from 'react';
-import { Menu, Tag, Skeleton } from "antd";
 import CounselorList from './CounselorList';
 
 import './CounselorsPanel.less';
@@ -7,29 +6,16 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { fetchAction } from '@common/api/action';
 import { ApiKey } from '@common/api/config';
-import { IApiStore, IPageInfo } from '@common/api/reducer';
+import { IPageInfo, defaultInitPageInfo, IApiState } from '@common/api/reducer';
 import { Counselor } from '@features/common/types';
 import FiltersPanel, { Filters, ICondition, onConditionChange } from './FiltersPanel';
 import { PaginationProps } from 'antd/lib/pagination';
 import { push } from 'connected-react-router';
 import { IStore } from '@common/storeConfig';
 
-const filtersKey: ApiKey = 'info/counselingFilters'
-const ListActionKey: ApiKey = 'query/counselorList'
-
-const pageSize = 5
-
-const initialFilters: Filters = {
-    city: [],
-    method: [],
-    topic: []
-}
-
-const initialPageInfo: IPageInfo = {
-    totalPageNum: 0,
+const initialPageInfo = {
+    ...defaultInitPageInfo,
     pageSize: 5,
-    totalNum: 0,
-    currentPageNum: 0
 }
 
 const initialCondition: ICondition = {
@@ -40,13 +26,11 @@ const initialCondition: ICondition = {
 }
 
 interface ICounselorPanelProps {
-    // store map
-    dispatch: Dispatch
-    filters: Filters
-    counselorList: Counselor[]
-    pageInfo: IPageInfo
-
     isAuth: boolean
+    apiData: IApiState
+    filters: Filters
+    fetchData: (params: any, data?: any) => void
+    gotoExpertHomepage: (e: number) => void
 }
 
 interface ICounselorPanelState {
@@ -54,7 +38,7 @@ interface ICounselorPanelState {
     condition: ICondition
 }
 
-class CounselorPanel extends React.Component<ICounselorPanelProps, ICounselorPanelState> {
+export default class CounselorPanel extends React.Component<ICounselorPanelProps, ICounselorPanelState> {
     constructor(props: ICounselorPanelProps) {
         super(props);
         this.state = {
@@ -70,7 +54,8 @@ class CounselorPanel extends React.Component<ICounselorPanelProps, ICounselorPan
         const data = {
             city, topic, method
         }
-        this.props.dispatch(fetchAction('query/counselorList', { params: { pageNum: p.currentPageNum, pageSize }, data }))
+
+        this.props.fetchData({ pageNum: p.currentPageNum, pageSize: p.pageSize }, data)
     }
 
     handleConditionChange: onConditionChange = (key, value) => {
@@ -86,39 +71,31 @@ class CounselorPanel extends React.Component<ICounselorPanelProps, ICounselorPan
             return
         }
 
+        const pageSize = this.props.apiData.pageInfo ? this.props.apiData.pageInfo.pageSize : 5
+
         this.setState({
             condition: { ...this.state.condition, [key]: value }
         }, () => this.loadMoreByCondition({ pageSize, currentPageNum: 1 }))
     }
 
     handleSearchCounselor = (like: string) => {
+        const params = { like: like.trim(), pageNum: 1 }
         this.setState({
             condition: initialCondition
-        }, () => this.props.dispatch(fetchAction('query/counselorList', { params: { like: like.trim(), pageNum: 1 } })))   
-    }
-
-    toExpertHomepage = (id: number) => {
-        this.props.dispatch(push(`/expert/${id}`))
-    }
-
-    componentDidMount() {
-        // 咨询师搜索查找过滤条件
-        this.props.dispatch(fetchAction('info/counselingFilters'))
-
-        // 咨询师列表
-        this.props.dispatch(fetchAction('query/counselorList', { params: { pageSize, pageNum: 1 } }))
+        }, () => this.props.fetchData(params))
     }
 
     render() {
         const filters = this.props.filters
-        const counselorList = this.props.counselorList
-        const pagination: PaginationProps = {
-            current: this.props.pageInfo.currentPageNum,
-            pageSize: this.props.pageInfo.pageSize,
-            total: this.props.pageInfo.totalNum,
-            onChange: (currentPageNum) => this.loadMoreByCondition({ pageSize, currentPageNum })
-        }
         const isAuth = this.props.isAuth
+        const { response, pageInfo = initialPageInfo } = this.props.apiData
+        const counselorList = response && response.data ? response.data.list : []
+        const pagination: PaginationProps = {
+            current: pageInfo.currentPageNum,
+            pageSize: pageInfo.pageSize,
+            total: pageInfo.totalNum,
+            onChange: (currentPageNum) => this.loadMoreByCondition({ pageSize: pageInfo.pageSize, currentPageNum })
+        }
         return (
             <div className="counselors-panel">
                 <FiltersPanel
@@ -126,16 +103,14 @@ class CounselorPanel extends React.Component<ICounselorPanelProps, ICounselorPan
                     onConditionChange={this.handleConditionChange}
                     filters={filters}
                 />
-                <CounselorList isAuth={isAuth} counselors={counselorList} pagination={pagination} onSearchCounselor={this.handleSearchCounselor} onToExpertPage={this.toExpertHomepage} />
+                <CounselorList
+                    isAuth={isAuth}
+                    counselors={counselorList}
+                    pagination={pagination}
+                    onSearchCounselor={this.handleSearchCounselor}
+                    onToExpertPage={this.props.gotoExpertHomepage}
+                />
             </div>
         )
     }
 }
-
-const mapState = (state: IStore) => ({
-    filters: state[filtersKey].response && state[filtersKey].response.data ? state[filtersKey].response.data : initialFilters,
-    counselorList: state[ListActionKey].response && state[ListActionKey].response.data ? state[ListActionKey].response.data.list : [],
-    pageInfo: state[ListActionKey].pageInfo ? state[ListActionKey].pageInfo : initialPageInfo
-})
-
-export default connect(mapState)(CounselorPanel)
