@@ -21,7 +21,11 @@ export interface IFetchFailedAction {
     err: any
 }
 
-export const fetchAction = (key: ApiKey, options?: AxiosRequestConfig) => {
+export interface IAxiosRequestConfig extends AxiosRequestConfig {
+    appendPath?: string
+}
+
+export const fetchAction = (key: ApiKey, options?: IAxiosRequestConfig) => {
     const action: IFetchAction = {
         key,
         options,

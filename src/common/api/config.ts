@@ -7,7 +7,7 @@ type oAuthKey = 'oauth/signin' | 'oauth/signup' | 'oauth/auth' | 'oauth/apply'
 type infoKey = 'info/counselingFilters'
 type queryKey = 'query/counselorList' | 'query/newlyCounselors' | 'query/counselor' | 'query/notifications' | 'query/counselingRecords' |
     'query/messages'
-type operationKey = 'operation/appoint' | 'operation/addMessage'
+type operationKey = 'operation/appoint' | 'operation/addMessage' | 'operation/appointProcess'
 
 export type ApiKey = oAuthKey | infoKey | queryKey | operationKey
 
@@ -66,7 +66,10 @@ export const apiConfig: IApiConfig = {
     'operation/addMessage': {
         method: 'POST'
     },
-    'query/messages': {}
+    'query/messages': {},
+    'operation/appointProcess': {
+        method: 'POST'
+    }
 }
 
 export const OtherAPI = {

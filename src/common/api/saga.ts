@@ -1,14 +1,15 @@
 import { IConfig, ApiKey, apiConfig, baseURL, IApiResponse } from "./config";
-import Axios, { AxiosRequestConfig } from "axios";
-import { IFetchSucessAction, IFetchFailedAction, IFetchAction } from "./action";
+import Axios from "axios";
+import { IFetchSucessAction, IFetchFailedAction, IFetchAction, IAxiosRequestConfig } from "./action";
 import { put, fork, take } from "redux-saga/effects";
 import store from "@common/storeConfig";
 import { IApiState } from "./reducer";
 
-function* fetchData(config: IConfig, key: ApiKey, option?: AxiosRequestConfig) {
+function* fetchData(config: IConfig, key: ApiKey, option?: IAxiosRequestConfig) {
     const { method = 'GET' } = config
     let data: any, params: any
     let pageNum, pageSize
+    const appendPath = option && option.appendPath ? option.appendPath : ''
 
     if (option) {
         data = option.data
@@ -25,7 +26,7 @@ function* fetchData(config: IConfig, key: ApiKey, option?: AxiosRequestConfig) {
     let fetchData: { data: IApiResponse }
     try {
         fetchData = yield Axios({
-            url: baseURL + key,
+            url: baseURL + key + appendPath,
             method,
             data,
             params: {
