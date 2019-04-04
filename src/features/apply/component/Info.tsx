@@ -317,15 +317,16 @@ class Info extends React.Component<IInfoProps, IInfoState> {
                 <Form.Item
                     {...formItemLayout}
                     label="个人头衔"
+                    extra="请以 / 分隔"
                 >
                     {getFieldDecorator('description', {
                         rules: [{
                             required: true, message: '请填写您的个人头衔'
                         }, {
-                            type: 'string', max: 20, message: '最多20个字符'
+                            type: 'string', max: 40, message: '最多40个字符'
                         }]
                     })(
-                        <Input placeholder="限20个字符，示例：XX协会会员/硕士/执业医师/三甲医院心理科医生" />
+                        <Input placeholder="限40个字符，示例：XX协会会员/硕士/执业医师/三甲医院心理科医生" />
                     )}
                 </Form.Item>
                 <Form.Item
