@@ -4,19 +4,18 @@ import { IStore } from '@common/storeConfig';
 import { Redirect, RouteComponentProps } from 'react-router';
 
 import './Profile.less'
-import { Tabs } from 'antd';
 import { Dispatch } from 'redux';
 import { fetchAction } from '@common/api/action';
 import { push } from 'connected-react-router';
-import CounselingTab, { ICounselingRecord } from './ProfileTab/CounselingTab';
+import CounselingTab, { ICounselingRecord } from './component/Counselor/CounselingTab';
+import CounselorTab, { CounselorProfileTab } from "./component/Counselor";
+import UserTab, { UserProfileTab } from "./component/User";
 
-const TabPane = Tabs.TabPane
+export type ProfileTab = CounselorProfileTab | UserProfileTab
 
-export type ProfileTabKey = 'counseling' | 'ask' | 'article' | 'message'
-
-interface IProfileProps extends RouteComponentProps<{ activeTab: ProfileTabKey }> {
+interface IProfileProps extends RouteComponentProps<{ activeTab: ProfileTab }> {
     isAuth: boolean
-    counselingRecords: ICounselingRecord[]
+    authType: number
     dispatch: Dispatch
 }
 
@@ -27,7 +26,7 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
         super(props);
     }
 
-    toggleAvtiveTab = (activeTab: ProfileTabKey) => {
+    toggleAvtiveTab = (activeTab: ProfileTab) => {
         this.props.dispatch(push(`./${activeTab}`))
     }
 
@@ -37,7 +36,7 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
             case 'counseling':
                 this.props.dispatch(fetchAction('query/counselingRecords'))
                 break;
-        
+
             default:
                 break;
         }
@@ -54,13 +53,26 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
         }
     }
 
+    // 判断路由合法性
+    isRouterCorrect(activeTab: ProfileTab) {
+        const isCounselor = this.props.authType === 1
+        if (isCounselor) {
+            return activeTab === 'counseling' || activeTab === 'message' || activeTab === 'article' || activeTab === 'ask'
+        } else {
+            return activeTab === 'xxx' || activeTab === 'counseling'
+        }
+    }
+
     render() {
+        // auth
+        const isCounselor = this.props.authType === 1
+        const activeTab = this.props.match.params.activeTab
         if (!this.props.isAuth) {
             return <Redirect to='/' />
         }
-
-        const activeTab = this.props.match.params.activeTab
-        const counselingRecords = this.props.counselingRecords.map(r => ({ ...r, method: JSON.parse(r.method).id }))
+        if (!this.isRouterCorrect(activeTab)) {
+            return <Redirect to='/profile/counseling' />
+        }
 
         return (
             <div className="pcs-profile">
@@ -75,14 +87,13 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
                 </div>
                 <div className="content">
                     <div className="main">
-                        <Tabs defaultActiveKey={activeTab} activeKey={activeTab} onChange={this.toggleAvtiveTab}>
-                            <TabPane tab={`咨询`} key="counseling">
-                                <CounselingTab data={counselingRecords} />
-                            </TabPane>
-                            <TabPane tab={`文章`} key="article">Content of Tab Pane 2</TabPane>
-                            <TabPane tab={`问答`} key="ask"></TabPane>
-                            <TabPane tab={`留言`} key="message"></TabPane>
-                        </Tabs>
+                        {
+                            isCounselor ?
+                                <CounselorTab 
+                                    toggleAvtiveTab={(tab) => this.toggleAvtiveTab(tab)}
+                                    activeTab={activeTab as CounselorProfileTab}
+                                /> :
+                                <UserTab />}
                     </div>
                     <div className="right"></div>
                 </div>
@@ -92,8 +103,9 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
 }
 
 const mapState = (state: IStore) => ({
+    // auth
     isAuth: state['@global'].auth.isAuth,
-    counselingRecords: state['query/counselingRecords'].response && state['query/counselingRecords'].response.data ? state['query/counselingRecords'].response.data : []
+    authType: state['@global'].auth.authType,
 })
 
 export default connect(mapState)(Profile)

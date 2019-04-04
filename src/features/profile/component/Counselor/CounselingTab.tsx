@@ -3,6 +3,7 @@ import { Table, Modal, Row, Col, Input, Divider } from 'antd';
 import { ColumnProps } from 'antd/lib/table';
 import moment from "@utils/moment";
 import { CounselingRecordStatusMap, CounselingMethodMap } from '@utils/map';
+import CounselorContactModal from './ContactModal';
 
 export type ICounselingRecordStatus = keyof typeof CounselingRecordStatusMap
 
@@ -24,9 +25,14 @@ export interface ICounselingRecord {
 
 interface ICounselingTabProps {
     data: ICounselingRecord[]
+    onContactSubmit: (recordID: number, op: number, data?: any) => void
 }
 
 interface ICounselingTabState {
+    showContactModal: boolean
+    isContactPass?: boolean
+    activeRecord?: ICounselingRecord
+
     keyword: string
 }
 
@@ -81,19 +87,50 @@ export default class CounselingTab extends React.Component<ICounselingTabProps, 
     }, {
         title: '操作',
         key: 'action',
-        render: (text, record) => (
-            <span>
-                <a href="javascript:;">聊天</a>
-                <Divider type="vertical" />
-                <a href="javascript:;">其他</a>
-            </span>
-        ),
+        render: (text, record) => this.getAction(record)
     }]
+
     constructor(props: ICounselingTabProps) {
         super(props);
         this.state = {
-            keyword: ''
+            keyword: '',
+            showContactModal: false,
         };
+    }
+
+    getAction = (record: ICounselingRecord) => {
+        switch (record.status) {
+            case 'wait_contact':
+                return (
+                    <React.Fragment>
+                        <a onClick={() => this.toggleContactWindow(true, record)}>同意</a>
+                        <a onClick={() => this.toggleContactWindow(true, record)}>拒绝</a>
+                    </React.Fragment>
+                )
+
+            default:
+                break;
+        }
+    }
+
+    // wait_contact -> wait_confirm
+    toggleContactWindow = (show: boolean, record?: ICounselingRecord) => {
+        this.setState({ showContactModal: show, activeRecord: record })
+    }
+
+    // 咨询协商
+    onContact = (op: number, time?: string, location?: string) => {
+        const record = this.state.activeRecord
+        if (!record) {
+            return
+        }
+
+        if (op === 1) {
+            const data = {time, location}
+            this.props.onContactSubmit(record.id, op, data)
+        } else {
+            this.props.onContactSubmit(record.id, op)
+        } 
     }
 
     // 查看紧急联系人详情
@@ -140,6 +177,7 @@ export default class CounselingTab extends React.Component<ICounselingTabProps, 
 
     render() {
         const data = this.props.data.filter(d => d.name.includes(this.state.keyword))
+        const showContactModal = this.state.showContactModal
         return (
             <div className="tab-counseling">
                 <Input.Search placeholder="输入姓名搜索" onSearch={this.handleSearch} />
@@ -148,6 +186,12 @@ export default class CounselingTab extends React.Component<ICounselingTabProps, 
                     dataSource={data}
                     bordered
                     rowKey={(r) => r.id.toString()}
+                />
+                <CounselorContactModal
+                    visible={showContactModal}
+                    closeModal={() => this.toggleContactWindow(false)}
+                    onPass={(time, location) => this.onContact(1, time, location)}
+                    isPass={true}
                 />
             </div>
         )
