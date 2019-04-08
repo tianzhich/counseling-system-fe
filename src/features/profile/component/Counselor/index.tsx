@@ -8,7 +8,7 @@ import { fetchAction } from '@common/api/action';
 
 const TabPane = Tabs.TabPane
 
-export type CounselorProfileTab = 'counseling' | 'ask' | 'article' | 'message'
+export type CounselorProfileTab = 'counseling' | 'ask' | 'article'
 
 interface IindexProps {
     activeTab: CounselorProfileTab
@@ -39,7 +39,6 @@ class index extends React.Component<IindexProps, IindexState> {
                 </TabPane>
                 <TabPane tab={`文章`} key="article">Content of Tab Pane 2</TabPane>
                 <TabPane tab={`问答`} key="ask"></TabPane>
-                <TabPane tab={`留言`} key="message"></TabPane>
             </Tabs>
         )
     }

@@ -11,6 +11,7 @@ export type ICounselingRecordStatus = keyof typeof CounselingRecordStatusMap
 
 export interface ICounselingRecord {
     id: number
+    cID: number
     method: string
     times: number
     name: string
@@ -23,6 +24,8 @@ export interface ICounselingRecord {
     desc: string
     status: ICounselingRecordStatus
     createTime: string
+    counselorName: string
+    startTime: string
 }
 
 interface ICounselingTabProps {
@@ -78,9 +81,9 @@ export default class CounselingTab extends React.Component<ICounselingTabProps, 
     }, {
         dataIndex: 'status',
         title: '进度',
-        filters: Object.keys(CounselingRecordStatusMap).map(s => ({ text: CounselingRecordStatusMap[s], value: s })),
+        filters: Object.keys(CounselingRecordStatusMap).map(s => ({ text: CounselingRecordStatusMap[s]['text'], value: s })),
         onFilter: (value, record) => record.method.indexOf(value) === 0,
-        render: (val) => CounselingRecordStatusMap[val]
+        render: (val) => CounselingRecordStatusMap[val]['text']
     }, {
         dataIndex: 'createTime',
         title: '申请时间',

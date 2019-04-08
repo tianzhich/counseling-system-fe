@@ -57,9 +57,9 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
     isRouterCorrect(activeTab: ProfileTab) {
         const isCounselor = this.props.authType === 1
         if (isCounselor) {
-            return activeTab === 'counseling' || activeTab === 'message' || activeTab === 'article' || activeTab === 'ask'
+            return activeTab === 'counseling' || activeTab === 'article' || activeTab === 'ask'
         } else {
-            return activeTab === 'xxx' || activeTab === 'counseling'
+            return activeTab === 'comment' || activeTab === 'counseling' || activeTab === 'ask'
         }
     }
 
@@ -88,12 +88,18 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
                 <div className="content">
                     <div className="main">
                         {
-                            isCounselor ?
-                                <CounselorTab 
+                            isCounselor ? (
+                                <CounselorTab
                                     toggleAvtiveTab={(tab) => this.toggleAvtiveTab(tab)}
                                     activeTab={activeTab as CounselorProfileTab}
-                                /> :
-                                <UserTab />}
+                                />
+                            ) : (
+                                <UserTab 
+                                    toggleAvtiveTab={(tab) => this.toggleAvtiveTab(tab)}
+                                    activeTab={activeTab as UserProfileTab}
+                                />
+                            )
+                        }
                     </div>
                     <div className="right"></div>
                 </div>
