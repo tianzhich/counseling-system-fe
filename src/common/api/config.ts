@@ -74,5 +74,6 @@ export const apiConfig: IApiConfig = {
 
 export const OtherAPI = {
     'Signout': () => Axios.get(`${baseURL}oauth/signout`),
-    'MarkRead': (ids: number[], type: NotificationTabKey) => Axios.get(`${baseURL}operation/markRead?ids=${ids.join(',')}&type=${type}`)
+    'MarkRead': (ids: number[], type: NotificationTabKey) => Axios.get(`${baseURL}operation/markRead?ids=${ids.join(',')}&type=${type}`),
+    'GetRecordDetail': (id: number) => Axios.get(`${baseURL}query/counselingRecords?id=${id}`)
 }

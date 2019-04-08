@@ -15,6 +15,11 @@ const childRoutes: IRoute[] = [{
     path: '/profile/:activeTab',
     name: 'Profile',
     loader: loader('Profile'),
+    exact: true
+}, {
+    path: '/profile/counseling/:recordID',
+    name: 'counseling detail',
+    loader: loader('Detail')
 }]
 
 export default {

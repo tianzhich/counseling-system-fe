@@ -17,7 +17,7 @@ export interface ICounselingRecord {
     name: string
     age: number
     gender: number
-    phone: number
+    phone: string
     contactName: string
     contactPhone: string
     contactRel: string
@@ -26,6 +26,9 @@ export interface ICounselingRecord {
     createTime: string
     counselorName: string
     startTime: string
+    location: string
+    cancelReason1: string
+    cancelReason2: string
 }
 
 interface ICounselingTabProps {
