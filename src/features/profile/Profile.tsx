@@ -30,6 +30,10 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
         this.props.dispatch(push(`./${activeTab}`))
     }
 
+    gotoDetail = (id: number) => {
+        this.props.dispatch(push(`./counseling/${id}`))
+    }
+
     fetchTabData = () => {
         const activeTab = this.props.match.params.activeTab
         switch (activeTab) {
@@ -92,11 +96,13 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
                                 <CounselorTab
                                     toggleAvtiveTab={(tab) => this.toggleAvtiveTab(tab)}
                                     activeTab={activeTab as CounselorProfileTab}
+                                    gotoDetail={this.gotoDetail}
                                 />
                             ) : (
                                 <UserTab 
                                     toggleAvtiveTab={(tab) => this.toggleAvtiveTab(tab)}
                                     activeTab={activeTab as UserProfileTab}
+                                    gotoDetail={this.gotoDetail}
                                 />
                             )
                         }

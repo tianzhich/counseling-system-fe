@@ -35,12 +35,17 @@ export default class CounselingTab extends React.Component<ICounselingTabProps, 
                         const { counselorName, startTime, cID, method, times } = item
                         const status = CounselingRecordStatusMap[item.status]
                         return (
-                            <List.Item actions={[<a onClick={() => this.gotoDetail(item.id)}>查看详情</a>]}>
+                            <List.Item onClick={() => this.gotoDetail(item.id)}>
                                 <List.Item.Meta
                                     avatar={<Avatar src={avatarURL} />}
                                     title={
                                         <React.Fragment>
-                                            <a onClick={() => this.props.gotoExpert(cID)}>{counselorName}</a>
+                                            <a onClick={(e) => {
+                                                e.stopPropagation()
+                                                this.props.gotoExpert(cID)
+                                            }}>
+                                                {counselorName}
+                                            </a>
                                             <Tag color={status.color}>{status.text}</Tag>
                                         </React.Fragment>
                                     }

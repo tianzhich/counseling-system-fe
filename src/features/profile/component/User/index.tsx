@@ -16,6 +16,7 @@ interface IindexProps {
     activeTab: UserProfileTab
     counselingRecords: ICounselingRecord[]
     toggleAvtiveTab: (t: UserProfileTab) => void
+    gotoDetail: (id: number) => void
 }
 
 interface IindexState {}
@@ -30,17 +31,13 @@ class index extends React.Component<IindexProps, IindexState> {
         this.props.dispatch(push(`/expert/${id}`))
     }
 
-    gotoDetail = (id: number) => {
-        this.props.dispatch(push(`./counseling/${id}`))
-    }
-
     render() {
         const { activeTab } = this.props
         const counselingRecords = this.props.counselingRecords.map(r => ({ ...r, method: JSON.parse(r.method).id }))
         return (
             <Tabs defaultActiveKey={activeTab} activeKey={activeTab} onChange={this.props.toggleAvtiveTab} className="tab-user">
                 <TabPane tab={`咨询`} key="counseling">
-                    <CounselingTab data={counselingRecords} gotoExpert={this.gotoExpertHomepage} gotoDetail={this.gotoDetail} />
+                    <CounselingTab data={counselingRecords} gotoExpert={this.gotoExpertHomepage} gotoDetail={this.props.gotoDetail} />
                 </TabPane>
                 <TabPane tab={`问答`} key="ask">Content of Tab Pane 2</TabPane>
                 <TabPane tab={`评论`} key="comment">Content of Tab Pane 2</TabPane>

@@ -1,5 +1,80 @@
 .counseling-detail {
     width: 800px;
-    justify-content: center;
     display: flex;
+    background: #fff;
+    margin-top: 10px;
+    border-radius: 10px;
+    flex-direction: column;
+    padding: 20px;
+
+    .header {
+        display: flex;
+        padding: 10px 40px;
+        position: relative;
+
+        .avatar>img {
+            height: 100px;
+            width: 100px;
+        }
+
+        .name {
+            font-size: 20px;
+            display: inline-flex;
+            align-items: flex-end;
+        }
+
+        .status {
+            position: absolute;
+            right: 40px;
+            top: 30px;
+        }
+
+        .status>.ant-tag {
+            font-size: 20px;
+            width: 80px;
+            height: 35px;
+            text-align: center;
+            line-height: 32px;
+        }
+    }
+
+    .main {
+        .section {
+            padding: 20px 20px 0;
+
+            .title {
+                font-size: 20px;
+                padding: 10px 0;
+            }
+
+            .content {
+                &>div {
+                    &>span {
+                        font-size: 16px;
+                        font-weight: 500;
+                        padding-right: 20px;
+                    }
+
+                    &>p {
+                        padding-left: 20px;
+                    }
+
+                    padding-bottom: 2px;
+                }
+            }
+        }
+    }
+
+    .footer {
+        margin: 20px;
+
+        .actions {
+            display: flex;
+            justify-content: center;
+
+            &>button:first-of-type {
+                margin-right: 50px;
+            }
+        }
+    }
 }

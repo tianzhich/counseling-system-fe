@@ -15,6 +15,7 @@ interface IindexProps {
     toggleAvtiveTab: (t: CounselorProfileTab) => void
     counselingRecords: ICounselingRecord[]
     dispatch: Dispatch
+    gotoDetail: (id: number) => void
 }
 
 interface IindexState { }
@@ -35,7 +36,7 @@ class index extends React.Component<IindexProps, IindexState> {
         return (
             <Tabs defaultActiveKey={activeTab} activeKey={activeTab} onChange={this.props.toggleAvtiveTab} className="tab-counselor">
                 <TabPane tab={`咨询`} key="counseling">
-                    <CounselingTab data={counselingRecords} onContactSubmit={this.handleContactSubmit} />
+                    <CounselingTab data={counselingRecords} onContactSubmit={this.handleContactSubmit} gotoDetail={this.props.gotoDetail} />
                 </TabPane>
                 <TabPane tab={`文章`} key="article">Content of Tab Pane 2</TabPane>
                 <TabPane tab={`问答`} key="ask"></TabPane>
