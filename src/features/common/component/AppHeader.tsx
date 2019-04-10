@@ -18,7 +18,7 @@ interface IAppHeaderProps {
     messages: IMessage[]
     dataOnload: boolean
     reloadNotifications: () => void
-    gotoProfile: (type: string) => void
+    onRedirect: (url: string) => void
 }
 
 interface IAppHeaderState {
@@ -117,7 +117,7 @@ export default class AppHeader extends React.Component<IAppHeaderProps, IAppHead
                                 notifications={notifications}
                                 count={count}
                                 onMarkRead={this.markRead}
-                                seeDetail={this.props.gotoProfile}
+                                onRedirect={this.props.onRedirect}
                             /> : null
                     }
                 </div>

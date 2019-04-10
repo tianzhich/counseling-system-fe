@@ -14,7 +14,6 @@ import MessageModal from './MessageModal';
 import { connect } from 'react-redux';
 import { IStore } from '@common/storeConfig';
 import { INotification, IMessage } from './Notification';
-import { ProfileTabKey } from '@features/profile/Profile';
 import { push } from 'connected-react-router';
 
 const { Content, Footer } = Layout;
@@ -94,8 +93,8 @@ class App extends React.Component<IAppProps, IAppState> {
         this.props.dispatch(fetchAction('query/messages'))
     }
 
-    gotoProfile = (type: ProfileTabKey) => {
-        this.props.dispatch(push(`/profile/${type}`))
+    handleRedirect = (url: string) => {
+        this.props.dispatch(push(url))
     }
 
     componentDidMount() {
@@ -132,7 +131,7 @@ class App extends React.Component<IAppProps, IAppState> {
                         onUserSignout={this.handleUserSignout}
                         onOpenSignModal={this.openModal}
                         reloadNotifications={this.loadNotifications}
-                        gotoProfile={this.gotoProfile}
+                        onRedirect={this.handleRedirect}
                     />
                     <Content>
                         <div className="pcs-content">{this.props.children}</div>

@@ -2,7 +2,6 @@ import React from 'react';
 import { Tabs, Avatar, List } from "antd";
 
 import "./Notification.less"
-import { ProfileTabKey } from '@features/profile/Profile';
 import { avatarURL } from '../fakeData';
 import Emitter from '@utils/events';
 
@@ -27,6 +26,7 @@ export interface INotification {
     title: string
     desc: string
     type: NotiType
+    payload: number
 }
 
 export interface IMessage {
@@ -45,7 +45,7 @@ interface INotificationProps {
         msgCount: number
     }
     onMarkRead: (type: NotificationTabKey, id?: number, markAll?: boolean) => void
-    seeDetail: (type: ProfileTabKey) => void
+    onRedirect: (url: string) => void
 }
 
 interface INotificationState {
@@ -76,6 +76,19 @@ export default class Notification extends React.Component<INotificationProps, IN
         Emitter.emit('openMessageModal', { receiverId, receiverName, srcMsg, callback })
     }
 
+    onClickDetail = (t: NotiType, p: number) => {
+        let url: string
+        switch (t) {
+            case 'counseling':
+                url = `/profile/${t}/${p}`
+                break;
+
+            default:
+                break;
+        }
+        this.props.onRedirect(url)
+    }
+
     render() {
         const { notifications, count, messages } = this.props
         const tabKey = this.state.tabKey
@@ -90,7 +103,7 @@ export default class Notification extends React.Component<INotificationProps, IN
                             dataSource={notifications}
                             renderItem={(item: INotification) => (
                                 <List.Item
-                                    onClick={() => this.props.seeDetail(item.type)}
+                                    onClick={() => this.onClickDetail(item.type, item.payload)}
                                     actions={[
                                         <a onClick={(e) => {
                                             e.stopPropagation()
@@ -136,18 +149,15 @@ export default class Notification extends React.Component<INotificationProps, IN
                         />
                     </TabPane>
                 </Tabs>
-                {
-                    tabKey === 'notification' ? (
-                        <div className="action action1">
-                            <div onClick={() => this.props.onMarkRead('notification', null, true)}>
-                                清空 通知
-                                </div>
-                            <div onClick={() => this.props.seeDetail('counseling')} >
-                                查看 详情
-                                </div>
-                        </div>
-                    ) : <div className="action action2" onClick={() => this.props.onMarkRead('message', null, true)}>清空 私信</div>
-                }
+                <div className="action">
+                    {
+                        tabKey === 'notification' ? (
+                            <div onClick={() => this.props.onMarkRead('notification', null, true)}>清空 通知</div>
+                        ) : (
+                                <div onClick={() => this.props.onMarkRead('message', null, true)}>清空 私信</div>
+                            )
+                    }
+                </div>
             </div>
         )
     }
