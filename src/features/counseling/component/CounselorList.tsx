@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Avatar, Button, Input, Icon, Pagination } from "antd";
+import { Card, Avatar, Button, Input, Icon, Pagination, Tooltip } from "antd";
 import { Counselor } from '@types';
 
 import './CounselorList.less';
@@ -19,7 +19,13 @@ function CounselorListItem(props: ICounselorListItemProps) {
     const Title = (titleProps: Partial<Counselor>) =>
         <React.Fragment>
             <span className="name" onClick={(e) => props.onClick()}>{titleProps.name}</span>
-            <span className="description">{titleProps.description}</span>
+            <span className="description">
+                {
+                    titleProps.description.length > 20 ? (
+                        <Tooltip title={titleProps.description} >{titleProps.description.substr(0, 20)}...</Tooltip>
+                    ) : titleProps.description
+                }
+            </span>
             <Button className="button-reservation" type="primary" onClick={props.onAppoint}>预约</Button>
         </React.Fragment>;
 
