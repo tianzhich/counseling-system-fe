@@ -35,7 +35,6 @@ class MessageModal extends React.Component<Props, IMessageModalState> {
     }
 
     openModal = (receiverId: number, receiverName: string, srcMsg?: string, callback?: Function) => {
-        console.log(callback)
         this.setState({
             visible: true,
             receiverId,
@@ -112,6 +111,7 @@ class MessageModal extends React.Component<Props, IMessageModalState> {
                     visible={this.state.visible}
                     onCancel={this.closeModal}
                     destroyOnClose
+                    zIndex={1001}
                 >
                     <div className="src-msg">
                         <p>{this.state.srcMsg}</p>

@@ -14,6 +14,7 @@ import Emitter from '@utils/events';
 interface HeaderProps {
     counselor?: Counselor
     onLeaveMessage: () => void
+    closeModal: () => void
 }
 
 const Header = (props: HeaderProps) => {
@@ -147,7 +148,7 @@ interface IAppointMntModalConnProps {
     appointRes: IApiState
 }
 
-interface IAppointMntModalOwnProps {}
+interface IAppointMntModalOwnProps { }
 
 type Props = IAppointMntModalOwnProps & IAppointMntModalConnProps
 
@@ -313,7 +314,7 @@ class AppointMntModal extends React.Component<Props, IAppointMntModalState> {
                 onCancel={this.closeModal}
                 footer={Footer}
             >
-                <Header counselor={counselor} onLeaveMessage={() => this.handleLeaveMessage(counselor.uid, counselor.name)} />
+                <Header counselor={counselor} onLeaveMessage={() => this.handleLeaveMessage(counselor.uid, counselor.name)} closeModal={this.closeModal} />
                 <PricePanel counselor={counselor} method={method} total={priceTotal} times={times} onSetTimes={this.handleSetTimes} onSetMethod={this.handleSetMethod} />
                 <Infos infos={infos} canInputLen={canInputLen} onChangeInfos={this.handleChangeInfos} />
                 <Agreement isAgree={isAgree} onToggleAgree={() => this.setState({ isAgree: !this.state.isAgree })} />

@@ -13,6 +13,7 @@ import { IStore } from '@common/storeConfig';
 import ActionModal from './ActionModal';
 import { Dispatch } from 'redux';
 import { fetchAction } from '@common/api/action';
+import { IApiState } from '@common/api/reducer';
 
 type ActionMap = {
     [key in keyof typeof CounselingRecordStatusMap]: React.ReactNode
@@ -21,6 +22,7 @@ type ActionMap = {
 interface ICounselingDetailProps extends RouteComponentProps<{ recordID: string }> {
     authType: number
     dispatch: Dispatch
+    processRes: IApiState
 }
 
 interface ICounselingDetailState {
@@ -60,6 +62,22 @@ class CounselingDetail extends React.Component<ICounselingDetailProps, ICounseli
         this.props.dispatch(fetchAction('operation/appointProcess', { data, appendPath }))
     }
 
+    fetchData = (rID: number) => {
+        OtherAPI.GetRecordDetail(rID).then(res => {
+            const resp: IApiResponse = res.data
+            this.setState({
+                loading: false,
+                isValid: resp.code === 1,
+                data: resp.code === 1 ? { ...resp.data, method: JSON.parse(resp.data.method).id } : undefined
+            })
+        }).catch(err => {
+            this.setState({
+                loading: false,
+                isValid: false
+            })
+        })
+    }
+
     componentDidMount() {
         const recordID = parseInt(this.props.match.params.recordID)
         if (isNaN(recordID)) {
@@ -68,19 +86,7 @@ class CounselingDetail extends React.Component<ICounselingDetailProps, ICounseli
                 isValid: false
             })
         } else {
-            OtherAPI.GetRecordDetail(recordID).then(res => {
-                const resp: IApiResponse = res.data
-                this.setState({
-                    loading: false,
-                    isValid: resp.code === 1,
-                    data: resp.code === 1 ? { ...resp.data, method: JSON.parse(resp.data.method).id } : undefined
-                })
-            }).catch(err => {
-                this.setState({
-                    loading: false,
-                    isValid: false
-                })
-            })
+            this.fetchData(recordID)
         }
     }
 
@@ -168,6 +174,8 @@ class CounselingDetail extends React.Component<ICounselingDetailProps, ICounseli
             ) : null
         )
 
+        const recordID = parseInt(this.props.match.params.recordID)
+
         return (
             <div className="counseling-detail">
                 <div className="header">
@@ -228,6 +236,8 @@ class CounselingDetail extends React.Component<ICounselingDetailProps, ICounseli
                     record={data}
                     operation={this.state.modalOp}
                     onProcess={this.handleProcess}
+                    processRes={this.props.processRes}
+                    onReload={() => this.fetchData(recordID)}
                 />
             </div>
         )
@@ -239,7 +249,7 @@ const mapState = (state: IStore) => ({
     authType: state['@global'].auth.authType,
 
     // 回调
-    
+    processRes: state['operation/appointProcess']
 })
 
 export default connect(mapState)(CounselingDetail)

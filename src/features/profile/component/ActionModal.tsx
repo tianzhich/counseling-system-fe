@@ -1,15 +1,19 @@
 import React from 'react';
-import { Modal, DatePicker, Input, message } from 'antd';
+import { Modal, DatePicker, Input, message, notification, Icon } from 'antd';
 import { ICounselingRecord } from './Counselor/CounselingTab';
 
 import "./ActionModal.less"
+import { IApiState } from '@common/api/reducer';
+import { ArgsProps } from 'antd/lib/notification';
 
 interface IActionModalProps {
     visible: boolean
     isCounselor: boolean
     record: ICounselingRecord
     operation: 0 | 1
+    processRes: IApiState
 
+    onReload: () => void
     closeModal: () => void
     onProcess: (data: any, op: 0 | 1) => void
 }
@@ -46,10 +50,11 @@ export default class ActionModal extends React.Component<IActionModalProps, IAct
         let op: 0 | 1
 
         switch (title) {
-            case '取消订单':
-                return null
+            case '取消订单': {
 
-            case '预约协商':case '确认预约': {
+            } break;
+
+            case '预约协商': case '确认预约': {
                 const startTime = this.state.startTime
                 const location = this.state.location
                 const needLocation = this.props.record.method === 'ftf'
@@ -67,17 +72,20 @@ export default class ActionModal extends React.Component<IActionModalProps, IAct
                 op = 1
             } break;
 
-            case '拒绝预约':
-                return <Input.TextArea placeholder="请填写拒绝理由(必填)" />
+            case '拒绝预约': {
 
-            case '确认预约':
-                return null
+            } break;
 
-            case '评价咨询':
-                return null
+            case '确认预约': {
+
+            } break;
+
+            case '评价咨询': {
+
+            } break;
 
             default:
-                return null
+                return
         }
 
         this.props.onProcess(data, op)
@@ -122,18 +130,20 @@ export default class ActionModal extends React.Component<IActionModalProps, IAct
 
         switch (title) {
             case '取消订单':
-                return null
+                return (
+                    null
+                )
 
-            case '预约协商':case '确认预约':
+            case '预约协商': case '确认预约':
                 return (
                     <React.Fragment>
                         <DatePicker showTime placeholder="请选择咨询时间" onChange={(date, dateStr) => this.handleChangeArgs('startTime', dateStr)} />
-                        {isFtf ? <Input placeholder="请输入咨询地点" /> : null}
+                        {isFtf ? <Input placeholder="请输入咨询地点" onChange={(e) => this.handleChangeArgs('location', e.target.value)} /> : null}
                     </React.Fragment>
                 )
 
             case '拒绝预约':
-                return <Input.TextArea placeholder="请填写拒绝理由(必填)" />
+                return <Input.TextArea placeholder="请填写拒绝理由(必填)" onChange={(e) => this.handleChangeArgs('cancelReason2', e.target.value)} />
 
             case '确认预约':
                 return null
@@ -143,6 +153,80 @@ export default class ActionModal extends React.Component<IActionModalProps, IAct
 
             default:
                 return null
+        }
+    }
+
+    renderProcessCallbackProps = () => {
+        const title = this.renderTitle()
+        const props: any = {
+            icon: <Icon type="smile" style={{ color: '#108ee9' }} />,
+            duration: null
+        }
+        let message: string
+        let description: string
+        switch (title) {
+            case '取消订单':
+                message = '取消成功'
+                description = '您已成功取消本次预约'
+                break;
+
+            case '感谢信':
+                message = '留言成功'
+                description = '咨询师将会收到您的感谢信，祝您生活美好，欢迎下次来访'
+                break;
+
+            case '拒绝预约': 
+                message = '取消成功'
+                description = '您已成功拒绝本次预约'
+                break;
+
+            case '确认预约': 
+                message = '确认成功'
+                description = '确认成功，请等待咨询师与您联系，进行后续的咨询'
+                break;
+
+            case '评价咨询': 
+                message = '评价成功'
+                description = '感谢您的评价，欢迎下次来访'
+                break;
+
+            case '预约协商': 
+                message = '操作成功'
+                description = '协商成功，请等待咨询者的确认'
+                break;
+
+            default:
+                message = ''
+                description = ''
+                break;
+        }
+
+        return {...props, message, description}
+    }
+
+    componentDidUpdate(prevProps: IActionModalProps) {
+        // 处理回调
+        const prevRes = prevProps.processRes
+        const curRes = this.props.processRes
+        if (prevRes.status === 'loading') {
+            if (curRes.status === 'success' && curRes.response && curRes.response.code === 1) {
+                const argsProps = this.renderProcessCallbackProps()
+                notification.open(argsProps);
+                this.props.closeModal()
+                this.props.onReload()
+            } else if (curRes.response && curRes.response.code !== 1) {
+                notification.error({
+                    message: '操作失败',
+                    description: curRes.response.message,
+                    duration: null
+                });
+            } else {
+                notification.error({
+                    message: '操作失败',
+                    description: '网络错误，请尝试稍后重试',
+                    duration: null
+                });
+            }
         }
     }
 
