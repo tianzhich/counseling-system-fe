@@ -249,6 +249,7 @@ class AppointMntModal extends React.Component<Props, IAppointMntModalState> {
             cID: this.state.counselor.id,
             method: JSON.stringify(method),
             times,
+            price: this.state.method.price * this.state.times,
             ...infos,
         }
 
