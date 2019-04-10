@@ -118,6 +118,7 @@ export default class AppHeader extends React.Component<IAppHeaderProps, IAppHead
                                 count={count}
                                 onMarkRead={this.markRead}
                                 onRedirect={this.props.onRedirect}
+                                closeNotif={this.closeNotif}
                             /> : null
                     }
                 </div>

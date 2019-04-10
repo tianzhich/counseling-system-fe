@@ -46,10 +46,10 @@ interface INotificationProps {
     }
     onMarkRead: (type: NotificationTabKey, id?: number, markAll?: boolean) => void
     onRedirect: (url: string) => void
+    closeNotif: () => void
 }
 
 interface INotificationState {
-    showNotif: boolean
     tabKey: NotificationTabKey
 }
 
@@ -57,7 +57,6 @@ export default class Notification extends React.Component<INotificationProps, IN
     constructor(props: INotificationProps) {
         super(props);
         this.state = {
-            showNotif: false,
             tabKey: 'notification'
         }
     }
@@ -87,6 +86,7 @@ export default class Notification extends React.Component<INotificationProps, IN
                 break;
         }
         this.props.onRedirect(url)
+        this.props.closeNotif()
     }
 
     render() {
