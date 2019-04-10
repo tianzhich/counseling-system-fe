@@ -7,13 +7,14 @@ import Loading from '@features/common/component/Loading';
 
 import './CounselingDetail.less'
 import { CounselingMethodMap, CounselingRecordStatusMap } from '@utils/map';
-import { Tag, Button } from 'antd';
+import { Tag, Button, notification, Modal, Icon, Rate } from 'antd';
 import { avatarURL } from '@features/common/fakeData';
 import { IStore } from '@common/storeConfig';
 import ActionModal from './ActionModal';
 import { Dispatch } from 'redux';
 import { fetchAction } from '@common/api/action';
 import { IApiState } from '@common/api/reducer';
+import moment from '@utils/moment';
 
 type ActionMap = {
     [key in keyof typeof CounselingRecordStatusMap]: React.ReactNode
@@ -54,7 +55,7 @@ class CounselingDetail extends React.Component<ICounselingDetailProps, ICounseli
         })
     }
 
-    handleProcess = (data: any, op: 0 | 1) => {
+    handleProcess = (op: 0 | 1, data?: any) => {
         console.log(data)
 
         const rID = this.state.data.id
@@ -62,20 +63,67 @@ class CounselingDetail extends React.Component<ICounselingDetailProps, ICounseli
         this.props.dispatch(fetchAction('operation/appointProcess', { data, appendPath }))
     }
 
-    fetchData = (rID: number) => {
+    fetchData = (rID: number, callback?: () => void) => {
         OtherAPI.GetRecordDetail(rID).then(res => {
             const resp: IApiResponse = res.data
             this.setState({
                 loading: false,
                 isValid: resp.code === 1,
                 data: resp.code === 1 ? { ...resp.data, method: JSON.parse(resp.data.method).id } : undefined
-            })
+            }, callback)
         }).catch(err => {
             this.setState({
                 loading: false,
                 isValid: false
             })
         })
+    }
+
+    handleCompleteCounseling = () => {
+        const startTime = moment(this.state.data.startTime).valueOf()
+        const now = moment().valueOf()
+        if (now <= startTime) {
+            Modal.confirm({
+                title: "咨询时间未到，您确认完成本次咨询吗？",
+                onOk: () => this.handleProcess(1)
+            })
+        } else {
+            this.handleProcess(1)
+        }
+    }
+
+    componentDidUpdate = (prevProps: ICounselingDetailProps, prevState: ICounselingDetailState) => {
+        if (!this.state.data) {
+            return
+        }
+
+        // 完成咨询时的回调单独处理
+        const prevRecordStatus = this.state.data.status
+        const prevRes = prevProps.processRes
+        const curRes = this.props.processRes
+        const rID = this.state.data.id
+        if (prevRecordStatus === 'wait_counseling' && prevRes.status === 'loading') {
+            if (curRes.status === 'success' && curRes.response && curRes.response.code === 1) {
+                notification.open({
+                    message: "操作成功",
+                    description: "您现在可以对本次咨询进行评价",
+                    icon: <Icon type="smile" style={{ color: '#108ee9' }} />,
+                });
+                this.fetchData(rID, () => this.openActionModal(1))
+            } else if (curRes.response && curRes.response.code !== 1) {
+                notification.error({
+                    message: '操作失败',
+                    description: curRes.response.message,
+                    duration: null
+                });
+            } else {
+                notification.error({
+                    message: '操作失败',
+                    description: '网络错误，请尝试稍后重试',
+                    duration: null
+                });
+            }
+        }
     }
 
     componentDidMount() {
@@ -101,26 +149,21 @@ class CounselingDetail extends React.Component<ICounselingDetailProps, ICounseli
         }
 
         const userActionMap: ActionMap = {
-            'wait_contact': <Button type='danger'>取消订单</Button>,
+            'wait_contact': <Button type='danger' onClick={() => this.openActionModal(0)}>取消订单</Button>,
             'wait_confirm': (
                 <React.Fragment>
-                    <Button type='danger'>取消</Button>
-                    <Button type="primary">确认</Button>
+                    <Button type='danger' onClick={() => this.openActionModal(0)}>取消</Button>
+                    <Button type="primary" onClick={() => this.openActionModal(1)}>确认</Button>
                 </React.Fragment>
             ),
-            'wait_counsling': (
+            'wait_counseling': (
                 <React.Fragment>
-                    <Button type='danger'>取消</Button>
-                    <Button type="primary">咨询已完成</Button>
+                    <Button type='danger' onClick={() => this.openActionModal(0)}>取消</Button>
+                    <Button type="primary" onClick={this.handleCompleteCounseling}>咨询已完成</Button>
                 </React.Fragment>
             ),
-            'wait_comment': (
-                <React.Fragment>
-                    <Button type='danger'>放弃评价</Button>
-                    <Button type="primary">评价咨询师</Button>
-                </React.Fragment>
-            ),
-            'finish': data.letter === '' ? <Button type='primary'>写封感谢信</Button> : null,
+            'wait_comment': <Button type="primary" onClick={() => this.openActionModal(1)}>评价咨询师</Button>,
+            'finish': data.letter === '' ? <Button type='primary' onClick={() => this.openActionModal(1)}>写封感谢信</Button> : null,
             'cancel': null
         }
 
@@ -132,7 +175,7 @@ class CounselingDetail extends React.Component<ICounselingDetailProps, ICounseli
                 </React.Fragment>
             ),
             'wait_confirm': null,
-            'wait_counsling': null,
+            'wait_counseling': null,
             'wait_comment': null,
             'finish': null,
             'cancel': null
@@ -145,8 +188,8 @@ class CounselingDetail extends React.Component<ICounselingDetailProps, ICounseli
                 <div className="section">
                     <div className="title">其他</div>
                     <div className="content">
-                        {data.cancelReason1 ? <div><span>咨询师取消理由</span> {data.cancelReason1}</div> : null}
-                        {data.cancelReason2 ? <div><span>咨询者取消理由</span> {data.cancelReason2}</div> : null}
+                        {data.cancelReason1 ? <div><span>咨询者取消理由</span> {data.cancelReason1}</div> : null}
+                        {data.cancelReason2 ? <div><span>咨询师取消理由</span> {data.cancelReason2}</div> : null}
                     </div>
                 </div>
             ) : data.status === 'finish' && (data.letter !== '' || data.ratingScore !== -1) && !isCounselor ? (
@@ -156,7 +199,7 @@ class CounselingDetail extends React.Component<ICounselingDetailProps, ICounseli
                         {
                             data.ratingScore !== -1 ? (
                                 <React.Fragment>
-                                    <div><span>咨询评分</span> {data.ratingScore}/5</div>
+                                    <div><span>咨询评分</span> {data.ratingScore !== -1 ? <Rate disabled value={data.ratingScore} /> : null}</div>
                                     <div><span>咨询评价</span> {data.ratingText !== '' ? data.ratingText : '空'}</div>
                                 </React.Fragment>
                             ) : null

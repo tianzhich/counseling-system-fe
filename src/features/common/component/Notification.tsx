@@ -86,7 +86,6 @@ export default class Notification extends React.Component<INotificationProps, IN
                 break;
         }
         this.props.onRedirect(url)
-        this.props.closeNotif()
     }
 
     render() {
@@ -103,7 +102,11 @@ export default class Notification extends React.Component<INotificationProps, IN
                             dataSource={notifications}
                             renderItem={(item: INotification) => (
                                 <List.Item
-                                    onClick={() => this.onClickDetail(item.type, item.payload)}
+                                    onClick={() => {
+                                        this.onClickDetail(item.type, item.payload)
+                                        this.props.onMarkRead('notification', item.id)
+                                        this.props.closeNotif()
+                                    }}
                                     actions={[
                                         <a onClick={(e) => {
                                             e.stopPropagation()

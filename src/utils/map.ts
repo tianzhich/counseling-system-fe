@@ -49,7 +49,7 @@ export const CounselingRecordStatusMap = {
         text: '待确定',
         color: 'gold'
     },
-    'wait_counsling': {
+    'wait_counseling': {
         text: '待咨询',
         color: 'gold'
     },
