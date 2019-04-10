@@ -20,6 +20,7 @@ const { Content, Footer } = Layout;
 
 interface IAppProps {
     isAuth: boolean
+    authType: number
     notifications: INotification[]
     messages: IMessage[]
     onload: boolean
@@ -85,7 +86,15 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     initRequest = () => {
+        // 消息通知
         this.loadNotifications()
+
+        // 个人信息
+        const isCounselor = this.props.authType === 1
+        if (isCounselor) {
+            this.props.dispatch(fetchAction('info/preCounselor'))
+        }
+        this.props.dispatch(fetchAction('info/pre'))
     }
 
     loadNotifications = () => {
@@ -102,7 +111,7 @@ class App extends React.Component<IAppProps, IAppState> {
         this.openModalToken = Emitter.addListener('openAppointMntModal', this.handleAppoint)
         this.openModalToken = Emitter.addListener('openMessageModal', this.handleLeaveMessage)
 
-        // init request
+        // refresh data (一些需要路由更改就刷新的数据)
         if (this.props.isAuth) {
             this.loadNotifications()
         }
@@ -113,6 +122,7 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     componentDidUpdate(prevProps: IAppProps) {
+        // init request
         if (!prevProps.isAuth && this.props.isAuth) {
             this.initRequest()
         }
@@ -151,6 +161,7 @@ class App extends React.Component<IAppProps, IAppState> {
 const mapState = (state: IStore) => ({
     // 权限
     isAuth: state['@global'].auth.isAuth,
+    authType: state['@global'].auth.authType,
 
     // 数据
     notifications: state['query/notifications'].response && state['query/notifications'].response.data ? state['query/notifications'].response.data : [],

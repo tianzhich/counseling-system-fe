@@ -7,16 +7,28 @@ import './Profile.less'
 import { Dispatch } from 'redux';
 import { fetchAction } from '@common/api/action';
 import { push } from 'connected-react-router';
-import CounselingTab, { ICounselingRecord } from './component/Counselor/CounselingTab';
 import CounselorTab, { CounselorProfileTab } from "./component/Counselor";
 import UserTab, { UserProfileTab } from "./component/User";
+import { avatarURL } from '@features/common/fakeData';
+import { Icon, Button } from 'antd';
+import { getDate } from "@utils/moment";
 
 export type ProfileTab = CounselorProfileTab | UserProfileTab
+
+export interface IUserInfo {
+    id: number
+    cID: number
+    userName: string
+    phone: string
+    email: string
+    createTime: string
+}
 
 interface IProfileProps extends RouteComponentProps<{ activeTab: ProfileTab }> {
     isAuth: boolean
     authType: number
     dispatch: Dispatch
+    userInfo: IUserInfo
 }
 
 interface IProfileState { }
@@ -61,9 +73,9 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
     isRouterCorrect(activeTab: ProfileTab) {
         const isCounselor = this.props.authType === 1
         if (isCounselor) {
-            return activeTab === 'counseling' || activeTab === 'article' || activeTab === 'ask'
+            return activeTab === 'counseling' || activeTab === 'article' || activeTab === 'ask' || activeTab === 'setting'
         } else {
-            return activeTab === 'comment' || activeTab === 'counseling' || activeTab === 'ask'
+            return activeTab === 'comment' || activeTab === 'counseling' || activeTab === 'ask' || activeTab === 'setting'
         }
     }
 
@@ -78,16 +90,22 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
             return <Redirect to='/profile/counseling' />
         }
 
+        const uInfo = this.props.userInfo
+
         return (
             <div className="pcs-profile">
                 <div className="header">
                     <div className="avatar">
-                        <img src="" alt="" />
+                        <img src={avatarURL} alt="" />
                     </div>
                     <div className="info">
-                        <div className="name"></div>
+                        <div className="item name"><Icon type="user" />{uInfo.userName}</div>
+                        <div className="item email"><Icon type="mail" />{uInfo.email}</div>
+                        <div className="item time"><Icon type="edit" />{getDate(uInfo.createTime)}</div>
                     </div>
-                    <div className="action"></div>
+                    <div className="action">
+                        <Button type='default' >编辑个人资料</Button>
+                    </div>
                 </div>
                 <div className="content">
                     <div className="main">
@@ -118,6 +136,9 @@ const mapState = (state: IStore) => ({
     // auth
     isAuth: state['@global'].auth.isAuth,
     authType: state['@global'].auth.authType,
+
+    // data
+    userInfo: state['info/pre'].response && state['info/pre'].response.data ? state['info/pre'].response.data : undefined,
 })
 
 export default connect(mapState)(Profile)

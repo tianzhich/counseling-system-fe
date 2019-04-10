@@ -12,6 +12,40 @@
         margin-top: 10px;
         width: 800px;
         height: 300px;
+        padding: 40px 20px 20px;
+        display: flex;
+
+        .avatar>img {
+            width: 200px;
+            height: 200px;
+        }
+
+        .info {
+            flex-grow: 1;
+            padding-top: 60px;
+            padding-left: 20px;
+
+            .item {
+                padding-bottom: 20px;
+                font-size: 20px;
+
+                &>i {
+                    padding-right: 20px;
+
+                    svg {
+                        width: 25px;
+                        height: 25px;
+                    }
+                }
+            }
+        }
+
+        .action {
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: 40px;
+            padding-right: 40px;
+        }
     }
 
     .content {

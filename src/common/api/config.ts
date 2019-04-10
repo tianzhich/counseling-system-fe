@@ -4,7 +4,7 @@ import { NotificationTabKey } from "@features/common/component/Notification";
 export const baseURL = `${window.location.origin}/api/`;
 
 type oAuthKey = 'oauth/signin' | 'oauth/signup' | 'oauth/auth' | 'oauth/apply'
-type infoKey = 'info/counselingFilters'
+type infoKey = 'info/counselingFilters' | 'info/pre' | 'info/preCounselor'
 type queryKey = 'query/counselorList' | 'query/newlyCounselors' | 'query/counselor' | 'query/notifications' | 'query/counselingRecords' |
     'query/messages'
 type operationKey = 'operation/appoint' | 'operation/addMessage' | 'operation/appointProcess'
@@ -69,7 +69,9 @@ export const apiConfig: IApiConfig = {
     'query/messages': {},
     'operation/appointProcess': {
         method: 'POST'
-    }
+    },
+    'info/pre': {},
+    'info/preCounselor': {}
 }
 
 export const OtherAPI = {

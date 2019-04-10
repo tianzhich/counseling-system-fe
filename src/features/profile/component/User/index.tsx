@@ -9,7 +9,7 @@ import { push } from 'connected-react-router';
 
 const TabPane = Tabs.TabPane
 
-export type UserProfileTab = 'counseling' | 'ask' | 'comment'
+export type UserProfileTab = 'counseling' | 'ask' | 'comment' | 'setting'
 
 interface IindexProps {
     dispatch: Dispatch
@@ -41,6 +41,7 @@ class index extends React.Component<IindexProps, IindexState> {
                 </TabPane>
                 <TabPane tab={`问答`} key="ask">Content of Tab Pane 2</TabPane>
                 <TabPane tab={`评论`} key="comment">Content of Tab Pane 2</TabPane>
+                <TabPane tab="设置" key="setting">设置</TabPane>
             </Tabs>
         )
     }
