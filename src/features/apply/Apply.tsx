@@ -43,7 +43,7 @@ class Apply extends React.Component<IApplyProps, IApplyState> {
         this.settingsRef = React.createRef();
         this.state = {
             currentStep: 0,
-            countdown: 0, // fake,默认为8s
+            countdown: 2, // fake,默认为8s
             personInfo: {},
         };
     }

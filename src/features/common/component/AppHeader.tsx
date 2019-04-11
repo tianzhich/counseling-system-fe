@@ -98,7 +98,7 @@ export default class AppHeader extends React.Component<IAppHeaderProps, IAppHead
                     <Link to="/profile" ><Icon type="user" /> 我的主页</Link>
                 </Menu.Item>
                 <Menu.Item>
-                    <Link to="" ><Icon type="setting" /> 设置</Link>
+                    <Link to="/profile/setting" ><Icon type="setting" /> 设置</Link>
                 </Menu.Item>
                 <Menu.Item>
                     <Link to="" onClick={this.props.onUserSignout} ><Icon type="poweroff" /> 退出</Link>

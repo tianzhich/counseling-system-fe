@@ -12,6 +12,7 @@ import UserTab, { UserProfileTab } from "./component/User";
 import { avatarURL } from '@features/common/fakeData';
 import { Icon, Button } from 'antd';
 import { getDate } from "@utils/moment";
+import Loading from '@features/common/component/Loading';
 
 export type ProfileTab = CounselorProfileTab | UserProfileTab
 
@@ -34,8 +35,10 @@ interface IProfileProps extends RouteComponentProps<{ activeTab: ProfileTab }> {
 interface IProfileState { }
 
 class Profile extends React.Component<IProfileProps, IProfileState> {
+    settingTabRef: React.RefObject<any>
     constructor(props: IProfileProps) {
         super(props);
+        this.settingTabRef = React.createRef()
     }
 
     toggleAvtiveTab = (activeTab: ProfileTab) => {
@@ -60,6 +63,11 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
 
     componentDidMount() {
         this.fetchTabData()
+        
+        const activeTab = this.props.match.params.activeTab
+        if (activeTab === 'setting') {
+            this.scrollToSetting()
+        }
     }
 
     componentDidUpdate(prevProps: IProfileProps) {
@@ -79,6 +87,22 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
         }
     }
 
+    gotoSetting = () => {
+        this.props.dispatch(push('./setting'))
+    }
+
+    scrollToSetting = () => {
+        window.scrollTo(0, this.settingTabRef.current.offsetTop-70)
+    }
+
+    reloadSetting = () => {
+        const isCounselor = this.props.authType === 1
+        if (isCounselor) {
+            this.props.dispatch(fetchAction('info/preCounselor'))
+        }
+        this.props.dispatch(fetchAction('info/pre'))
+    }
+
     render() {
         // auth
         const isCounselor = this.props.authType === 1
@@ -91,6 +115,9 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
         }
 
         const uInfo = this.props.userInfo
+        if (!uInfo) {
+            return <Loading />
+        }
 
         return (
             <div className="pcs-profile">
@@ -104,10 +131,10 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
                         <div className="item time"><Icon type="edit" />{getDate(uInfo.createTime)}</div>
                     </div>
                     <div className="action">
-                        <Button type='default' >编辑个人资料</Button>
+                        <Button type='default' onClick={this.gotoSetting} >编辑个人资料</Button>
                     </div>
                 </div>
-                <div className="content">
+                <div className="content" ref={this.settingTabRef}>
                     <div className="main">
                         {
                             isCounselor ? (
@@ -115,12 +142,14 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
                                     toggleAvtiveTab={(tab) => this.toggleAvtiveTab(tab)}
                                     activeTab={activeTab as CounselorProfileTab}
                                     gotoDetail={this.gotoDetail}
+                                    onReloadSetting={this.reloadSetting}
                                 />
                             ) : (
                                 <UserTab 
                                     toggleAvtiveTab={(tab) => this.toggleAvtiveTab(tab)}
                                     activeTab={activeTab as UserProfileTab}
                                     gotoDetail={this.gotoDetail}
+                                    onReloadSetting={this.reloadSetting}
                                 />
                             )
                         }
