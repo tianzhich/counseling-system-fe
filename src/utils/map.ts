@@ -33,7 +33,8 @@ export const articleTopicMap = {
     family: "家庭关系",
     growth: "成长学习",
     workSkill: "职场技能",
-    hotTopic: "热点"
+    hotTopic: "热点",
+    others: "其他"
 }
 
 export const CounselingRecordStatusMap = {
