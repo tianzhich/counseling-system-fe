@@ -1,15 +1,16 @@
 import React from 'react';
 import { Affix, Button } from "antd";
-import { Article } from '@types';
+import { fakeArticle } from '@types';
 
 import "./PopularList.less";
 import { Link } from 'react-router-dom';
 
 interface IPopularListProps {
-    articles: Article[]
+    articles: fakeArticle[]
+    isCounselor: boolean
 }
 
-function ListItem(props: Pick<Article, "author" | "title" | "date" | "excerpt"> & { number: string }) {
+function ListItem(props: Pick<fakeArticle, "author" | "title" | "date" | "excerpt"> & { number: string }) {
     return (
         <li className="list-item">
             <div className="number">{props.number}</div>
@@ -38,7 +39,7 @@ export default class PopularList extends React.Component<IPopularListProps, {}> 
                             )
                         }
                     </ol>
-                    <div className="post-button">
+                    <div className="post-button" style={{display: this.props.isCounselor ? 'block' : 'none'}}>
                         <Link to="/post"><Button type="primary">发表文章</Button></Link>
                     </div>
                 </div>

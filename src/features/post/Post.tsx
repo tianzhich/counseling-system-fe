@@ -5,12 +5,24 @@ import { Upload, Icon, Input, Select, Tag, Tooltip, Button, message } from "antd
 import './Post.less'
 import 'quill/dist/quill.snow.css';
 import { articleTopicMap } from '@utils/map';
+import { OtherAPI, IApiResponse, NetworkErrorMsg } from '@common/api/config';
+import { IStore } from '@common/storeConfig';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router';
+import { Dispatch } from 'redux';
+import { fetchAction } from '@common/api/action';
+import { IApiState } from '@common/api/reducer';
 
 type topicKey = keyof Pick<typeof articleTopicMap, Exclude<keyof typeof articleTopicMap, 'all'>>
 
-interface IPostProps { }
+interface IPostProps {
+    isCounselor: boolean
+    dispatch: Dispatch
+    operationStatus: IApiState
+}
 
 interface IPostState {
+    draftID?: number
     counters: number
     title: string
     topic?: topicKey
@@ -19,6 +31,9 @@ interface IPostState {
     tags: string[]
     inputVisible: boolean
     inputValue: string
+
+    // 当前操作
+    curOperation?: 'submit' | 'draft'
 }
 
 const toolbarOptions = [
@@ -33,7 +48,7 @@ const toolbarOptions = [
     ['clean']                                         // remove formatting button
 ];
 
-export default class Post extends React.Component<IPostProps, IPostState> {
+class Post extends React.Component<IPostProps, IPostState> {
     quill: Quill;
     input: React.RefObject<any>
     constructor(props: IPostProps) {
@@ -91,7 +106,7 @@ export default class Post extends React.Component<IPostProps, IPostState> {
 
     handleSubmit = () => {
         // validation
-        const { topic, title, tags } = this.state
+        const { topic, title, tags, draftID } = this.state
         const len = this.quill.getLength() - 1 // 减去quill默认的换行符\n
         if (!topic) {
             message.error('请选择文章类别')
@@ -103,18 +118,44 @@ export default class Post extends React.Component<IPostProps, IPostState> {
         }
         if (len === 0) {
             message.error('文章内容不能为空')
-            return 
+            return
         }
 
         // post
         const delta = this.quill.getContents()
+        const excerpt = delta.ops[0].insert ? delta.ops[0].insert.toString().split('\n')[0] : ''
         const data = {
             title,
+            excerpt,
             content: JSON.stringify(delta),
             category: topic,
-            tags: tags.join(',')
+            tags: tags.join(','),
+            id: draftID
         }
-        console.log(delta, data)
+
+        this.setState({
+            curOperation: 'submit'
+        }, () => this.props.dispatch(fetchAction('operation/article', { data })))
+    }
+
+    handleSaveDraft = () => {
+        const { topic, title, tags, draftID } = this.state
+        // post
+        const delta = this.quill.getContents()
+        const excerpt = delta.ops[0].insert ? delta.ops[0].insert.toString().split('\n')[0] : ''
+        const data = {
+            title,
+            excerpt,
+            content: JSON.stringify(delta),
+            category: topic ? topic : "_blank",
+            tags: tags.join(','),
+            isDraft: 1,
+            id: draftID
+        }
+
+        this.setState({
+            curOperation: 'draft'
+        }, () => this.props.dispatch(fetchAction('operation/article', { data })))
     }
 
     handleInputConfirm = () => {
@@ -129,20 +170,91 @@ export default class Post extends React.Component<IPostProps, IPostState> {
             inputValue: '',
         });
     }
-    
+
+    reload = () => {
+        this.setState({
+            counters: 1,
+            title: '',
+            tags: [],
+            topic: undefined,
+            draftID: undefined,
+            curOperation: undefined
+        })
+        const delta: any = {
+            ops: [{
+                insert: "\n"
+            }]
+        }
+        this.quill.setContents(delta)
+    }
+
+    initDraft = () => {
+        OtherAPI.GetArticleDraft().then(({ data }) => {
+            const res: IApiResponse = data
+            if (res.code === 1) {
+                // 草稿初始化
+                const a = res.data
+                const delta = JSON.parse(a.content)
+                this.quill.setContents(delta)
+                const tags = a.tags === '' ? [] : a.tags.split(',')
+
+                this.setState({
+                    counters: this.quill.getLength(),
+                    title: a.title,
+                    draftID: a.id,
+                    tags,
+                    topic: a.category === '_blank' ? undefined : a.category
+                })
+            }
+        })
+    }
+
+    componentDidUpdate(prevProps: IPostProps) {
+        // 操作结果
+        const op = this.state.curOperation
+        const prevState = prevProps.operationStatus
+        const curState = this.props.operationStatus
+        if (op && prevState.status === 'loading') {
+            if (curState.status === 'success' && curState.response) {
+                if (curState.response.code === 1) {
+                    const msg = op === 'draft' ? '草稿已保存' : '发表成功'
+                    message.success(msg)
+                    if (op === 'submit') {
+                        this.reload()
+                    }
+                } else {
+                    message.error(curState.response.message)
+                }
+            } else {
+                message.error(NetworkErrorMsg)
+            }
+        }
+    }
+
     componentDidMount() {
+        if (!this.props.isCounselor) {
+            return
+        }
+
         window.scrollTo(0, 0);
         this.initQuill();
+
+        // init draft
+        this.initDraft()
     }
 
     render() {
+        if (!this.props.isCounselor) {
+            return <Redirect to="/" />
+        }
+
         const uploadButton = (
             <div>
                 <Icon type="instagram" />
                 <div className="ant-upload-text">点击更换封面图片<br /><span>最佳尺寸: xxx * xxx</span></div>
             </div>
         );
-        const { tags, inputVisible, inputValue, counters } = this.state;
+        const { tags, inputVisible, inputValue, counters, title, topic } = this.state;
         return (
             <div className="pcs-post">
                 <div className="cover">
@@ -155,7 +267,7 @@ export default class Post extends React.Component<IPostProps, IPostState> {
                     </Upload>
                 </div>
                 <div className="type">
-                    <Select placeholder="请选择文章类型" onChange={this.handleTopicChange}>
+                    <Select placeholder="请选择文章类型" onChange={this.handleTopicChange} value={topic}>
                         {
                             Object.keys(articleTopicMap).filter(k => k !== 'all').map((k) => <Select.Option key={k}>{articleTopicMap[k]}</Select.Option>)
                         }
@@ -193,17 +305,24 @@ export default class Post extends React.Component<IPostProps, IPostState> {
                     )}
                 </div>
                 <div className="titleName">
-                    <Input placeholder="请输入文章标题" onChange={(e) => this.handleTitleChange(e.target.value)} />
+                    <Input placeholder="请输入文章标题" onChange={(e) => this.handleTitleChange(e.target.value)} value={title} />
                 </div>
                 <div className="editor">
                     <div id="editor" />
-                    <div className="counters">{`当前已输入${counters-1}个字符，您还可以输入${50001 - counters}个字符`}</div>
+                    <div className="counters">{`当前已输入${counters - 1}个字符，您还可以输入${50001 - counters}个字符`}</div>
                 </div>
                 <div className="actions">
-                    <Button>保存草稿</Button>
+                    <Button onClick={this.handleSaveDraft}>保存草稿</Button>
                     <Button type="primary" onClick={this.handleSubmit}>发布文章</Button>
                 </div>
             </div>
         )
     }
 }
+
+const mapState = (state: IStore) => ({
+    isCounselor: state['@global'].auth.authType === 1,
+    operationStatus: state['operation/article']
+})
+
+export default connect(mapState)(Post)

@@ -1,4 +1,4 @@
-import { Expert, Article } from "@types";
+import { Expert, fakeArticle } from "@types";
 
 export const avatarURL = 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
 
@@ -47,7 +47,7 @@ export const newlyExperts: Expert[] = [{
     price: 500
 }]
 
-export const articles: Article[] = [{
+export const articles: fakeArticle[] = [{
     id: "1",
     title: "致睡不着的中国人：你有多久没有说过“我很累”了？",
     excerpt: "这些失眠的人，心理上承受了多大的压力，生理上又消耗了多少功能，只有他们自己知道。",

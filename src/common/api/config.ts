@@ -7,7 +7,7 @@ type oAuthKey = 'oauth/signin' | 'oauth/signup' | 'oauth/auth' | 'oauth/apply'
 type infoKey = 'info/counselingFilters' | 'info/pre' | 'info/preCounselor'
 type queryKey = 'query/counselorList' | 'query/newlyCounselors' | 'query/counselor' | 'query/notifications' | 'query/counselingRecords' |
     'query/messages'
-type operationKey = 'operation/appoint' | 'operation/addMessage' | 'operation/appointProcess'
+type operationKey = 'operation/appoint' | 'operation/addMessage' | 'operation/appointProcess' | 'operation/article'
 
 export type ApiKey = oAuthKey | infoKey | queryKey | operationKey
 
@@ -71,7 +71,10 @@ export const apiConfig: IApiConfig = {
         method: 'POST'
     },
     'info/pre': {},
-    'info/preCounselor': {}
+    'info/preCounselor': {},
+    'operation/article': {
+        method: 'POST'
+    }
 }
 
 export const OtherAPI = {
@@ -79,5 +82,7 @@ export const OtherAPI = {
     'MarkRead': (ids: number[], type: NotificationTabKey) => Axios.get(`${baseURL}operation/markRead?ids=${ids.join(',')}&type=${type}`),
     'GetRecordDetail': (id: number) => Axios.get(`${baseURL}query/counselingRecords?id=${id}`),
     'UpdateUserInfo': (data: any) => Axios.post(`${baseURL}operation/updateInfo?type=2`, data),
-    'UpdateCounselorInfo': (data: any) => Axios.post(`${baseURL}operation/updateInfo?type=1`, data)
+    'UpdateCounselorInfo': (data: any) => Axios.post(`${baseURL}operation/updateInfo?type=1`, data),
+    'GetArticleDraft': () => Axios.get(`${baseURL}info/articleDraft`),
+    'GetArticleByID': (id: number) => Axios.get(`${baseURL}query/article?id=${id}`)
 }

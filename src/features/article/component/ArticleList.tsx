@@ -1,6 +1,6 @@
 import React from 'react';
 import { Menu, Tag } from "antd";
-import { ArticleTopic, Article } from '@types';
+import { ArticleTopic, fakeArticle } from '@types';
 import { articleTopicMap } from '@utils/map';
 
 import './ArticleList.less'
@@ -11,7 +11,7 @@ interface ITopicBar {
 }
 
 interface IArticleListProps {
-    articles: Article[]
+    articles: fakeArticle[]
 }
 
 interface IArticleListState {
@@ -34,7 +34,7 @@ function TopicBar(props: ITopicBar) {
     );
 }
 
-function ArticleItem(props: Article) {
+function ArticleItem(props: fakeArticle) {
     return (
         <div className="article-item-wrapper">
             <article>
