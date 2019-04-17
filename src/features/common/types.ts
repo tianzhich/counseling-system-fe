@@ -64,6 +64,6 @@ export interface Article {
     // views: number // 浏览量
     tags: string // 标签
     content: string
-    topic: ArticleTopic
+    category: ArticleTopic
     authorName: string
 }
