@@ -65,4 +65,5 @@ export interface Article {
     tags: string // 标签
     content: string
     topic: ArticleTopic
+    authorName: string
 }

@@ -10,6 +10,11 @@ const childRoutes: IRoute[] = [{
     path: '/article',
     name: 'Article',
     loader: loader('Article'),
+    exact: true
+}, {
+    path: '/article/:id',
+    name: 'Article post',
+    loader: loader('ArticlePost'),
 }]
 
 export default {

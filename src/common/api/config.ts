@@ -6,7 +6,7 @@ export const baseURL = `${window.location.origin}/api/`;
 type oAuthKey = 'oauth/signin' | 'oauth/signup' | 'oauth/auth' | 'oauth/apply'
 type infoKey = 'info/counselingFilters' | 'info/pre' | 'info/preCounselor'
 type queryKey = 'query/counselorList' | 'query/newlyCounselors' | 'query/counselor' | 'query/notifications' | 'query/counselingRecords' |
-    'query/messages'
+    'query/messages' | 'query/articleList'
 type operationKey = 'operation/appoint' | 'operation/addMessage' | 'operation/appointProcess' | 'operation/article'
 
 export type ApiKey = oAuthKey | infoKey | queryKey | operationKey
@@ -74,6 +74,9 @@ export const apiConfig: IApiConfig = {
     'info/preCounselor': {},
     'operation/article': {
         method: 'POST'
+    },
+    'query/articleList': {
+        isPage: true
     }
 }
 
@@ -84,5 +87,5 @@ export const OtherAPI = {
     'UpdateUserInfo': (data: any) => Axios.post(`${baseURL}operation/updateInfo?type=2`, data),
     'UpdateCounselorInfo': (data: any) => Axios.post(`${baseURL}operation/updateInfo?type=1`, data),
     'GetArticleDraft': () => Axios.get(`${baseURL}info/articleDraft`),
-    'GetArticleByID': (id: number) => Axios.get(`${baseURL}query/article?id=${id}`)
+    'GetArticleByID': (id: string) => Axios.get(`${baseURL}query/article?id=${id}`)
 }
