@@ -124,7 +124,7 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
     const aID = article.id
     const { userID, userName } = this.props
 
-    if (cmtText === '') {
+    if (cmtText.trim() === '') {
       return
     }
 
@@ -150,7 +150,7 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
           const newComment: ArticleComment = {
             id: data.data,
             text: JSON.stringify(text),
-            postTime: moment().format('YYYY-MM-DD hh:mm:ss'),
+            postTime: moment().format('YYYY-MM-DD HH:mm:ss'),
             authorID: userID,
             authorName: userName
           }
@@ -268,7 +268,7 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
       <div className="pcs-article-detail">
         <article>
           <div className="category">{articleTopicMap[data.category]}</div>
-          <h2 className="title">{data.title}</h2>
+          <h1 className="title">{data.title}</h1>
           <div className="tags">
             {tags.map(t => (
               <Tag color="blue" key={t}>
@@ -277,34 +277,46 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
             ))}
           </div>
           <div className="infos">
-            <span>发布时间：</span>
-            {getDate(data.postTime)}
-            <span>
-              <Icon type="like" />
-            </span>
-            {200}赞
-            <span>
-              <Icon type="message" />
-            </span>
-            {3}评论
-            <span>
-              <Icon type="eye" />
-            </span>
-            {2015}阅读
+            <div>
+              <span>发布时间：</span>
+              {getDate(data.postTime)}
+            </div>
+            <div>
+              <span>
+                <Icon type="like" />
+              </span>
+              {200}赞
+            </div>
+            <div>
+              <span>
+                <Icon type="message" />
+              </span>
+              {commentList.length}评论
+            </div>
+            <div>
+              <span>
+                <Icon type="eye" />
+              </span>
+              {2015}阅读
+            </div>
           </div>
           <div>
             <img src={data.cover} alt="" />
           </div>
+          <div className="content" dangerouslySetInnerHTML={{ __html: ctntHtml }} />
           <div className="author">
             <div>文：{data.authorName}</div>
           </div>
-          <div className="content" dangerouslySetInnerHTML={{ __html: ctntHtml }} />
           <div className="operation">
             <div className="like">
               <Icon type="like" />
+              <br />
+              点赞
             </div>
             <div className="collection">
               <Icon type="star" />
+              <br />
+              收藏
             </div>
           </div>
           {commentList.length === 0 ? <Divider /> : null}
@@ -322,7 +334,13 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
                   {refCmt ? (
                     <div className="comment-ref">
                       <blockquote>
-                        <pre>引用{refCmt.userName}的发言：<span className="remove" onClick={this.resetCommentRef}> # 清除引用</span></pre>
+                        <pre>
+                          引用{refCmt.userName}的发言：
+                          <span className="remove" onClick={this.resetCommentRef}>
+                            {' '}
+                            # 清除引用
+                          </span>
+                        </pre>
                         {refCmt.text}
                       </blockquote>
                     </div>
