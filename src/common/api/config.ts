@@ -87,5 +87,6 @@ export const OtherAPI = {
     'UpdateUserInfo': (data: any) => Axios.post(`${baseURL}operation/updateInfo?type=2`, data),
     'UpdateCounselorInfo': (data: any) => Axios.post(`${baseURL}operation/updateInfo?type=1`, data),
     'GetArticleDraft': () => Axios.get(`${baseURL}info/articleDraft`),
-    'GetArticleByID': (id: string) => Axios.get(`${baseURL}query/article?id=${id}`)
+    'GetArticleByID': (id: string) => Axios.get(`${baseURL}query/article?id=${id}`),
+    'AddArticleComment': (data: any) => Axios.post(`${baseURL}operation/articleComment`, data)
 }

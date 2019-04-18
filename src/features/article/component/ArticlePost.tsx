@@ -1,54 +1,91 @@
-import React from 'react'
-import { OtherAPI, NetworkStatus } from '@common/api/config'
+import React, { ComponentProps } from 'react'
+import { OtherAPI, NetworkStatus, NetworkErrorMsg } from '@common/api/config'
 import { RouteComponentProps, Redirect } from 'react-router'
-import { Article } from '@features/common/types'
+import { Article, ArticleComment } from '@features/common/types'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { push } from 'connected-react-router'
-import { message, Empty, Spin, Tag, Icon, Divider, Comment, Avatar, Form, Input, Button } from 'antd'
+import {
+  message,
+  Empty,
+  Spin,
+  Tag,
+  Icon,
+  Divider,
+  Comment,
+  Avatar,
+  Form,
+  Input,
+  Button,
+  List,
+  Tooltip
+} from 'antd'
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'
 
 import './ArticlePost.less'
 import { topicMap, articleTopicMap } from '@utils/map'
-import { getDate } from '@utils/moment'
+import moment, { getDate } from '@utils/moment'
+import { IStore } from '@common/storeConfig'
+import { CommentProps } from 'antd/lib/comment'
+import { avatarURL } from '@features/common/fakeData'
 
 const TextArea = Input.TextArea
 
-const Editor = ({
-  onChange, onSubmit, submitting, value,
-}: any) => (
-  <div>
-    <Form.Item>
-      <TextArea rows={4} onChange={onChange} value={value} />
-    </Form.Item>
-    <Form.Item>
-      <Button
-        htmlType="submit"
-        loading={submitting}
-        onClick={onSubmit}
-        type="primary"
-      >
-        提交回复
-      </Button>
-    </Form.Item>
-  </div>
-);
+const CommentList = ({ comments }: { comments: CommentProps[] }) => (
+  <List
+    dataSource={comments}
+    header={comments.length > 0 ? `${comments.length}个评论` : ''}
+    itemLayout="horizontal"
+    renderItem={(props: CommentProps) => <Comment {...props} />}
+    locale={{ emptyText: '暂无评论, 写下你的第一评论吧' }}
+  />
+)
+
+interface CommentPostForm {
+  text: string
+  aID: number
+  refID?: number
+  authorID: number
+}
+
+interface CommentRef {
+  id: number
+  text: string
+  userName: string
+  uID: number
+}
+
+interface CommentTextObj {
+  text: string
+  refText?: string
+  refUser?: string
+}
 
 interface IArticlePostProps extends RouteComponentProps<{ id?: string }> {
   dispatch: Dispatch
+  userID: number
+  userName: string
 }
 
 interface IArticlePostState {
   data?: Article
   status?: NetworkStatus
 
-
+  // comment
+  cmtText: string
+  ref?: CommentRef
+  cmtSubmitting: boolean
+  postedComments: ArticleComment[]
 }
 
 class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> {
   constructor(props: IArticlePostProps) {
     super(props)
-    this.state = {}
+    this.state = {
+      cmtSubmitting: false,
+      cmtText: '',
+      postedComments: []
+    }
   }
 
   isIDValidate = () => {
@@ -60,6 +97,117 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
     const qc = new QuillDeltaToHtmlConverter(deltaOps, {})
     const html = qc.convert()
     return html
+  }
+
+  handleLikeComment = () => {}
+
+  handleReferComment = (refcmt: ArticleComment) => {
+    const text = (JSON.parse(refcmt.text) as CommentTextObj).text
+    this.setState({
+      ref: {
+        id: refcmt.id,
+        text,
+        userName: refcmt.authorName,
+        uID: refcmt.authorID
+      }
+    })
+  }
+
+  renderCommentActions = (c: ArticleComment) => {
+    const actions = [<span onClick={() => this.handleReferComment(c)}># 引用</span>]
+    return actions
+  }
+
+  handleSubmitComment = () => {
+    const { cmtText, ref } = this.state
+    const article = this.state.data
+    const aID = article.id
+    const { userID, userName } = this.props
+
+    if (cmtText === '') {
+      return
+    }
+
+    const text: CommentTextObj = {
+      text: cmtText,
+      refText: ref ? ref.text : undefined,
+      refUser: ref ? ref.userName : undefined
+    }
+    const data: CommentPostForm = {
+      refID: ref ? ref.id : undefined,
+      text: JSON.stringify(text),
+      aID,
+      authorID: userID
+    }
+
+    // post
+    this.setState({
+      cmtSubmitting: true
+    })
+    OtherAPI.AddArticleComment(data)
+      .then(({ data }) => {
+        if (data.code === 1) {
+          const newComment: ArticleComment = {
+            id: data.data,
+            text: JSON.stringify(text),
+            postTime: moment().format('YYYY-MM-DD hh:mm:ss'),
+            authorID: userID,
+            authorName: userName
+          }
+          this.setState({
+            postedComments: [...this.state.postedComments, newComment],
+            cmtSubmitting: false,
+            cmtText: '',
+            ref: undefined
+          })
+        } else {
+          this.setState({
+            cmtSubmitting: false
+          })
+          message.error(data.message)
+        }
+      })
+      .catch(err => {
+        this.setState({
+          cmtSubmitting: false
+        })
+        message.error(NetworkErrorMsg)
+      })
+  }
+
+  handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    this.setState({
+      cmtText: e.target.value
+    })
+  }
+
+  getAntdComment = (c: ArticleComment) => {
+    const text: CommentTextObj = JSON.parse(c.text)
+    return {
+      content: (
+        <div className="comment-ref">
+          {text.refUser ? (
+            <blockquote>
+              <pre>引用{text.refUser}的发言：</pre>
+              {text.refText}
+            </blockquote>
+          ) : null}
+          {text.text}
+        </div>
+      ),
+      author: c.authorName,
+      avatar: avatarURL,
+      datetime: moment(c.postTime).fromNow(),
+      actions: this.renderCommentActions(c)
+    }
+  }
+
+  handleCommentRefChange = () => {}
+
+  resetCommentRef = () => {
+    this.setState({
+      ref: undefined
+    })
   }
 
   componentDidMount() {
@@ -105,6 +253,16 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
     const deltaOps = JSON.parse(data.content).ops
     const ctntHtml = this.getContentHtml(deltaOps)
     const tags = data.tags === '' ? [] : data.tags.split(',')
+    const refCmt = this.state.ref
+
+    // comment post
+    const { cmtSubmitting, cmtText, postedComments } = this.state
+    // comment list
+    const srcCmts: CommentProps[] = data.comment
+      ? data.comment.map(c => this.getAntdComment(c))
+      : []
+    const postedCmts: CommentProps[] = postedComments.map(c => this.getAntdComment(c))
+    const commentList = [...srcCmts, ...postedCmts]
 
     return (
       <div className="pcs-article-detail">
@@ -149,8 +307,9 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
               <Icon type="star" />
             </div>
           </div>
-          <Divider />
+          {commentList.length === 0 ? <Divider /> : null}
           <div className="comment">
+            <CommentList comments={commentList} />
             <Comment
               avatar={
                 <Avatar
@@ -159,12 +318,29 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
                 />
               }
               content={
-                <Editor
-                  // onChange={this.handleChange}
-                  // onSubmit={this.handleSubmit}
-                  // submitting={submitting}
-                  // value={value}
-                />
+                <div>
+                  {refCmt ? (
+                    <div className="comment-ref">
+                      <blockquote>
+                        <pre>引用{refCmt.userName}的发言：<span className="remove" onClick={this.resetCommentRef}> # 清除引用</span></pre>
+                        {refCmt.text}
+                      </blockquote>
+                    </div>
+                  ) : null}
+                  <Form.Item>
+                    <TextArea rows={4} onChange={this.handleCommentChange} value={cmtText} />
+                  </Form.Item>
+                  <Form.Item>
+                    <Button
+                      htmlType="submit"
+                      loading={cmtSubmitting}
+                      onClick={this.handleSubmitComment}
+                      type="primary"
+                    >
+                      提交回复
+                    </Button>
+                  </Form.Item>
+                </div>
               }
             />
           </div>
@@ -174,4 +350,9 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
   }
 }
 
-export default connect()(ArticlePost)
+const mapState = (state: IStore) => ({
+  userID: state['@global'].user.id,
+  userName: state['@global'].user.userName
+})
+
+export default connect(mapState)(ArticlePost)

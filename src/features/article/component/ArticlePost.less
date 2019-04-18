@@ -12,4 +12,24 @@
     border-radius: @border-radius;
     margin-top: 40px;
   }
+
+  // 评论区引用
+  .comment-ref {
+    blockquote {
+      background: #e6e6e6;
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .remove {
+      color: rgba(0, 0, 0, 0.45);
+      font-size: 12px;
+      transition: color 0.3s;
+      cursor: pointer;
+
+      &:hover {
+        color: #595959;
+      }
+    }
+  }
 }
