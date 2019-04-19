@@ -1,66 +1,137 @@
 .pcs-app {
 
-    // antd layout override
-    .ant-layout-header {
-        background-color: #fff;
-        position: sticky;
-        top: 0;
-        z-index: 11;
-        height: 65px;
-        line-height: 65px;
-        border-bottom: 1px solid #e8e8e8;
+  // antd layout override
+  .ant-layout-header {
+    background-color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 11;
+    height: 65px;
+    line-height: 65px;
+    border-bottom: 1px solid #e8e8e8;
 
-        .ant-menu {
-            border-bottom: none;
-            line-height: 63px;
+    .ant-menu {
+      border-bottom: none;
+      line-height: 63px;
 
-            .ant-menu-item {
-                padding: 0 30px;
-            }
-        }
-
-        .sign-button-group {
-            position: absolute;
-            top: 0;
-            right: 0;
-
-            .ant-btn:first-of-type {
-                right: 75px;
-            }
-
-            .ant-btn:last-of-type {
-                right: 50px;
-            }
-        }
-
-        .user-viewer {
-            position: absolute;
-            top: 0;
-            right: 80px;
-            display: flex;
-            align-items: center;
-            height: 100%;
-            justify-content: space-around;
-            width: 300px;
-
-            .trigger {
-                width: 60px;
-                height: 100%;
-                text-align: center;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                transition: all .3s;
-
-                &:hover {
-                    background: rgba(0, 0, 0, .025)
-                }
-            }
-
-            .ant-input-search {
-                width: unset;
-            }
-        }
+      .ant-menu-item {
+        padding: 0 30px;
+      }
     }
+
+    .sign-button-group {
+      position: absolute;
+      top: 0;
+      right: 0;
+
+      .ant-btn:first-of-type {
+        right: 75px;
+      }
+
+      .ant-btn:last-of-type {
+        right: 50px;
+      }
+    }
+
+    .user-viewer {
+      position: absolute;
+      top: 0;
+      right: 80px;
+      display: flex;
+      align-items: center;
+      height: 100%;
+      justify-content: space-around;
+      width: 300px;
+
+      .trigger {
+        width: 60px;
+        height: 100%;
+        text-align: center;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all .3s;
+
+        &:hover {
+          background: rgba(0, 0, 0, .025)
+        }
+      }
+
+      .ant-input-search {
+        width: unset;
+      }
+    }
+
+    // media
+    @media screen and (max-width: 720px) {
+      .user-viewer {
+        justify-content: flex-end;
+
+        .ant-input-search {
+          display: none;
+        }
+      }
+    }
+
+    @media screen and (max-width: 580px) {
+      padding: 0;
+
+      .user-viewer {
+        right: 10px;
+      }
+
+      .sign-button-group {
+        .ant-btn:first-of-type {
+          right: 35px;
+        }
+
+        .ant-btn:last-of-type {
+          right: 10px;
+        }
+      }
+    }
+
+    @media screen and (min-width: 1000px) {
+      padding: 0 70px;
+    }
+
+    @media screen and (min-width: 1200px) {
+      padding: 0 100px;
+
+      .user-viewer {
+        right: 120px;
+      }
+
+      .sign-button-group {
+        .ant-btn:first-of-type {
+          right: 100px;
+        }
+
+        .ant-btn:last-of-type {
+          right: 75px;
+        }
+      }
+    }
+
+    @media screen and (min-width: 1400px) {
+      padding: 0 150px;
+    }
+
+    @media screen and (min-width: 1600px) {
+      .user-viewer {
+        right: 150px;
+      }
+
+      .sign-button-group {
+        .ant-btn:first-of-type {
+          right: 125px;
+        }
+
+        .ant-btn:last-of-type {
+          right: 100px;
+        }
+      }
+    }
+  }
 }

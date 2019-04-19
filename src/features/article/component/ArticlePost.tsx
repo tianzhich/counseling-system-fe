@@ -28,6 +28,7 @@ import moment, { getDate } from '@utils/moment'
 import { IStore } from '@common/storeConfig'
 import { CommentProps } from 'antd/lib/comment'
 import { avatarURL } from '@features/common/fakeData'
+import Emitter from '@utils/events'
 
 const TextArea = Input.TextArea
 
@@ -65,6 +66,7 @@ interface IArticlePostProps extends RouteComponentProps<{ id?: string }> {
   dispatch: Dispatch
   userID: number
   userName: string
+  auth: boolean
 }
 
 type ArticleCmtCounter = Pick<ArticleComment, 'id' | 'likeCount'>[]
@@ -88,6 +90,7 @@ interface IArticlePostState {
 }
 
 class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> {
+  cmtTextAreaRef: React.RefObject<any>
   constructor(props: IArticlePostProps) {
     super(props)
     this.state = {
@@ -97,6 +100,7 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
       likedCmt: [],
       cmtCounter: []
     }
+    this.cmtTextAreaRef = React.createRef()
   }
 
   isIDValidate = () => {
@@ -111,23 +115,36 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
   }
 
   toggleStarLikeArticle = (t: 'star' | 'like') => {
+    if (!this.checkAuthBeforeOp()) {
+      return
+    }
     const key = t === 'like' ? 'isLike' : 'isStar'
     const val = !this.state[key]
     this.setState({
       ...this.state,
       [key]: val,
-      likeCount: t === 'like' ? val ? this.state.likeCount + 1 : this.state.likeCount - 1 : this.state.likeCount
+      likeCount:
+        t === 'like'
+          ? val
+            ? this.state.likeCount + 1
+            : this.state.likeCount - 1
+          : this.state.likeCount
     })
     const { id } = this.state.data
     OtherAPI.ToggleStarLike(id, t, 'article')
   }
 
   toggleLikeComment = (id: number) => {
+    if (!this.checkAuthBeforeOp()) {
+      return
+    }
     const { likedCmt, cmtCounter } = this.state
     let newLikedCmt: ArticleComment['id'][]
 
     const isLiked = likedCmt.indexOf(id) !== -1
-    const newCounter = cmtCounter.map(cc => cc.id === id ? ({...cc, likeCount: isLiked ? cc.likeCount - 1 : cc.likeCount + 1 }) : cc)
+    const newCounter = cmtCounter.map(cc =>
+      cc.id === id ? { ...cc, likeCount: isLiked ? cc.likeCount - 1 : cc.likeCount + 1 } : cc
+    )
 
     if (isLiked) {
       newLikedCmt = likedCmt.filter(c => c !== id)
@@ -143,6 +160,9 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
   }
 
   handleReferComment = (refcmt: ArticleComment) => {
+    if (!this.checkAuthBeforeOp()) {
+      return
+    }
     const text = (JSON.parse(refcmt.text) as CommentTextObj).text
     this.setState({
       ref: {
@@ -152,6 +172,7 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
         uID: refcmt.authorID
       }
     })
+    this.focusCmtInput()
   }
 
   renderCommentActions = (c: ArticleComment) => {
@@ -160,7 +181,11 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
     const likeCount = findCounter ? findCounter.likeCount : 0
     const actions = [
       <React.Fragment>
-        <Icon type="like" theme={isLike ? 'filled' : 'outlined'} onClick={() => this.toggleLikeComment(c.id)} />
+        <Icon
+          type="like"
+          theme={isLike ? 'filled' : 'outlined'}
+          onClick={() => this.toggleLikeComment(c.id)}
+        />
         <span style={{ paddingLeft: 8, cursor: 'auto' }}>{likeCount}</span>
       </React.Fragment>,
       <span onClick={() => this.handleReferComment(c)}># 引用</span>
@@ -205,7 +230,7 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
             authorID: userID,
             authorName: userName,
             isLike: false,
-            likeCount: 0,
+            likeCount: 0
           }
           this.setState({
             postedComments: [...this.state.postedComments, newComment],
@@ -235,6 +260,15 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
     })
   }
 
+  checkAuthBeforeOp = () => {
+    const pass = this.props.auth
+    if (!pass) {
+      Emitter.emit('openSigninModal')
+      return false
+    }
+    return true
+  }
+
   getAntdComment = (c: ArticleComment) => {
     const text: CommentTextObj = JSON.parse(c.text)
     return {
@@ -260,6 +294,10 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
     this.setState({
       ref: undefined
     })
+  }
+
+  focusCmtInput = () => {
+    this.cmtTextAreaRef.current.focus()
   }
 
   componentDidMount() {
@@ -329,6 +367,8 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
       : []
     const postedCmts: CommentProps[] = postedComments.map(c => this.getAntdComment(c))
     const commentList = [...srcCmts, ...postedCmts]
+
+    const auth = this.props.auth
 
     return (
       <div className="pcs-article-detail">
@@ -412,7 +452,7 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
                     </div>
                   ) : null}
                   <Form.Item>
-                    <TextArea rows={4} onChange={this.handleCommentChange} value={cmtText} />
+                    <TextArea rows={4} onChange={this.handleCommentChange} value={cmtText} ref={this.cmtTextAreaRef} />
                   </Form.Item>
                   <Form.Item>
                     <Button
@@ -420,9 +460,11 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
                       loading={cmtSubmitting}
                       onClick={this.handleSubmitComment}
                       type="primary"
+                      disabled={!auth}
                     >
                       提交回复
                     </Button>
+                    {!auth ? <span className="prompt">请登录以提交回复</span> : null}
                   </Form.Item>
                 </div>
               }
@@ -435,6 +477,7 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
 }
 
 const mapState = (state: IStore) => ({
+  auth: state['@global'].auth.isAuth,
   userID: state['@global'].user.id,
   userName: state['@global'].user.userName
 })
