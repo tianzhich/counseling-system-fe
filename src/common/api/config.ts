@@ -88,5 +88,7 @@ export const OtherAPI = {
     'UpdateCounselorInfo': (data: any) => Axios.post(`${baseURL}operation/updateInfo?type=1`, data),
     'GetArticleDraft': () => Axios.get(`${baseURL}info/articleDraft`),
     'GetArticleByID': (id: string) => Axios.get(`${baseURL}query/article?id=${id}`),
-    'AddArticleComment': (data: any) => Axios.post(`${baseURL}operation/articleComment`, data)
+    'AddArticleComment': (data: any) => Axios.post(`${baseURL}operation/articleComment`, data),
+    'ToggleStarLike': (id: number, type1: 'star' | 'like', type2: 'article' | 'article_comment') => Axios.get(`${baseURL}operation/starLike?refID=${id}&type1=${type1}&type2=${type2}`),
+    'CountReadByID': (id: number, type: 'article') => Axios.get(`${baseURL}operation/countRead?refID=${id}&type=${type}`),
 }

@@ -37,7 +37,7 @@ const CommentList = ({ comments }: { comments: CommentProps[] }) => (
     header={comments.length > 0 ? `${comments.length}个评论` : ''}
     itemLayout="horizontal"
     renderItem={(props: CommentProps) => <Comment {...props} />}
-    locale={{ emptyText: '暂无评论, 写下你的第一评论吧' }}
+    locale={{ emptyText: '暂无评论, 写下你的第一条评论吧' }}
   />
 )
 
@@ -67,6 +67,8 @@ interface IArticlePostProps extends RouteComponentProps<{ id?: string }> {
   userName: string
 }
 
+type ArticleCmtCounter = Pick<ArticleComment, 'id' | 'likeCount'>[]
+
 interface IArticlePostState {
   data?: Article
   status?: NetworkStatus
@@ -76,6 +78,13 @@ interface IArticlePostState {
   ref?: CommentRef
   cmtSubmitting: boolean
   postedComments: ArticleComment[]
+  likedCmt: ArticleComment['id'][]
+  cmtCounter: ArticleCmtCounter
+
+  // star, like
+  isStar?: boolean
+  isLike?: boolean
+  likeCount?: number
 }
 
 class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> {
@@ -84,7 +93,9 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
     this.state = {
       cmtSubmitting: false,
       cmtText: '',
-      postedComments: []
+      postedComments: [],
+      likedCmt: [],
+      cmtCounter: []
     }
   }
 
@@ -99,7 +110,37 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
     return html
   }
 
-  handleLikeComment = () => {}
+  toggleStarLikeArticle = (t: 'star' | 'like') => {
+    const key = t === 'like' ? 'isLike' : 'isStar'
+    const val = !this.state[key]
+    this.setState({
+      ...this.state,
+      [key]: val,
+      likeCount: t === 'like' ? val ? this.state.likeCount + 1 : this.state.likeCount - 1 : this.state.likeCount
+    })
+    const { id } = this.state.data
+    OtherAPI.ToggleStarLike(id, t, 'article')
+  }
+
+  toggleLikeComment = (id: number) => {
+    const { likedCmt, cmtCounter } = this.state
+    let newLikedCmt: ArticleComment['id'][]
+
+    const isLiked = likedCmt.indexOf(id) !== -1
+    const newCounter = cmtCounter.map(cc => cc.id === id ? ({...cc, likeCount: isLiked ? cc.likeCount - 1 : cc.likeCount + 1 }) : cc)
+
+    if (isLiked) {
+      newLikedCmt = likedCmt.filter(c => c !== id)
+    } else {
+      newLikedCmt = [...likedCmt, id]
+    }
+
+    this.setState({
+      likedCmt: newLikedCmt,
+      cmtCounter: newCounter
+    })
+    OtherAPI.ToggleStarLike(id, 'like', 'article_comment')
+  }
 
   handleReferComment = (refcmt: ArticleComment) => {
     const text = (JSON.parse(refcmt.text) as CommentTextObj).text
@@ -114,7 +155,16 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
   }
 
   renderCommentActions = (c: ArticleComment) => {
-    const actions = [<span onClick={() => this.handleReferComment(c)}># 引用</span>]
+    const isLike = this.state.likedCmt.indexOf(c.id) !== -1
+    const findCounter = this.state.cmtCounter.find(cc => cc.id === c.id)
+    const likeCount = findCounter ? findCounter.likeCount : 0
+    const actions = [
+      <React.Fragment>
+        <Icon type="like" theme={isLike ? 'filled' : 'outlined'} onClick={() => this.toggleLikeComment(c.id)} />
+        <span style={{ paddingLeft: 8, cursor: 'auto' }}>{likeCount}</span>
+      </React.Fragment>,
+      <span onClick={() => this.handleReferComment(c)}># 引用</span>
+    ]
     return actions
   }
 
@@ -147,18 +197,22 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
     OtherAPI.AddArticleComment(data)
       .then(({ data }) => {
         if (data.code === 1) {
+          const newCmtID: number = data.data
           const newComment: ArticleComment = {
-            id: data.data,
+            id: newCmtID,
             text: JSON.stringify(text),
             postTime: moment().format('YYYY-MM-DD HH:mm:ss'),
             authorID: userID,
-            authorName: userName
+            authorName: userName,
+            isLike: false,
+            likeCount: 0,
           }
           this.setState({
             postedComments: [...this.state.postedComments, newComment],
             cmtSubmitting: false,
             cmtText: '',
-            ref: undefined
+            ref: undefined,
+            cmtCounter: [...this.state.cmtCounter, { id: newCmtID, likeCount: 0 }]
           })
         } else {
           this.setState({
@@ -202,8 +256,6 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
     }
   }
 
-  handleCommentRefChange = () => {}
-
   resetCommentRef = () => {
     this.setState({
       ref: undefined
@@ -225,6 +277,20 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
           this.setState({
             data: data.data,
             status: 'success'
+          })
+          const { isRead, isLike, isStar, id, comment, likeCount } = data.data as Article
+          const wrappedComment = comment ? comment : []
+          // 文章设为已读
+          if (isRead === false) {
+            OtherAPI.CountReadByID(id, 'article')
+          }
+          // handle star and like, comments
+          this.setState({
+            isLike: isLike && isLike,
+            likeCount,
+            isStar: isStar && isStar,
+            likedCmt: wrappedComment.filter(c => c.isLike && c.isLike).map(c => c.id),
+            cmtCounter: wrappedComment.map(c => ({ id: c.id, likeCount: c.likeCount }))
           })
         })
         .catch(err => {
@@ -256,7 +322,7 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
     const refCmt = this.state.ref
 
     // comment post
-    const { cmtSubmitting, cmtText, postedComments } = this.state
+    const { cmtSubmitting, cmtText, postedComments, isLike, isStar, likeCount } = this.state
     // comment list
     const srcCmts: CommentProps[] = data.comment
       ? data.comment.map(c => this.getAntdComment(c))
@@ -285,7 +351,7 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
               <span>
                 <Icon type="like" />
               </span>
-              {200}赞
+              {likeCount}赞
             </div>
             <div>
               <span>
@@ -297,7 +363,7 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
               <span>
                 <Icon type="eye" />
               </span>
-              {2015}阅读
+              {data.readCount}阅读
             </div>
           </div>
           <div>
@@ -308,15 +374,15 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
             <div>文：{data.authorName}</div>
           </div>
           <div className="operation">
-            <div className="like">
-              <Icon type="like" />
+            <div className="like" onClick={() => this.toggleStarLikeArticle('like')}>
+              <Icon type="like" theme={isLike ? 'filled' : 'outlined'} />
               <br />
-              点赞
+              {isLike ? '取消' : '点赞'}
             </div>
-            <div className="collection">
-              <Icon type="star" />
+            <div className="collection" onClick={() => this.toggleStarLikeArticle('star')}>
+              <Icon type="star" theme={isStar ? 'filled' : 'outlined'} />
               <br />
-              收藏
+              {isStar ? '取消' : '收藏'}
             </div>
           </div>
           {commentList.length === 0 ? <Divider /> : null}

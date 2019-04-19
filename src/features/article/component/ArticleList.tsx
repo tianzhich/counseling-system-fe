@@ -86,7 +86,7 @@ export default class ArticleList extends React.Component<IArticleListProps, IArt
               <div className="footer">
                 <span className="author">{props.authorName}</span>
                 <span className="date">{getDate(props.postTime)}</span>
-                <span className="views">{2015}阅读</span>
+                <span className="views">{props.readCount}阅读</span>
                 <div className="tags">
                   {tags.map(t => (
                     <Tag key={t} color="blue">

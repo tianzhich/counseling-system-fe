@@ -62,6 +62,8 @@ export interface ArticleComment {
   ref?: ArticleComment
   authorID: number
   authorName: string
+  isLike: boolean
+  likeCount: number
 }
 
 // article info
@@ -77,4 +79,9 @@ export interface Article {
   category: ArticleTopic
   authorName: string
   comment: ArticleComment[]
+  isRead: boolean
+  isStar: boolean
+  isLike: boolean
+  readCount: number
+  likeCount: number // 点赞量
 }
