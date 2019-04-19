@@ -9,3 +9,6 @@ build/
 
 ## template
 tsconfig-copy.json
+
+## concat assets
+public/assets

@@ -67,6 +67,45 @@ module.exports = {
       .relative(paths.appSrc, info.absoluteResourcePath)
       .replace(/\\/g, '/'),
   },
+  externals: require('./externals'),
+  optimization: {
+    minimizer: [
+      // Minify the code.
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          warnings: false,
+          parse: {},
+          compress: {
+            drop_console: true
+          },
+          mangle: true, // Note `mangle.properties` is `false` by default.
+          output: null,
+          toplevel: false,
+          nameCache: null,
+          ie8: false,
+          keep_fnames: false
+        },
+        sourceMap: shouldUseSourceMap,
+      }),
+    ],
+    splitChunks: {
+      chunks: 'async',
+      minSize: 30000,
+      minChunks: 1,
+      maxAsyncRequests: 5,
+      maxInitialRequests: 3,
+      automaticNameDelimiter: '~',
+      name: true,
+      cacheGroups: {
+        antd: {
+          test: /[\\/]node_modules[\\/](?!quill)/,
+          name: 'antd',
+          chunks: 'initial',
+          priority: -10
+        }
+      }
+    }
+  },
   resolve: {
     // This allows you to set a fallback for where Webpack should look for modules.
     // We placed these paths second because we want `node_modules` to "win"
@@ -287,27 +326,6 @@ module.exports = {
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new BundleAnalyzerPlugin()
   ],
-  optimization: {
-    minimizer: [
-      // Minify the code.
-      new UglifyJsPlugin({
-        uglifyOptions: {
-          warnings: false,
-          parse: {},
-          compress: {
-            drop_console: true
-          },
-          mangle: true, // Note `mangle.properties` is `false` by default.
-          output: null,
-          toplevel: false,
-          nameCache: null,
-          ie8: false,
-          keep_fnames: false
-        },
-        sourceMap: shouldUseSourceMap,
-      }),
-    ]
-  },
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
   node: {
