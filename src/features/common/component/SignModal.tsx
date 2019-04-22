@@ -74,7 +74,7 @@ class SignModal extends React.Component<ISignModalProps, ISignModalState> {
                             this.props.dispatch(replace(this.state.ref))
                         }, 800);
                     } else {
-                        // window.location.reload()
+                        window.location.reload()
                     }
                 } else if (this.props.signinRes.response.code === 0) {
                     message.error(this.props.signinRes.response.message)
