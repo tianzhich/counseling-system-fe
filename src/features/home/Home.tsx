@@ -1,8 +1,6 @@
 import React from 'react';
-import axios from 'axios';
-import emitter from "@utils/events";
-
 import './Home.less'
+import BaseCarousel from '@features/common/component/Carousel';
 
 interface IHomeProps { }
 
@@ -20,17 +18,14 @@ export default class Home extends React.Component<IHomeProps, IHomeState> {
         // })
     }
 
-    login() {
-        emitter.emit("login")
-    }
-
     render() {
         return (
             <div className="pcs-home">
-                <h2>My Home</h2>
-                <button onClick={this.login}>此操作需要先登录</button>
+                <header>
+                    <BaseCarousel />
+                </header>
+                
             </div>
-
         )
     }
 }
