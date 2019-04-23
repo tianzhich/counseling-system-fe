@@ -6,7 +6,7 @@ import store from "@common/storeConfig";
 import { IApiState } from "./reducer";
 
 function* fetchData(config: IConfig, key: ApiKey, option?: IAxiosRequestConfig) {
-    const { method = 'GET' } = config
+    const { method = 'GET', repeat } = config
     let data: any, params: any
     let pageNum, pageSize
     const appendPath = option && option.appendPath ? option.appendPath : ''
@@ -24,9 +24,10 @@ function* fetchData(config: IConfig, key: ApiKey, option?: IAxiosRequestConfig) 
     }
 
     let fetchData: { data: IApiResponse }
+    const url = repeat ? baseURL + repeat + appendPath : baseURL + key + appendPath 
     try {
         fetchData = yield Axios({
-            url: baseURL + key + appendPath,
+            url,
             method,
             data,
             params: {

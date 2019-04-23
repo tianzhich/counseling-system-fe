@@ -6,7 +6,7 @@ export const baseURL = `${window.location.origin}/api/`;
 type oAuthKey = 'oauth/signin' | 'oauth/signup' | 'oauth/auth' | 'oauth/apply'
 type infoKey = 'info/counselingFilters' | 'info/pre' | 'info/preCounselor'
 type queryKey = 'query/counselorList' | 'query/newlyCounselors' | 'query/counselor' | 'query/notifications' | 'query/counselingRecords' |
-    'query/messages' | 'query/articleList'
+    'query/messages' | 'query/articleList' | 'query/homeArticleList'
 type operationKey = 'operation/appoint' | 'operation/addMessage' | 'operation/appointProcess' | 'operation/article'
 
 export type ApiKey = oAuthKey | infoKey | queryKey | operationKey
@@ -36,6 +36,7 @@ export interface IConfig {
     isPage?: boolean // 分页请求
     processor?: (res: any) => any // 数据额外加工
     initState?: any
+    repeat?: ApiKey
 }
 
 export const apiConfig: IApiConfig = {
@@ -77,6 +78,10 @@ export const apiConfig: IApiConfig = {
     },
     'query/articleList': {
         isPage: true
+    },
+    'query/homeArticleList': {
+        isPage: true,
+        repeat: 'query/articleList'
     }
 }
 
