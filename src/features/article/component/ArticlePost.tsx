@@ -18,7 +18,8 @@ import {
   Input,
   Button,
   List,
-  Tooltip
+  Tooltip,
+  Skeleton
 } from 'antd'
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'
 
@@ -345,9 +346,12 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
     if (!this.isIDValidate()) {
       return <Redirect to="/article" />
     }
-
     if (!status || status === 'loading') {
-      return <Spin />
+      return (
+        <div className="pcs-article-detail">
+          <Skeleton active></Skeleton>
+        </div>
+      )
     }
     if (status === 'failed') {
       return <Empty />
