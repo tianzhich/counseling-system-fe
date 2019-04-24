@@ -12,7 +12,7 @@ export default class Header extends React.Component<IHeaderProps, {}> {
     render() {
         const { avatar = avatarURL, name, description, city, onLeaveMessage } = this.props
         return (
-            <div className="header">
+            <div className="expert-header">
                 <div className="bg-banner" />
                 <div className="info">
                     <img className="avatar" src={avatar} alt="" />
