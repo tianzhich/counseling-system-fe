@@ -6,9 +6,37 @@
 .counselor-content {
   margin: 0 auto;
   max-width: 900px;
-  padding-top: 40px;
+  padding: 40px 0;
 
   .swipe {
+    position: relative;
+
+    .action {
+      position: absolute;
+      font-size: 50px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #afafaf;
+      cursor: pointer;
+      transition: all 0.5s;
+
+      &:hover {
+        color: #5a5a5a;
+      }
+
+      &.prev {
+        left: -30px;
+      }
+
+      &.next {
+        right: -30px;
+      }
+
+      &.disable {
+        display: none;
+      }
+    }
+
     .list {
       display: flex;
       padding: 10px 20px;
@@ -21,7 +49,7 @@
         border-radius: 10px;
         width: 200px;
         border: 1px solid #e8e8e8;
-        transition: all .5s;
+        transition: all 0.5s;
 
         &:hover {
           box-shadow: 0 2px 20px 0 #eaeaea;
@@ -52,9 +80,10 @@
 
           section.desc {
             padding: 0 10px;
+            min-height: 42px;
 
-            &>div::before {
-              content: "\25CF";
+            & > div::before {
+              content: '\25CF';
               color: #0b8bff;
               font-size: 12px;
               margin-right: 10px;

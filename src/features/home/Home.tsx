@@ -11,6 +11,7 @@ import { push } from 'connected-react-router';
 import PostContent from './component/AskContent';
 import AskContent from './component/AskContent';
 import CounselorContent from './component/CounselorContent';
+import LectureContent from './component/LectureContent';
 
 interface IHomeProps {
     articleList: Article[]
@@ -78,6 +79,7 @@ class Home extends React.Component<IHomeProps, IHomeState> {
                         seeDetail={(id) => this.redirect(`/counselor/${id}`)}
                         list={counselorList}
                     />
+                    <LectureContent />
                 </main>
             </div>
         )
