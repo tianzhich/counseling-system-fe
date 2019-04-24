@@ -9,7 +9,7 @@ const fakeCover = 'https://ossimg.xinli001.com/20190417/8a3c53c18ee8b5d46d56815f
 
 interface IArticleContentProps {
   list: Article[]
-  isCounselor: boolean
+  showPost: boolean
   loadList: (c: ArticleTopic) => void
   seeMore: () => void
   seeDetail: (id: number) => void
@@ -57,7 +57,7 @@ export default class ArticleContent extends React.Component<IArticleContentProps
   }
   render() {
     const active = this.state.activeCategory
-    const { seeMore, gotoPost, isCounselor } = this.props
+    const { seeMore, gotoPost, showPost } = this.props
     return (
       <div className="article-content-wrapper">
         <div className="content">
@@ -75,7 +75,7 @@ export default class ArticleContent extends React.Component<IArticleContentProps
             }
             <div onClick={seeMore} className="category">更多分类</div>
             {
-              isCounselor ? (
+              showPost ? (
                 <div className="post-button" onClick={gotoPost}>
                   <Icon type="highlight" /> 发布文章
                 </div>

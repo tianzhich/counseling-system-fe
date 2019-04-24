@@ -1,0 +1,33 @@
+header.content-header {
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  .title {
+    &>span:first-of-type {
+      font-size: 30px;
+      color: #0b8bff;
+    }
+
+    &>span:last-of-type {
+      color: #7d7d7d;
+      padding-left: 20px;
+    }
+  }
+
+  .actions {
+    position: absolute;
+    right: 20px;
+
+    .action {
+      cursor: pointer;
+      &:first-of-type {
+        padding-right: 20px;
+      }
+
+      &:hover {
+        color: #0b8bff;
+      }
+    }
+  }
+}

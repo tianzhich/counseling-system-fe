@@ -4,13 +4,17 @@ import BaseCarousel from '@features/common/component/Carousel';
 import ArticleContent from './component/ArticleContent';
 import { IStore } from '@common/storeConfig';
 import { connect } from 'react-redux';
-import { ArticleTopic, Article } from '@features/common/types';
+import { ArticleTopic, Article, Counselor } from '@features/common/types';
 import { Dispatch } from 'redux';
 import { fetchAction } from '@common/api/action';
 import { push } from 'connected-react-router';
+import PostContent from './component/AskContent';
+import AskContent from './component/AskContent';
+import CounselorContent from './component/CounselorContent';
 
 interface IHomeProps {
     articleList: Article[]
+    counselorList: Counselor[]
     dispatch: Dispatch
     isCounselor: boolean
 }
@@ -25,6 +29,7 @@ class Home extends React.Component<IHomeProps, IHomeState> {
 
     componentDidMount() {
         this.fetchArticleList('all')
+        this.fetchCounselorList()
     }
 
     redirect = (path: string) => {
@@ -40,8 +45,13 @@ class Home extends React.Component<IHomeProps, IHomeState> {
         }
     }
 
+    fetchCounselorList = () => {
+        const p = { pageSize: 10, pageNum: 1 }
+        this.props.dispatch(fetchAction('query/homeCounselorList', { params: { ...p } }))
+    }
+
     render() {
-        const { articleList, isCounselor } = this.props
+        const { articleList, isCounselor, counselorList } = this.props
         return (
             <div className="pcs-home">
                 <header>
@@ -53,8 +63,20 @@ class Home extends React.Component<IHomeProps, IHomeState> {
                         seeMore={() => this.redirect('/article')}
                         gotoPost={() => this.redirect('/post')}
                         loadList={this.fetchArticleList}
-                        isCounselor={isCounselor}
+                        showPost={isCounselor}
                         seeDetail={(id) => this.redirect(`/article/${id}`)}
+                    />
+                    <AskContent
+                        list={[]}
+                        gotoPost={() => this.redirect('/')}
+                        seeMore={() => this.redirect('/')}
+                    />
+                    <CounselorContent 
+                        gotoApply={() => this.redirect('/apply')}
+                        showApply={!isCounselor}
+                        seeMore={() => this.redirect('/counseling')}
+                        seeDetail={(id) => this.redirect(`/counselor/${id}`)}
+                        list={counselorList}
                     />
                 </main>
             </div>
@@ -64,9 +86,11 @@ class Home extends React.Component<IHomeProps, IHomeState> {
 
 const mapState = (state: IStore) => {
     const as = state['query/homeArticleList']
+    const cs = state['query/homeCounselorList']
     return {
         articleList: as.response && as.response.data && as.response.data.list ? as.response.data.list : [],
-        isCounselor: state['@global'].auth.authType === 1
+        counselorList: cs.response && cs.response.data && cs.response.data.list ? cs.response.data.list : [],
+        isCounselor: state['@global'].auth.authType === 1,
     }
 }
 

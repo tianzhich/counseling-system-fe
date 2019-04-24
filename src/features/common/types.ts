@@ -66,6 +66,19 @@ export interface ArticleComment {
   likeCount: number
 }
 
+// post comment
+export interface PostComment {
+  id: number
+  text: string
+  postTime: string
+  authorID: number
+  authorName: string
+  isLike: boolean
+  likeCount: number
+  replyTo?: string // 被回复者username
+  childComment: PostComment[]
+}
+
 // article info
 export interface Article {
   id: number
@@ -84,4 +97,20 @@ export interface Article {
   isLike: boolean
   readCount: number
   likeCount: number // 点赞量
+}
+
+// ask post
+export interface AskPost {
+  id: number
+  title: string 
+  postTime: string // 发表日期
+  tags: string // 标签
+  content: string
+  authorName: string
+  comment: PostComment[]
+  isRead: boolean
+  isStar: boolean // 收藏(也叫关注)
+  isLike: boolean // 点赞(也叫抱抱)
+  readCount: number
+  likeCount: number
 }

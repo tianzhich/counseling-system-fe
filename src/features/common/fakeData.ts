@@ -1,4 +1,4 @@
-import { Expert, fakeArticle } from "@types";
+import { Expert, fakeArticle, AskPost } from "@types";
 
 export const avatarURL = 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
 
@@ -106,4 +106,8 @@ export const articles: fakeArticle[] = [{
     views: 4590,
     tags: ["tag33"],
     topic: "psychology"
+}]
+
+export const fakePostList: any[] = [{
+    
 }]

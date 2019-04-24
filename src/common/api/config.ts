@@ -6,7 +6,7 @@ export const baseURL = `${window.location.origin}/api/`;
 type oAuthKey = 'oauth/signin' | 'oauth/signup' | 'oauth/auth' | 'oauth/apply'
 type infoKey = 'info/counselingFilters' | 'info/pre' | 'info/preCounselor'
 type queryKey = 'query/counselorList' | 'query/newlyCounselors' | 'query/counselor' | 'query/notifications' | 'query/counselingRecords' |
-    'query/messages' | 'query/articleList' | 'query/homeArticleList'
+    'query/messages' | 'query/articleList' | 'query/homeArticleList' | 'query/homeCounselorList'
 type operationKey = 'operation/appoint' | 'operation/addMessage' | 'operation/appointProcess' | 'operation/article'
 
 export type ApiKey = oAuthKey | infoKey | queryKey | operationKey
@@ -82,6 +82,11 @@ export const apiConfig: IApiConfig = {
     'query/homeArticleList': {
         isPage: true,
         repeat: 'query/articleList'
+    },
+    'query/homeCounselorList': {
+        isPage: true,
+        repeat: 'query/counselorList',
+        method: 'POST'
     }
 }
 
