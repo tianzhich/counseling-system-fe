@@ -82,6 +82,9 @@ class CounselingDetail extends React.Component<ICounselingDetailProps, ICounseli
     handleCompleteCounseling = () => {
         const startTime = moment(this.state.data.startTime).valueOf()
         const now = moment().valueOf()
+        this.setState({
+            modalOp: 1
+        })
         if (now <= startTime) {
             Modal.confirm({
                 title: "咨询时间未到，您确认完成本次咨询吗？",
@@ -102,7 +105,8 @@ class CounselingDetail extends React.Component<ICounselingDetailProps, ICounseli
         const prevRes = prevProps.processRes
         const curRes = this.props.processRes
         const rID = this.state.data.id
-        if (prevRecordStatus === 'wait_counseling' && prevRes.status === 'loading') {
+        const isFinish = this.state.modalOp !== 0
+        if (prevRecordStatus === 'wait_counseling' && prevRes.status === 'loading' && isFinish) {
             if (curRes.status === 'success' && curRes.response && curRes.response.code === 1) {
                 notification.open({
                     message: "操作成功",

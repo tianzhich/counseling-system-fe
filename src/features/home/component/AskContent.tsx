@@ -57,7 +57,7 @@ export default class AskContent extends React.Component<IAskContentProps, {}> {
                     </main>
                     <footer>
                       {tags.map(t => (
-                        <span className="tag">
+                        <span className="tag" key={t}>
                           <Tag color="blue">{t}</Tag>
                         </span>
                       ))}
