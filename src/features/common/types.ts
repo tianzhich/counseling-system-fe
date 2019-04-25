@@ -113,4 +113,31 @@ export interface AskPost {
   isLike: boolean // 点赞(也叫抱抱)
   readCount: number
   likeCount: number
+  starCount: number
+}
+
+// post comment(暂用于首页展示)
+export interface FakePostComment {
+  id: number
+  text: string
+  authorAvatar: string
+  authorName: string
+}
+
+// ask post(暂用于首页展示)
+export interface FakeAskPost {
+  id: number
+  title: string 
+  // postTime: string // 发表日期
+  tags: string // 标签
+  // content: string
+  commentCount: number
+  recmdComment: FakePostComment
+  starCount: number
+}
+
+export interface FakeRecmdAskPost {
+  title: string
+  id: number
+  commentCount: number
 }

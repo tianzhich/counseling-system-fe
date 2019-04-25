@@ -57,55 +57,49 @@ export default class CounselorContent extends React.Component<
             onAction={gotoApply}
             hideAction={!showApply}
           />
-          <main>
-            <div className="swipe">
-              <div
-                className={isStart ? 'action prev disable' : 'action prev'}
-                onClick={() => this.toggleActiveSlide('prev')}
-              >
-                <Icon type="left" />
-              </div>
-              <div className="list">
-                {swipeList.length !== 0 &&
-                  activeList.map(l => {
-                    const major = l.topic.id === 4 ? l.topicOther : l.topic.name
-                    const desc = l.description.split('/').slice(0, 2)
-                    return (
-                      <div className="item" key={l.id}>
-                        <div className="bg" />
-                        <header>
-                          <img className="avatar" src={avatarURL} alt="" />
-                          <span>累计帮助了53人</span>
-                        </header>
-                        <main>
-                          <section className="desc">
-                            {desc.map(d => (
-                              <div key={d}>
-                                {d.length > 9 ? (
-                                  <Tooltip title={d}>{d.substr(0, 8)}...</Tooltip>
-                                ) : (
-                                  d
-                                )}
-                              </div>
-                            ))}
-                          </section>
-                          <section className="major">擅长：{major}</section>
-                        </main>
-                        <footer>
-                          <Button type="primary">预约</Button>
-                        </footer>
-                      </div>
-                    )
-                  })}
-              </div>
-              <div
-                className={isEnd ? 'action next disable' : 'action next'}
-                onClick={() => this.toggleActiveSlide('next')}
-              >
-                <Icon type="right" />
-              </div>
+          <div className="swipe">
+            <div
+              className={isStart ? 'action prev disable' : 'action prev'}
+              onClick={() => this.toggleActiveSlide('prev')}
+            >
+              <Icon type="left" />
             </div>
-          </main>
+            <div className="list">
+              {swipeList.length !== 0 &&
+                activeList.map(l => {
+                  const major = l.topic.id === 4 ? l.topicOther : l.topic.name
+                  const desc = l.description.split('/').slice(0, 2)
+                  return (
+                    <div className="item" key={l.id}>
+                      <div className="bg" />
+                      <header>
+                        <img className="avatar" src={avatarURL} alt="" />
+                        <span>累计帮助了53人</span>
+                      </header>
+                      <main>
+                        <section className="desc">
+                          {desc.map(d => (
+                            <div key={d}>
+                              {d.length > 9 ? <Tooltip title={d}>{d.substr(0, 8)}...</Tooltip> : d}
+                            </div>
+                          ))}
+                        </section>
+                        <section className="major">擅长：{major}</section>
+                      </main>
+                      <footer>
+                        <Button type="primary">预约</Button>
+                      </footer>
+                    </div>
+                  )
+                })}
+            </div>
+            <div
+              className={isEnd ? 'action next disable' : 'action next'}
+              onClick={() => this.toggleActiveSlide('next')}
+            >
+              <Icon type="right" />
+            </div>
+          </div>
         </div>
       </div>
     )

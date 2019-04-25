@@ -1,4 +1,4 @@
-import { Expert, fakeArticle, AskPost } from "@types";
+import { Expert, fakeArticle, AskPost, FakeAskPost, FakeRecmdAskPost } from "@types";
 
 export const avatarURL = 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
 
@@ -108,6 +108,126 @@ export const articles: fakeArticle[] = [{
     topic: "psychology"
 }]
 
-export const fakePostList: any[] = [{
-    
+export const fakeAskList: FakeAskPost[] = [{
+    title: '想要考公务员，又特别纠结，怎么办?',
+    id: 1,
+    tags: 'tag1,tag2,tag3',
+    commentCount: 25,
+    recmdComment: {
+        id: 1,
+        text: '听上去，你对于自己考公务员的事情有些没信心，但是当面对如今自己的工作也不是很满意，产生了矛盾的心理。只要你坚信着自己只有两条路：考上中央部委或者做着自己的工作没有将来。陷入了困难和讨厌的冲突中，无论选择哪一种都会让你痛苦。那么你有没有想过第三条路，既有前途又更容易做到呢？你有没有考虑过，考中央以外的职位呢，你觉得那些职位和你的现在的工作比哪个更有前途？有没有跳槽的可能比现在的工作有前途？有没有和领导说过自己现在的工作前途可能是什么方面的？有没有想过有时候到底一个高度并不需要一步登天，上一个台阶休息一下再来一个台阶也同样可以到达？',
+        authorAvatar: '',
+        authorName: '网一'
+    },
+    starCount: 20
+}, {
+    title: '十九岁高中生，内向型思维适合从事什么职业？',
+    id: 2,
+    tags: 'tag1,tag2,tag3',
+    commentCount: 25,
+    recmdComment: {
+        id: 1,
+        text: '听上去，你对于自己考公务员的事情有些没信心，但是当面对如今自己的工作也不是很满意，产生了矛盾的心理。',
+        authorAvatar: '',
+        authorName: '网一'
+    },
+    starCount: 20
+}, {
+    title: '十九岁高中生，内向型思维适合从事什么职业？',
+    id: 3,
+    tags: 'tag1,tag2,tag3',
+    commentCount: 25,
+    recmdComment: {
+        id: 1,
+        text: '听上去，你对于自己考公务员的事情有些没信心，但是当面对如今自己的工作也不是很满意，产生了矛盾的心理。',
+        authorAvatar: '',
+        authorName: '网一'
+    },
+    starCount: 20
+}, {
+    title: '十九岁高中生，内向型思维适合从事什么职业？',
+    id: 4,
+    tags: 'tag1,tag2,tag3',
+    commentCount: 25,
+    recmdComment: {
+        id: 1,
+        text: '听上去，你对于自己考公务员的事情有些没信心，但是当面对如今自己的工作也不是很满意，产生了矛盾的心理。',
+        authorAvatar: '',
+        authorName: '网一'
+    },
+    starCount: 20
+}, {
+    title: '十九岁高中生，内向型思维适合从事什么职业？',
+    id: 5,
+    tags: 'tag1,tag2,tag3',
+    commentCount: 25,
+    recmdComment: {
+        id: 1,
+        text: '听上去，你对于自己考公务员的事情有些没信心，但是当面对如今自己的工作也不是很满意，产生了矛盾的心理。',
+        authorAvatar: '',
+        authorName: '网一'
+    },
+    starCount: 20
+}]
+
+export const fakeRecmdAskPost: FakeRecmdAskPost[] = [{
+    id: 1,
+    title: '人真的会复制父母对孩子的教养方式吗？',
+    commentCount: 43
+}, {
+    id: 2,
+    title: '迷茫前进的路，我该如何认识自己？该怎么调整？',
+    commentCount: 36
+}, {
+    id: 3,
+    title: '迷茫前进的路，我该如何认识自己？该怎么调整？',
+    commentCount: 36
+}, {
+    id: 4,
+    title: '迷茫前进的路，我该如何认识自己？该怎么调整？',
+    commentCount: 36
+}, {
+    id: 5,
+    title: '迷茫前进的路，我该如何认识自己？该怎么调整？',
+    commentCount: 36
+}, {
+    id: 6,
+    title: '人真的会复制父母对孩子的教养方式吗？',
+    commentCount: 43
+}, {
+    id: 7,
+    title: '人真的会复制父母对孩子的教养方式吗？',
+    commentCount: 43
+}, {
+    id: 8,
+    title: '人真的会复制父母对孩子的教养方式吗？',
+    commentCount: 43
+}, {
+    id: 9,
+    title: '人真的会复制父母对孩子的教养方式吗？',
+    commentCount: 43
+}, {
+    id: 10,
+    title: '人真的会复制父母对孩子的教养方式吗？',
+    commentCount: 43
+}, {
+    id: 11,
+    title: '人真的会复制父母对孩子的教养方式吗？',
+    commentCount: 43
+}, {
+    id: 12,
+    title: '迷茫前进的路，我该如何认识自己？该怎么调整？',
+    commentCount: 36
+}, {
+    id: 13,
+    title: '迷茫前进的路，我该如何认识自己？该怎么调整？',
+    commentCount: 36
+}, {
+    id: 14,
+    title: '迷茫前进的路，我该如何认识自己？该怎么调整？',
+    commentCount: 36
+}, {
+    id: 15,
+    title: '迷茫前进的路，我该如何认识自己？该怎么调整？',
+    commentCount: 36
 }]
