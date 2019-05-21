@@ -1,6 +1,7 @@
-import { Expert, fakeArticle, AskPost, FakeAskPost, FakeRecmdAskPost } from "@types";
+import { Expert, fakeArticle, AskPost, FakeAskPost, FakeRecmdAskPost, AskTags, FakeAskTag } from "@types";
 
 export const avatarURL = 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
+export const anonyURL = 'https://lapp.xinli001.com/images/yiapp/v4.8/incognito.png'
 
 export const newlyExperts: Expert[] = [{
     id: '1',
@@ -231,3 +232,91 @@ export const fakeRecmdAskPost: FakeRecmdAskPost[] = [{
     title: '迷茫前进的路，我该如何认识自己？该怎么调整？',
     commentCount: 36
 }]
+
+export const featuedTags: FakeAskTag[] = [
+  {
+    id: '16',
+    name: '手机依赖',
+    parentTag: 'behavior'
+  },
+  {
+    id: '3',
+    name: '心理咨询',
+    parentTag: 'treatment'
+  },
+  {
+    id: '31',
+    name: '社交恐惧',
+    parentTag: 'people'
+  },
+  {
+    id: '40',
+    name: '自我成长',
+    parentTag: 'growth'
+  },
+  {
+    id: '42',
+    name: '压力管理',
+    parentTag: 'growth'
+  },
+  {
+    id: '45',
+    name: '工作学习',
+    parentTag: 'growth'
+  },
+  {
+    id: '47',
+    name: '人生意义',
+    parentTag: 'growth'
+  },
+  {
+    id: '50',
+    name: '情绪调节',
+    parentTag: 'emotion'
+  },
+  {
+    id: '51',
+    name: '抑郁情绪',
+    parentTag: 'emotion'
+  },
+  {
+    id: '60',
+    name: '失恋',
+    parentTag: 'love'
+  },
+  {
+    id: '67',
+    name: '性行为',
+    parentTag: 'love'
+  },
+  {
+    id: '66',
+    name: '安全感',
+    parentTag: 'love'
+  },
+  {
+    id: '82',
+    name: '父母沟通',
+    parentTag: 'home'
+  },
+  {
+    id: '88',
+    name: '工作压力',
+    parentTag: 'career'
+  },
+  {
+    id: '104',
+    name: '犯罪心理',
+    parentTag: 'science'
+  },
+  {
+    id: '106',
+    name: '热点话题',
+    parentTag: 'hottopic'
+  },
+  {
+    id: '111',
+    name: '性心理',
+    parentTag: 'hottopic'
+  }
+]

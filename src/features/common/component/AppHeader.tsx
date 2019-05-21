@@ -137,28 +137,31 @@ export default class AppHeader extends React.Component<IAppHeaderProps, IAppHead
         )
 
         return (
-            <Header>
-                <Route children={({ location }) => (
-                    <Menu
-                        theme="light"
-                        mode="horizontal"
-                        selectedKeys={[location.pathname.split('/')[1]]}
-                    >
-                        <Menu.Item key="home">
-                            <NavLink to="/">首页</NavLink>
-                        </Menu.Item>
-                        <Menu.Item key="article">
-                            <NavLink to="/article">阅读</NavLink>
-                        </Menu.Item>
-                        <Menu.Item key="counseling">
-                            <NavLink to="/counseling">咨询</NavLink>
-                        </Menu.Item>
-                    </Menu>
-                )} />
-                {
-                    this.props.isAuth ? UserViewer : SignButtonGroup
-                }
-            </Header>
+          <Header>
+            <Route
+              children={({ location }) => (
+                <Menu
+                  theme="light"
+                  mode="horizontal"
+                  selectedKeys={[location.pathname.split('/')[1]]}
+                >
+                  <Menu.Item key="home">
+                    <NavLink to="/">首页</NavLink>
+                  </Menu.Item>
+                  <Menu.Item key="article">
+                    <NavLink to="/article">阅读</NavLink>
+                  </Menu.Item>
+                  <Menu.Item key="ask">
+                    <NavLink to="/ask">问答</NavLink>
+                  </Menu.Item>
+                  <Menu.Item key="counseling">
+                    <NavLink to="/counseling">咨询</NavLink>
+                  </Menu.Item>
+                </Menu>
+              )}
+            />
+            {this.props.isAuth ? UserViewer : SignButtonGroup}
+          </Header>
         )
     }
 }

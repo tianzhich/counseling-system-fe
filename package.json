@@ -11,6 +11,7 @@
   "author": "Tian Zhi",
   "license": "ISC",
   "dependencies": {
+    "@types/classnames": "^2.2.7",
     "@types/history": "^4.7.2",
     "@types/quill": "^2.0.1",
     "@types/react": "^16.8.8",
@@ -23,6 +24,7 @@
     "@types/redux-logger": "^3.0.7",
     "antd": "^3.15.0",
     "axios": "^0.18.0",
+    "classnames": "^2.2.6",
     "commander": "^2.19.0",
     "connected-react-router": "^6.0.0",
     "events": "^3.0.0",

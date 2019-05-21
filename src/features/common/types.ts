@@ -141,3 +141,50 @@ export interface FakeRecmdAskPost {
   id: number
   commentCount: number
 }
+
+// ask tags
+export interface AskTags {
+  id: string
+  name: string
+  subTags: null | AskTags[]
+}
+
+// featued ask tags
+export interface FakeAskTag {
+  id: string
+  name: string
+  parentTag: string
+}
+
+// askComment
+export interface AskComment{
+  id: number
+  text: string
+  authorId: number
+  authorName: string
+  replyTo?: string // 被回复人用户名
+  time: string
+  subComments?: AskComment[]
+}
+
+// ask item
+export interface AskItemProps {
+  id: number
+  title: string
+  content: string
+  time: string
+  authorName: string
+  authorId: number
+  answerCount: number
+  starCount: number
+  likeCount: number
+  readCount: number
+  isStar?: boolean
+  isLike?: boolean
+  isRead?: boolean
+  isAnony: boolean
+  tags: AskTags[]
+  recentComment: AskComment
+  askComment: AskComment[]
+}
+

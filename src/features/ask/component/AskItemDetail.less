@@ -1,0 +1,118 @@
+.ask-item-detail {
+  margin: 60px auto;
+  width: 90%;
+
+  .ask {
+    display: flex;
+    border-radius: 10px;
+    background-color: #fff;
+    padding: 20px;
+
+    .content {
+      flex-grow: 1;
+      .title {
+        font-size: 20px;
+        height: 50px;
+        line-height: 50px;
+        position: relative;
+        span:last-of-type {
+          position: absolute;
+          right: 0;
+          font-size: 18px;
+        }
+      }
+
+      .desc {
+        color: #a5a3a3;
+        span {
+          padding-right: 10px;
+        }
+      }
+
+      p {
+        margin-top: 10px;
+      }
+
+      .tags {
+        span {
+          display: inline-block;
+          margin-right: 10px;
+          background: #ddefff;
+          border-radius: 10px;
+          color: #a1b3db;
+          text-align: center;
+          width: 80px;
+          height: 30px;
+          line-height: 30px;
+        }
+      }
+    }
+  }
+
+  .actions {
+    margin-top: 30px;
+    display: flex;
+    background-color: #fff;
+    border-radius: 10px;
+    height: 80px;
+    justify-content: space-around;
+    align-items: center;
+
+    .item {
+      cursor: pointer;
+      font-size: 20px;
+      text-align: center;
+      height: 40px;
+      i {
+        margin-right: 10px;
+      }
+      & > span:last-of-type {
+        font-size: 14px;
+        position: relative;
+        bottom: 10px;
+        color: #a5a3a3;
+      }
+      &:hover,
+      &.active {
+        color: #0b8bff;
+      }
+    }
+  }
+
+  .comment-list {
+    .extra-text {
+      font-size: 16px;
+    }
+    margin: 30px 0;
+    & > .comment {
+      &:not(:first-of-type) {
+        margin-top: 10px;
+      }
+      background-color: #fff;
+      padding: 0 16px;
+      border-radius: 10px;
+      .ant-comment-inner {
+        padding-bottom: 0;
+      }
+      .ant-comment-nested {
+        border-top: 1px solid #d8d8d8;
+      }
+    }
+  }
+
+  a.post {
+    text-align: center;
+    display: block;
+    .ant-btn {
+      width: 400px;
+      height: 50px;
+      font-size: 20px;
+    }
+  }
+}
+
+.askcmt-modal {
+  .ant-input {
+    height: 200px;
+  }
+}
