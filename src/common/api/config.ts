@@ -16,6 +16,7 @@ type queryKey =
   | 'query/homeArticleList'
   | 'query/homeCounselorList'
   | 'query/askList'
+  | 'query/search'
 type operationKey =
   | 'operation/appoint'
   | 'operation/addMessage'
@@ -108,7 +109,8 @@ export const apiConfig: IApiConfig = {
   'query/askList': {},
   'operation/addAskComment': {
     method: 'POST'
-  }
+  },
+  'query/search': {}
 }
 
 export const OtherAPI = {

@@ -106,6 +106,13 @@ class App extends React.Component<IAppProps, IAppState> {
         this.props.dispatch(push(url))
     }
 
+    handleSearch = (keyword: string) => {
+        if (keyword.trim() === '') {
+            return
+        }
+        this.props.dispatch(push('/search', { keyword }))
+    }
+
     componentDidMount() {
         this.openModalToken = Emitter.addListener('openSigninModal', this.handleLoginWithRef)
         this.openModalToken = Emitter.addListener('openAppointMntModal', this.handleAppoint)
@@ -142,6 +149,7 @@ class App extends React.Component<IAppProps, IAppState> {
                         onOpenSignModal={this.openModal}
                         reloadNotifications={this.loadNotifications}
                         onRedirect={this.handleRedirect}
+                        onSearch={this.handleSearch}
                     />
                     <Content>
                         <div className="pcs-content">{this.props.children}</div>

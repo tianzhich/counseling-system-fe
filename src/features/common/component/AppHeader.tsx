@@ -19,6 +19,7 @@ interface IAppHeaderProps {
     dataOnload: boolean
     reloadNotifications: () => void
     onRedirect: (url: string) => void
+    onSearch: (keyword: string) => void
 }
 
 interface IAppHeaderState {
@@ -107,7 +108,7 @@ export default class AppHeader extends React.Component<IAppHeaderProps, IAppHead
         )
         const UserViewer = (
             <div className="user-viewer">
-                <Search placeholder="站内搜索" />
+                <Search placeholder="站内搜索" onSearch={this.props.onSearch} />
                 <div className="trigger trigger-notif" onClick={this.toggleNotif} >
                     <Badge count={countAll}><Icon type="bell" style={{ fontSize: "20px" }} /></Badge>
                     {

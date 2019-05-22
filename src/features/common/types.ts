@@ -97,6 +97,7 @@ export interface Article {
   isLike: boolean
   readCount: number
   likeCount: number // 点赞量
+  starCount: number // 收藏量
 }
 
 // ask post
