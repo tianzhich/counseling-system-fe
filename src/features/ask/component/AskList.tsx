@@ -1,6 +1,6 @@
 import React from 'react'
 import './AskList.less'
-import { Icon, Empty, Spin } from 'antd'
+import { Icon, Empty, Spin, Pagination } from 'antd'
 import classnames from 'classnames'
 import { AskItemProps } from '@features/common/types'
 import AskItem from './AskItem'
@@ -16,7 +16,11 @@ interface IAskListProps {
   featued: string
 }
 
-interface IAskListState {}
+interface IAskListState {
+  curPage: number
+}
+
+const PageSize = 4
 
 const ToggleBarOption = [
   {
@@ -39,7 +43,15 @@ const ToggleBarOption = [
 export default class AskList extends React.Component<IAskListProps, IAskListState> {
   constructor(props: IAskListProps) {
     super(props)
-    this.state = {}
+    this.state = {
+      curPage: 1
+    }
+  }
+
+  handlePageChange = (pageNum: number) => {
+    this.setState({
+      curPage: pageNum
+    })
   }
 
   render() {
@@ -49,6 +61,9 @@ export default class AskList extends React.Component<IAskListProps, IAskListStat
       featued === ''
         ? list
         : list.filter(item => (item.tags.find(t => t.id === featued.split('-')[0]) ? true : false))
+
+    const { curPage } = this.state
+    const curList = llist.filter((v, k) => k >= (curPage - 1) * PageSize && k < curPage * PageSize)
 
     return (
       <div className="ask-list">
@@ -65,8 +80,8 @@ export default class AskList extends React.Component<IAskListProps, IAskListStat
           ))}
         </div>
         <div className="list">
-          {llist.length > 0 && loadingStatus === 'success' ? (
-            llist.map(item => {
+          {curList.length > 0 && loadingStatus === 'success' ? (
+            curList.map(item => {
               const key = item.recentComment ? item.recentComment.id : item.id
               return <AskItem key={key} type={itemType} data={item} />
             })
@@ -75,6 +90,16 @@ export default class AskList extends React.Component<IAskListProps, IAskListStat
           ) : (
             <Empty />
           )}
+        </div>
+        <div className="paging">
+          {llist.length > 0 ? (
+            <Pagination
+              current={curPage}
+              total={llist.length}
+              pageSize={4}
+              onChange={(pageNum, pageSize) => this.handlePageChange(pageNum)}
+            />
+          ) : null}
         </div>
       </div>
     )

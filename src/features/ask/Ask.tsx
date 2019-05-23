@@ -16,6 +16,8 @@ interface IAskProps {
   isLoggin: boolean
   askList: AskItemProps[]
   listStatus: NetworkStatus
+  cmtCount: number
+  postCount: number
 }
 
 interface IAskState {
@@ -78,7 +80,7 @@ class Ask extends React.Component<IAskProps, IAskState> {
 
   render() {
     const { listType, featured } = this.state
-    const { askList, listStatus } = this.props
+    const { askList, listStatus, isLoggin, postCount, cmtCount } = this.props
     return (
       <div className="ask">
         <AskList
@@ -92,6 +94,9 @@ class Ask extends React.Component<IAskProps, IAskState> {
           onGotoAskPost={this.handleGotoAskPost}
           onToggleFeatured={this.toggleFeatured}
           featured={featured}
+          isLoggin={isLoggin}
+          cmtCount={cmtCount}
+          postCount={postCount}
         />
       </div>
     )
@@ -104,7 +109,15 @@ const mapState = (state: IStore) => ({
     state['query/askList'].response && state['query/askList'].response.data
       ? state['query/askList'].response.data
       : [],
-  listStatus: state['query/askList'].status
+  listStatus: state['query/askList'].status,
+  cmtCount:
+    state['info/pre'].response && state['info/pre'].response.data
+      ? state['info/pre'].response.data.askCmtCount
+      : 0,
+  postCount:
+    state['info/pre'].response && state['info/pre'].response.data
+      ? state['info/pre'].response.data.askPostCount
+      : 0
 })
 
 export default connect(mapState)(Ask)

@@ -8,6 +8,9 @@ interface ISiderProps {
   onGotoAskPost: () => void
   onToggleFeatured: (id: string) => void
   featured: string
+  isLoggin: boolean
+  postCount: number
+  cmtCount: number
 }
 
 interface ISiderState {}
@@ -23,36 +26,33 @@ export default class Sider extends React.Component<ISiderProps, ISiderState> {
   }
 
   render() {
-    const featured = this.props.featured
+    const { featured, isLoggin, postCount, cmtCount } = this.props
     return (
       <div className="sider">
-        <div className="item item1">
-          <div className="content">
-            <div>
-              <span>0</span>
-              <br />
-              <span>获赞数</span>
+        {isLoggin ? (
+          <div className="item item1">
+            <div className="content">
+              <div>
+                <span>{cmtCount}</span>
+                <br />
+                <span>回答数</span>
+              </div>
+              <div>
+                <span>{postCount}</span>
+                <br />
+                <span>提问数</span>
+              </div>
             </div>
-            <div>
-              <span>0</span>
-              <br />
-              <span>回答数</span>
-            </div>
-            <div>
-              <span>0</span>
-              <br />
-              <span>提问数</span>
+            <div className="actions">
+              <Button type="primary" size="large" onClick={this.gotoAskPost}>
+                我要提问
+              </Button>
+              <Button type="primary" size="large">
+                我的问答
+              </Button>
             </div>
           </div>
-          <div className="actions">
-            <Button type="primary" size="large" onClick={this.gotoAskPost}>
-              我要提问
-            </Button>
-            <Button type="primary" size="large">
-              我的问答
-            </Button>
-          </div>
-        </div>
+        ) : null}
         <div className="item item2">
           <div className="title">精选分类</div>
           <div className="content">

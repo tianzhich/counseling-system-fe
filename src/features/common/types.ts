@@ -80,7 +80,7 @@ export interface PostComment {
 }
 
 // article info
-export interface Article {
+export interface ArticleProps {
   id: number
   cover: string // 缩略图
   title: string // 文章标题

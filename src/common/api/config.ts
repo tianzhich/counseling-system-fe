@@ -13,6 +13,7 @@ type queryKey =
   | 'query/counselingRecords'
   | 'query/messages'
   | 'query/articleList'
+  | 'query/popularList'
   | 'query/homeArticleList'
   | 'query/homeCounselorList'
   | 'query/homeAskList'
@@ -95,6 +96,7 @@ export const apiConfig: IApiConfig = {
   'query/articleList': {
     isPage: true
   },
+  'query/popularList': {},
   'query/homeArticleList': {
     isPage: true,
     repeat: 'query/articleList'

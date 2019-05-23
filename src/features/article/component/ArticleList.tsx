@@ -1,6 +1,6 @@
 import React from 'react'
 import { Menu, Tag, Spin, Empty } from 'antd'
-import { ArticleTopic, Article } from '@types'
+import { ArticleTopic, ArticleProps } from '@types'
 import { articleTopicMap } from '@utils/map'
 import InfiniteScroll from 'react-infinite-scroller'
 
@@ -14,7 +14,7 @@ interface ITopicBar {
 }
 
 interface IArticleListProps {
-  list: Article[]
+  list: ArticleProps[]
   loadData: (c: ArticleTopic, init?: boolean) => void
   status: NetworkStatus
   hasMore: boolean
@@ -23,7 +23,7 @@ interface IArticleListProps {
 
 interface IArticleListState {
   topic: ArticleTopic
-  list: Article[]
+  list: ArticleProps[]
 }
 
 function TopicBar(props: ITopicBar) {
@@ -75,7 +75,7 @@ export default class ArticleList extends React.Component<IArticleListProps, IArt
   }
 
   render() {
-    const ArticleItem = (props: Article) => {
+    const ArticleItem = (props: ArticleProps) => {
       const tags = props.tags === '' ? [] : props.tags.split(',')
       return (
         <div className="article-item-wrapper">

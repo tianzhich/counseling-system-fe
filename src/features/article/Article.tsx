@@ -7,16 +7,18 @@ import './Article.less'
 import { IStore } from '@common/storeConfig'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
-import { Dispatch } from 'redux';
-import { fetchAction } from '@common/api/action';
-import { IApiState } from '@common/api/reducer';
-import { ArticleTopic } from '@features/common/types';
-import { push } from 'connected-react-router';
+import { Dispatch } from 'redux'
+import { fetchAction } from '@common/api/action'
+import { IApiState } from '@common/api/reducer'
+import { ArticleTopic } from '@features/common/types'
+import { push } from 'connected-react-router'
+import { ArticleProps } from '@types'
 
 interface IArticleProps extends RouteComponentProps<{ id?: string }> {
   isCounselor: boolean
   dispatch: Dispatch
-  list1State: IApiState
+  listState: IApiState
+  popularList: ArticleProps[]
 }
 
 interface IArticleState {}
@@ -28,26 +30,43 @@ class Article extends React.Component<IArticleProps, IArticleState> {
   }
 
   fetchArticleList = (category: ArticleTopic, init?: boolean) => {
-    this.props.dispatch(fetchAction('query/articleList', { params: { pageSize: 4, category: category === 'all' ? undefined : category, pageNum: init ? 1 : undefined } }))
+    this.props.dispatch(
+      fetchAction('query/articleList', {
+        params: {
+          pageSize: 4,
+          category: category === 'all' ? undefined : category,
+          pageNum: init ? 1 : undefined
+        }
+      })
+    )
+    // featch popular list
+    this.props.dispatch(fetchAction('query/popularList'))
   }
 
-  getMostReadArticleList = () => {
-
-  }
+  getMostReadArticleList = () => {}
 
   gotoArticlePost = (id: string) => {
     this.props.dispatch(push(`/article/${id}`))
   }
 
   render() {
-    const state1 = this.props.list1State
-    const status1 = state1.status
-    const list1 = state1.response && state1.response.data && state1.response.data.list ? state1.response.data.list : []
-    const hasMore = state1.pageInfo.currentPageNum < state1.pageInfo.totalPageNum
+    const { listState, popularList } = this.props
+    const listStatus = listState.status
+    const list1 =
+      listState.response && listState.response.data && listState.response.data.list
+        ? listState.response.data.list
+        : []
+    const hasMore = listState.pageInfo.currentPageNum < listState.pageInfo.totalPageNum
     return (
       <div className="pcs-article">
-        <ArticleList list={list1} loadData={this.fetchArticleList} status={status1} hasMore={hasMore} gotoArticlePost={this.gotoArticlePost} />
-        <PopularList articles={articles.slice(0, 4)} isCounselor={this.props.isCounselor} />
+        <ArticleList
+          list={list1}
+          loadData={this.fetchArticleList}
+          status={listStatus}
+          hasMore={hasMore}
+          gotoArticlePost={this.gotoArticlePost}
+        />
+        <PopularList articles={popularList} isCounselor={this.props.isCounselor} />
       </div>
     )
   }
@@ -55,7 +74,11 @@ class Article extends React.Component<IArticleProps, IArticleState> {
 
 const mapState = (state: IStore) => ({
   isCounselor: state['@global'].auth.authType === 1,
-  list1State: state['query/articleList']
+  listState: state['query/articleList'],
+  popularList:
+    state['query/popularList'].response && state['query/popularList'].response.data
+      ? state['query/popularList'].response.data
+      : []
 })
 
 export default connect(mapState)(Article)
