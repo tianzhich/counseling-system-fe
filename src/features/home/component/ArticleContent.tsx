@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Tag } from 'antd';
+import { Icon, Tag, Empty } from 'antd';
 import { Article, ArticleTopic } from '@features/common/types';
 
 import "./ArticleContent.less"
@@ -29,7 +29,7 @@ export default class ArticleContent extends React.Component<IArticleContentProps
   }
   renderArticleItem = () => {
     const { list, seeDetail } = this.props
-    return list.map(l => {
+    return list.length > 0 ? list.map(l => {
       const tags = l.tags === '' ? [] : l.tags.split(',')
       const excerpt = l.excerpt.length > 40 ? `${l.excerpt.substr(0, 40)}...` : l.excerpt
       return (
@@ -48,7 +48,7 @@ export default class ArticleContent extends React.Component<IArticleContentProps
           </div>
         </div>
       )
-    })
+    }) : <Empty/>
   }
   loadList = (c: ArticleTopic) => {
     this.setState({

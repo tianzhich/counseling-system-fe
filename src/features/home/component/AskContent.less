@@ -20,8 +20,20 @@
     padding: 30px 20px 30px;
 
     .header {
-      font-size: 20px;
+      font-size: 18px;
       margin-bottom: 20px;
+      position: relative;
+
+      a {
+        position: absolute;
+        right: 10px;
+        font-size: 16px;
+        color: rgba(0, 0, 0, 0.65);
+
+        &:hover {
+          color: #000;
+        }
+      }
     }
 
     .item {
@@ -30,8 +42,16 @@
         margin-bottom: 10px;
       }
 
-      .title {
-        // color: #fff;
+      a.title {
+        color: rgba(0, 0, 0, 0.65);
+        &:hover {
+          color: #000;
+        }
+      }
+
+      .count {
+        font-size: 12px;
+        color: #0b8bff;
       }
     }
 
@@ -54,10 +74,13 @@
       header {
         padding-left: 10px;
 
-        span.title {
+        a.title {
           margin-right: 20px;
           font-size: 16px;
           color: #000;
+          &:hover {
+            color: #6f6f6f;
+          }
         }
 
         span.count {

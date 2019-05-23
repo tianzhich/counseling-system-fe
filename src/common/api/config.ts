@@ -15,6 +15,8 @@ type queryKey =
   | 'query/articleList'
   | 'query/homeArticleList'
   | 'query/homeCounselorList'
+  | 'query/homeAskList'
+  | 'query/homeAskFeatureList'
   | 'query/askList'
   | 'query/search'
 type operationKey =
@@ -101,6 +103,12 @@ export const apiConfig: IApiConfig = {
     isPage: true,
     repeat: 'query/counselorList',
     method: 'POST'
+  },
+  'query/homeAskList': {
+    repeat: 'query/askList',
+  },
+  'query/homeAskFeatureList': {
+    repeat: 'query/askList'
   },
   'info/askTags': {},
   'operation/addAsk': {

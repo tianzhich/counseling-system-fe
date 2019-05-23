@@ -4,12 +4,12 @@ header.content-header {
   position: relative;
 
   .title {
-    &>span:first-of-type {
+    & > span:first-of-type {
       font-size: 30px;
       color: #0b8bff;
     }
 
-    &>span:last-of-type {
+    & > span:last-of-type {
       color: #7d7d7d;
       padding-left: 20px;
     }
@@ -21,6 +21,12 @@ header.content-header {
 
     .action {
       cursor: pointer;
+      a {
+        color: rgba(0, 0, 0, 0.65);
+        &:hover {
+          color: #0b8bff;
+        }
+      }
       &:first-of-type {
         padding-right: 20px;
       }

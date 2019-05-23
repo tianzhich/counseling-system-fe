@@ -4,11 +4,12 @@ import { Icon, Avatar, Tag } from 'antd'
 import './AskContent.less'
 import ContentHeader from './ContentHeader'
 import { fakeAskList, avatarURL, fakeRecmdAskPost } from '@features/common/fakeData'
+import { AskItemProps } from '@features/common/types'
+import { Link } from 'react-router-dom'
 
 interface IAskContentProps {
-  list: any[]
-  gotoPost: () => void
-  seeMore: () => void
+  list: AskItemProps[]
+  featuredList: AskItemProps[]
 }
 
 export default class AskContent extends React.Component<IAskContentProps, {}> {
@@ -21,30 +22,37 @@ export default class AskContent extends React.Component<IAskContentProps, {}> {
   }
 
   render() {
-    const { gotoPost, seeMore } = this.props
+    const { list, featuredList } = this.props
     return (
       <div className="ask-content-wrapper">
         <div className="ask-content">
-          <ContentHeader onAction={gotoPost} onSeeMore={seeMore} type="ask" />
+          <ContentHeader type="ask" />
           <div className="sections">
             <div className="list">
-              {fakeAskList.map(l => {
-                const tags = l.tags === '' ? [] : l.tags.split(',')
-                const recmdComment =
-                  l.recmdComment.text.length > 50 ? (
+              {list.map(l => {
+                const tags = l.tags.map(t => (
+                  <span className="tag" key={t.subTags[0].id}>
+                    <Tag color="blue">{t.subTags[0].name}</Tag>
+                  </span>
+                ))
+                const recentCmt = l.recentComment
+                const cmtEle =
+                  recentCmt.text.length > 50 ? (
                     <React.Fragment>
-                      {`${l.recmdComment.text.slice(0, 60)}`}{' '}
-                      <span className="see-more">...[查看全部]</span>
+                      {`${recentCmt.text.slice(0, 60)}`}{' '}
+                      <Link className="see-more" to={`/ask/${l.id}`}>
+                        ...[查看全部]
+                      </Link>
                     </React.Fragment>
                   ) : (
-                    l.recmdComment.text
+                    recentCmt.text
                   )
                 return (
-                  <div className="item" key={l.id}>
+                  <div className="item" key={recentCmt.id}>
                     <header>
-                      <span className="title">{l.title}</span>
-                      {l.commentCount > 0 ? (
-                        <span className="count">{l.commentCount}个回答</span>
+                      <Link to={`/ask/${l.id}`} className="title">{l.title}</Link>
+                      {l.answerCount > 0 ? (
+                        <span className="count">{l.answerCount}个回答</span>
                       ) : null}
                       {l.starCount > 0 ? <span className="count">{l.starCount}个收藏</span> : null}
                     </header>
@@ -53,32 +61,24 @@ export default class AskContent extends React.Component<IAskContentProps, {}> {
                         <img src={avatarURL} alt="" />
                       </div>
                       <div className="before" />
-                      <div className="content">{recmdComment}</div>
+                      <div className="content">{cmtEle}</div>
                     </main>
-                    <footer>
-                      {tags.map(t => (
-                        <span className="tag" key={t}>
-                          <Tag color="blue">{t}</Tag>
-                        </span>
-                      ))}
-                    </footer>
+                    <footer>{tags}</footer>
                   </div>
                 )
               })}
             </div>
             <div className="recmd-list">
-              <div className="header">最近30天精华回答</div>
-              {
-                fakeRecmdAskPost.map(l => {
-                  const text = l.title.length > 10 ? <span>{l.title.slice(0, 10)}...</span> : l.title
-                  return (
-                    <div className="item" key={l.id}>
-                      <div className="title">{text}</div>
-                      <div className="count">{l.commentCount}回答</div>
-                    </div>
-                  )
-                })
-              }
+              <div className="header">最近30天精华回答 <Link to="/ask">更多</Link></div>
+              {featuredList.map(l => {
+                const text = l.title.length > 20 ? <span>{l.title.slice(0, 20)}...</span> : l.title
+                return (
+                  <div className="item" key={l.id}>
+                    <Link to={`/ask/${l.id}`} className="title">{text}</Link>
+                    <div className="count">{l.answerCount}回答</div>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>

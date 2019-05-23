@@ -4,6 +4,7 @@ import ContentHeader from './ContentHeader'
 import { Counselor } from '@features/common/types'
 import { avatarURL } from '@features/common/fakeData'
 import { Button, Icon, Tooltip } from 'antd'
+import { Link } from 'react-router-dom';
 
 interface ICounselorContentProps {
   seeMore: () => void
@@ -53,8 +54,6 @@ export default class CounselorContent extends React.Component<
         <div className="counselor-content">
           <ContentHeader
             type="counselor"
-            onSeeMore={seeMore}
-            onAction={gotoApply}
             hideAction={!showApply}
           />
           <div className="swipe">
@@ -87,7 +86,7 @@ export default class CounselorContent extends React.Component<
                         <section className="major">擅长：{major}</section>
                       </main>
                       <footer>
-                        <Button type="primary">预约</Button>
+                        <Link to={`/expert/${l.id}`}><Button type="primary">预约</Button></Link>
                       </footer>
                     </div>
                   )

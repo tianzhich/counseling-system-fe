@@ -49,15 +49,19 @@
       justify-content: space-between;
       margin-top: 10px;
 
+      .ant-empty {
+        width: 100%;
+      }
+
       .item {
-        background-color: #f0f2f5;;
+        background-color: #f0f2f5;
         display: inline-flex;
         width: 400px;
         border-radius: 10px;
         margin: 10px;
-        padding: 10px;
+        padding: 10px 20px;
         cursor: pointer;
-        transition: all .5s;
+        transition: all 0.5s;
 
         &:hover {
           box-shadow: 0 2px 20px 0 #eaeaea;
@@ -68,14 +72,16 @@
           cursor: pointer;
         }
 
-        .cover>img {
+        .cover > img {
           width: 100px;
           height: 100px;
         }
 
         .main {
-          padding-left: 5px;
+          padding-left: 10px;
           flex-grow: 1;
+          display: inline-flex;
+          flex-direction: column;
 
           .title {
             font-size: 16px;
@@ -89,6 +95,8 @@
 
           .excerpt {
             font-size: 13px;
+            padding: 5px;
+            flex-grow: 1;
           }
 
           .tags {
