@@ -4,7 +4,13 @@ import { NotificationTabKey } from '@features/common/component/Notification'
 export const baseURL = `${window.location.origin}/api/`
 
 type oAuthKey = 'oauth/signin' | 'oauth/signup' | 'oauth/auth' | 'oauth/apply'
-type infoKey = 'info/counselingFilters' | 'info/pre' | 'info/preCounselor' | 'info/askTags'
+type infoKey =
+  | 'info/counselingFilters'
+  | 'info/pre'
+  | 'info/preCounselor'
+  | 'info/askTags'
+  | 'info/myArticleList'
+  | 'info/myAskList'
 type queryKey =
   | 'query/counselorList'
   | 'query/newlyCounselors'
@@ -107,7 +113,7 @@ export const apiConfig: IApiConfig = {
     method: 'POST'
   },
   'query/homeAskList': {
-    repeat: 'query/askList',
+    repeat: 'query/askList'
   },
   'query/homeAskFeatureList': {
     repeat: 'query/askList'
@@ -120,7 +126,9 @@ export const apiConfig: IApiConfig = {
   'operation/addAskComment': {
     method: 'POST'
   },
-  'query/search': {}
+  'query/search': {},
+  'info/myArticleList': {},
+  'info/myAskList': {}
 }
 
 export const OtherAPI = {

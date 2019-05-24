@@ -8,10 +8,12 @@ import { Dispatch } from 'redux'
 import { fetchAction } from '@common/api/action'
 import { IStore } from '@common/storeConfig'
 import AskItem from '@features/ask/component/AskItem'
-import { Article, Counselor, AskItemProps } from '@features/common/types'
+import { ArticleProps, Counselor, AskItemProps } from '@features/common/types'
 import { NetworkStatus } from '@common/api/config'
 import { fakeCoverURL, avatarURL } from '@features/common/fakeData'
 import { Link } from 'react-router-dom'
+import CommonAskList from '@features/common/component/CommonAskList';
+import CommonArticleList from '@features/common/component/CommonArticleList';
 
 const typeBarOption = [
   {
@@ -52,7 +54,7 @@ const IconText = (props: { type: string; text: string; onClick?: () => void }) =
 )
 
 type QueryType = 'ask' | 'article' | 'counselor'
-type SearchList = AskItem[] | Article[] | Counselor[]
+type SearchList = AskItem[] | ArticleProps[] | Counselor[]
 
 interface ISearchProps {
   dispatch: Dispatch
@@ -93,107 +95,13 @@ class Search extends React.Component<Props, ISearchState> {
     switch (type) {
       case 'article': {
         return (
-          <List
-            itemLayout="vertical"
-            size="large"
-            pagination={{
-              pageSize: 3
-            }}
-            dataSource={list}
-            renderItem={(item: Article) => {
-              const tags = item.tags !== '' && item.tags ? item.tags.split(',') : []
-              return (
-                <List.Item
-                  key={item.id}
-                  actions={[
-                    <IconText type="eye" text={item.readCount.toString()} />,
-                    <IconText type="star-o" text={item.starCount.toString()} />,
-                    <IconText type="like-o" text={item.likeCount.toString()} />,
-                    <IconText
-                      type="message"
-                      text={item.comment ? item.comment.length.toString() : '0'}
-                    />
-                  ]}
-                  extra={<img width={272} alt="logo" src={fakeCoverURL} />}
-                >
-                  <List.Item.Meta
-                    avatar={<Avatar src={avatarURL} />}
-                    title={<Link to={`/article/${item.id}`}>{item.title}</Link>}
-                    description={
-                      <div>
-                        <div>
-                          作者：<span>{item.authorName}</span>
-                        </div>
-                        <div>
-                          发布时间：<span>{item.postTime}</span>
-                        </div>
-                        <div>
-                          标签：
-                          {tags.map(t => (
-                            <Tag key={t} color="blue">
-                              #{t}
-                            </Tag>
-                          ))}
-                        </div>
-                      </div>
-                    }
-                  />
-                  {item.excerpt}
-                </List.Item>
-              )
-            }}
-          />
+          <CommonArticleList list={list as ArticleProps[]} />
         )
       }
 
       case 'ask': {
         return (
-          <List
-            itemLayout="vertical"
-            size="large"
-            pagination={{
-              pageSize: 3
-            }}
-            dataSource={list}
-            renderItem={(item: AskItemProps) => {
-              const recentCmt = item.askComment ? item.askComment[0] : null
-              return (
-                <List.Item
-                  key={item.id}
-                  actions={[
-                    <IconText type="eye" text={item.readCount.toString()} />,
-                    <IconText type="star-o" text={item.starCount.toString()} />,
-                    <IconText type="like-o" text={item.likeCount.toString()} />,
-                    <IconText type="message" text={item.answerCount.toString()} />
-                  ]}
-                >
-                  <List.Item.Meta
-                    avatar={<Avatar src={avatarURL} />}
-                    title={<Link to={`/ask/${item.id}`}>{item.title}</Link>}
-                    description={
-                      <div>
-                        <div>
-                          作者：<span>{item.authorName}</span>
-                        </div>
-                        <div>
-                          发布时间：<span>{item.time}</span>
-                        </div>
-                        <div>
-                          最近回答：
-                          {recentCmt ? (
-                            <span className="recent-cmt">{recentCmt.text}</span>
-                          ) : (
-                            '暂无'
-                          )}
-                        </div>
-                      </div>
-                    }
-                  />
-                  {item.content}
-                </List.Item>
-              )
-            }}
-          />
+          <CommonAskList list={list as AskItem[]} />
         )
       }
 
