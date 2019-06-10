@@ -23,6 +23,7 @@ export default class AskItem extends React.Component<IAskItemProps, IAskItemStat
   renderContent = () => {
     const { data, type } = this.props
     const isAnswer = type === 'answerFirst'
+    const content  = data.content
     const Header = (
       <Link to={`/ask/${data.id}`} className="title">
         <h2>{data.title}</h2>
@@ -61,7 +62,7 @@ export default class AskItem extends React.Component<IAskItemProps, IAskItemStat
           {AnswerBtn}
         </div>
         <div className="main">
-          <p>{data.content}</p>
+          <p>{content}</p>
         </div>
       </React.Fragment>
     )
@@ -77,7 +78,7 @@ export default class AskItem extends React.Component<IAskItemProps, IAskItemStat
     return (
       <div className="ask-item">
         <div className="avatar">
-          <img src={isAnony ? anonyURL : avatarURL} alt="" width="30px" />
+          <img src={isAnony ? require('@images/anonyAvatar.png') : avatarURL} alt="" />
         </div>
         <div className="content">
           {this.renderContent()}

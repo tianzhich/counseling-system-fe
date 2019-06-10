@@ -77,12 +77,15 @@ export default class ArticleList extends React.Component<IArticleListProps, IArt
   render() {
     const ArticleItem = (props: ArticleProps) => {
       const tags = props.tags === '' ? [] : props.tags.split(',')
+      const excerpt = props.excerpt.length > 80 ? `${props.excerpt.slice(0, 80)}...` : props.excerpt
       return (
         <div className="article-item-wrapper">
           <article>
             <div className="content">
-              <h2 className="title" onClick={() => this.props.gotoArticlePost(props.id.toString())}>{props.title}</h2>
-              <p className="excerpt">{props.excerpt}</p>
+              <h2 className="title" onClick={() => this.props.gotoArticlePost(props.id.toString())}>
+                {props.title}
+              </h2>
+              <p className="excerpt">{excerpt}</p>
               <div className="footer">
                 <span className="author">{props.authorName}</span>
                 <span className="date">{getDate(props.postTime)}</span>
@@ -97,7 +100,7 @@ export default class ArticleList extends React.Component<IArticleListProps, IArt
               </div>
             </div>
             <div className="thumbnail">
-              <img src={props.cover} alt="" />
+              <img src={require('@images/thumbnail.jpeg')} alt="" />
             </div>
           </article>
         </div>

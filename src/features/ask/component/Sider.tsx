@@ -2,10 +2,9 @@ import React from 'react'
 import { Button } from 'antd'
 import './Sider.less'
 import { featuedTags } from '@features/common/fakeData'
-import classnames from 'classnames'
+import { Link } from 'react-router-dom';
 
 interface ISiderProps {
-  onGotoAskPost: () => void
   onToggleFeatured: (id: string) => void
   featured: string
   isLoggin: boolean
@@ -19,10 +18,6 @@ export default class Sider extends React.Component<ISiderProps, ISiderState> {
   constructor(props: ISiderProps) {
     super(props)
     this.state = {}
-  }
-
-  gotoAskPost = () => {
-    this.props.onGotoAskPost()
   }
 
   render() {
@@ -44,12 +39,16 @@ export default class Sider extends React.Component<ISiderProps, ISiderState> {
               </div>
             </div>
             <div className="actions">
-              <Button type="primary" size="large" onClick={this.gotoAskPost}>
-                我要提问
-              </Button>
-              <Button type="primary" size="large">
-                我的问答
-              </Button>
+              <Link to="/ask/post">
+                <Button type="primary" size="large">
+                  我要提问
+                </Button>
+              </Link>
+              <Link to="/profile/ask">
+                <Button type="primary" size="large">
+                  我的问答
+                </Button>
+              </Link>
             </div>
           </div>
         ) : null}

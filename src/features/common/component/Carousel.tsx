@@ -14,7 +14,7 @@ export default class BaseCarousel extends React.Component<IBaseCarouselProps, IB
 
   render() {
     return (
-      <Carousel >
+      <Carousel autoplay >
         <div className="slide slide1" />
         <div className="slide slide2" />
         <div className="slide slide3" />

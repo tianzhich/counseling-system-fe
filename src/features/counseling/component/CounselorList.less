@@ -1,84 +1,86 @@
 @import '~@styles/global.less';
 .query-bar {
-    background-color: @bg-color-white;
-    display: flex;
-    height: 60px;
-    align-items: center;
-    position: relative;
-    margin-bottom: 10px;
-    border-radius: @border-radius;
-    >span:first-of-type {
-        flex-basis: 120px;
-        text-align: center;
-        border-right: @border-thick;
+  background-color: @bg-color-white;
+  display: flex;
+  height: 60px;
+  align-items: center;
+  position: relative;
+  margin-bottom: 10px;
+  border-radius: @border-radius;
+  > span:first-of-type {
+    flex-basis: 120px;
+    text-align: center;
+    border-right: @border-thick;
+  }
+  > span:last-of-type {
+    width: 250px;
+    position: absolute;
+    right: 20px;
+    input {
+      font-size: 12px;
     }
-    >span:last-of-type {
-        width: 250px;
-        position: absolute;
-        right: 20px;
-        input {
-            font-size: 12px;
-        }
-    }
+  }
 }
 
 .counselor-list {
-    border-radius: @border-radius;
-    .ant-card {
-        border: none;
+  border-radius: @border-radius;
+  background-color: @bg-color-white;
+
+  .ant-card {
+    border: none;
+  }
+  .ant-card:first-of-type {
+    border-top-left-radius: @border-radius;
+    border-top-right-radius: @border-radius;
+  }
+  .ant-card-body {
+    margin: 0 20px;
+    padding: 20px 0;
+    border-bottom: @border-thick;
+  }
+  .ant-avatar {
+    height: 100px;
+    width: 100px;
+    cursor: pointer;
+  }
+  .ant-card-meta-title {
+    display: flex;
+    align-items: center;
+    .name {
+      font-size: 18px;
+      font-weight: 400;
+      margin-right: 10px;
+      cursor: pointer;
     }
-    .ant-card:first-of-type {
-        border-top-left-radius: @border-radius;
-        border-top-right-radius: @border-radius;
+    .description {
+      flex-grow: 1;
+      font-size: 14px;
+      font-weight: 200;
     }
-    .ant-card-body {
-        margin: 0 20px;
-        padding: 20px 0;
-        border-bottom: @border-thick;
+  }
+  .ant-card-meta-description {
+    .motto {
+      height: 50px;
+      font-weight: 500;
+      width: 400px;
     }
-    .ant-avatar {
-        height: 100px;
-        width: 100px;
-        cursor: pointer;
+    .footer {
+      display: flex;
+      .workYears,
+      .goodRate,
+      .price {
+        width: 120px;
+      }
     }
-    .ant-card-meta-title {
-        display: flex;
-        align-items: center;
-        .name {
-            font-size: 18px;
-            font-weight: 400;
-            width: 50px;
-            cursor: pointer;
-        }
-        .description {
-            flex-grow: 1;
-            font-size: 14px;
-            font-weight: 200;
-        }
-    }
-    .ant-card-meta-description {
-        .motto {
-            height: 50px;
-            font-weight: 500;
-        }
-        .footer {
-            display: flex;
-            .workYears,
-            .goodRate,
-            .price {
-                width: 120px;
-            }
-        }
-    }
+  }
 }
 
 .pagination-wrapper {
-    background-color: @bg-color-white;
-    border-bottom-right-radius: @border-radius;
-    border-bottom-left-radius: @border-radius;
-    ul {
-        height: 60px;
-        text-align: center;
-        line-height: 60px;
-    }
+  border-bottom-right-radius: @border-radius;
+  border-bottom-left-radius: @border-radius;
+  ul {
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
+  }
 }

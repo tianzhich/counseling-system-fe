@@ -4,7 +4,7 @@ import BaseCarousel from '@features/common/component/Carousel'
 import ArticleContent from './component/ArticleContent'
 import { IStore } from '@common/storeConfig'
 import { connect } from 'react-redux'
-import { ArticleTopic, Article, Counselor, AskItemProps } from '@features/common/types'
+import { ArticleTopic, ArticleProps, Counselor, AskItemProps } from '@features/common/types'
 import { Dispatch } from 'redux'
 import { fetchAction } from '@common/api/action'
 import { push } from 'connected-react-router'
@@ -13,7 +13,7 @@ import AskContent from './component/AskContent'
 import CounselorContent from './component/CounselorContent'
 
 interface IHomeProps {
-  articleList: Article[]
+  articleList: ArticleProps[]
   counselorList: Counselor[]
   askList: AskItemProps[]
   featuredList: AskItemProps[]
@@ -31,8 +31,8 @@ class Home extends React.Component<IHomeProps, IHomeState> {
 
   componentDidMount() {
     this.fetchArticleList('all')
-		this.fetchCounselorList()
-		this.fetchAskList()
+    this.fetchCounselorList()
+    this.fetchAskList()
   }
 
   redirect = (path: string) => {
@@ -70,6 +70,8 @@ class Home extends React.Component<IHomeProps, IHomeState> {
 
   render() {
     const { articleList, isCounselor, counselorList, askList, featuredList } = this.props
+    const aaskList = askList.length > 5 ? askList.slice(0, 5) : askList
+    const ffList = featuredList.length > 15 ? featuredList.slice(0, 15) : featuredList
     return (
       <div className="pcs-home">
         <header>
@@ -84,7 +86,7 @@ class Home extends React.Component<IHomeProps, IHomeState> {
             showPost={isCounselor}
             seeDetail={id => this.redirect(`/article/${id}`)}
           />
-          <AskContent list={askList} featuredList={featuredList} />
+          <AskContent list={aaskList} featuredList={ffList} />
           <CounselorContent
             gotoApply={() => this.redirect('/apply')}
             showApply={!isCounselor}

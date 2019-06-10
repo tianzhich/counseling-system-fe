@@ -235,29 +235,27 @@ class CounselingDetail extends React.Component<ICounselingDetailProps, ICounseli
             ) : null}
           </div>
         </div>
-      ) : data.status === 'finish' &&
-        (data.letter !== '' || data.ratingScore !== -1) &&
-        !isCounselor ? (
+      ) : data.status === 'finish' && (data.letter !== '' || data.ratingScore !== -1) ? (
         <div className="section">
           <div className="title">其他</div>
           <div className="content">
-            {data.ratingScore !== -1 ? (
+            {data.ratingScore !== -1 && !isCounselor ? (
               <React.Fragment>
                 <div>
                   <span>咨询评分</span>{' '}
-                  {data.ratingScore !== -1 ? <Rate disabled value={data.ratingScore} /> : null}
+                  {data.ratingScore !== -1 ? (
+                    <Rate disabled value={data.ratingScore} allowHalf />
+                  ) : null}
                 </div>
                 <div>
                   <span>咨询评价</span> {data.ratingText !== '' ? data.ratingText : '空'}
                 </div>
               </React.Fragment>
             ) : null}
-            {data.letter !== '' ? (
-              <div>
-                <span>感谢信</span>
-                <p>{data.letter}</p>
-              </div>
-            ) : null}
+            <div>
+              <span>感谢信</span>
+              {data.letter === '' ? <p>暂无</p> : <p>{data.letter}</p>}
+            </div>
           </div>
         </div>
       ) : null

@@ -289,7 +289,7 @@ export const fakeRecmdAskPost: FakeRecmdAskPost[] = [
 export const featuedTags: FakeAskTag[] = [
   {
     id: '16',
-    name: '手机依赖',
+    name: '行为困惑',
     parentTag: 'behavior'
   },
   {

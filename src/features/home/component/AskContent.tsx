@@ -50,7 +50,9 @@ export default class AskContent extends React.Component<IAskContentProps, {}> {
                 return (
                   <div className="item" key={recentCmt.id}>
                     <header>
-                      <Link to={`/ask/${l.id}`} className="title">{l.title}</Link>
+                      <Link to={`/ask/${l.id}`} className="title">
+                        {l.title}
+                      </Link>
                       {l.answerCount > 0 ? (
                         <span className="count">{l.answerCount}个回答</span>
                       ) : null}
@@ -58,7 +60,7 @@ export default class AskContent extends React.Component<IAskContentProps, {}> {
                     </header>
                     <main>
                       <div className="cover">
-                        <img src={avatarURL} alt="" />
+                        <img src={require('@images/fakeAvatar.png')} alt="" />
                       </div>
                       <div className="before" />
                       <div className="content">{cmtEle}</div>
@@ -69,12 +71,16 @@ export default class AskContent extends React.Component<IAskContentProps, {}> {
               })}
             </div>
             <div className="recmd-list">
-              <div className="header">最近30天精华回答 <Link to="/ask">更多</Link></div>
+              <div className="header">
+                最近30天精华回答 <Link to="/ask">更多</Link>
+              </div>
               {featuredList.map(l => {
                 const text = l.title.length > 20 ? <span>{l.title.slice(0, 20)}...</span> : l.title
                 return (
                   <div className="item" key={l.id}>
-                    <Link to={`/ask/${l.id}`} className="title">{text}</Link>
+                    <Link to={`/ask/${l.id}`} className="title">
+                      {text}
+                    </Link>
                     <div className="count">{l.answerCount}回答</div>
                   </div>
                 )

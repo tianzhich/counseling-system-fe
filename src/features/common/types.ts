@@ -6,6 +6,18 @@ export interface DictInfo {
   name: string
 }
 
+export interface Letter {
+  id: number
+  time: string
+  text: string
+}
+
+export interface DetailItem {
+  id: number
+  title: string
+  content: string
+}
+
 // Info about Counselor
 export interface Counselor {
   id: number
@@ -23,6 +35,11 @@ export interface Counselor {
   city: DictInfo | null
   topic: DictInfo
   topicOther: string
+  serviceCount: number
+  lettersCount: number
+  letters: Letter[]
+  articleList: ArticleProps[]
+  details: DetailItem[]
 }
 
 // deprecated fake expert

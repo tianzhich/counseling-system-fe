@@ -14,6 +14,7 @@ interface IPopularListProps {
 function ListItem(
   props: Pick<ArticleProps, 'id' | 'authorName' | 'title' | 'postTime' | 'excerpt'> & { number: string }
 ) {
+  const excerpt = props.excerpt.length > 30 ? `${props.excerpt.slice(0, 30)}...` : props.excerpt
   return (
     <li className="list-item">
       <div className="number">{props.number}</div>
@@ -21,7 +22,7 @@ function ListItem(
         <Link to={`/article/${props.id}`}>
           <h4 className="title">{props.title}</h4>
         </Link>
-        <p className="excerpt">{props.excerpt}</p>
+        <p className="excerpt">{excerpt}</p>
         <div>
           <span className="date">{getDate(props.postTime)}</span>
           <span className="author">{props.authorName}</span>

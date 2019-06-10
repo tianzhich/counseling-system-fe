@@ -91,7 +91,6 @@ class Ask extends React.Component<IAskProps, IAskState> {
           featued={featured}
         />
         <Sider
-          onGotoAskPost={this.handleGotoAskPost}
           onToggleFeatured={this.toggleFeatured}
           featured={featured}
           isLoggin={isLoggin}

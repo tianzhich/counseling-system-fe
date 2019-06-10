@@ -1,7 +1,7 @@
 import React, { ComponentProps } from 'react'
 import { OtherAPI, NetworkStatus, NetworkErrorMsg } from '@common/api/config'
 import { RouteComponentProps, Redirect } from 'react-router'
-import { Article, ArticleComment } from '@features/common/types'
+import { ArticleProps, ArticleComment } from '@features/common/types'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { push } from 'connected-react-router'
@@ -73,7 +73,7 @@ interface IArticlePostProps extends RouteComponentProps<{ id?: string }> {
 type ArticleCmtCounter = Pick<ArticleComment, 'id' | 'likeCount'>[]
 
 interface IArticlePostState {
-  data?: Article
+  data?: ArticleProps
   status?: NetworkStatus
 
   // comment
@@ -317,7 +317,7 @@ class ArticlePost extends React.Component<IArticlePostProps, IArticlePostState> 
             data: data.data,
             status: 'success'
           })
-          const { isRead, isLike, isStar, id, comment, likeCount } = data.data as Article
+          const { isRead, isLike, isStar, id, comment, likeCount } = (data.data) as ArticleProps
           const wrappedComment = comment ? comment : []
           // 文章设为已读
           if (isRead === false) {

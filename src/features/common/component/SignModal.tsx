@@ -93,9 +93,9 @@ class SignModal extends React.Component<ISignModalProps, ISignModalState> {
                     })
                     message.success(this.props.signupRes.response.message)
                     // reload
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 1500);
+                    // setTimeout(() => {
+                    //     window.location.reload()
+                    // }, 1500);
                 } else if (this.props.signupRes.response.code === 0) {
                     message.warning(this.props.signupRes.response.message)
                 }

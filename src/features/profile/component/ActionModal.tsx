@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, DatePicker, Input, message, notification, Icon, Select, Rate } from 'antd'
+import { Modal, DatePicker, Input, message, notification, Icon, Select, Rate, Divider } from 'antd'
 import { ICounselingRecord } from './Counselor/CounselingTab'
 
 import './ActionModal.less'
@@ -193,6 +193,8 @@ export default class ActionModal extends React.Component<IActionModalProps, IAct
       case '取消订单':
         return (
           <React.Fragment>
+            <div>注意：确认咨询后取消订单无法退款，确认前取消可直接退款</div>
+            <Divider />
             <Select
               placeholder="请选择理由"
               value={option}

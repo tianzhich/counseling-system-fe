@@ -19,7 +19,7 @@ import { IStore } from '@common/storeConfig'
 import { platform } from 'os'
 import { Dispatch } from 'redux'
 import { fetchAction } from '@common/api/action'
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
 type MockAskCmt = AskComment & { replyToID?: number }
 
@@ -234,18 +234,19 @@ class AskItemDetail extends React.Component<Props, IAskItemDetailState> {
       const resp = addCmtRes.response
       if (addCmtRes.status === 'success' && resp && resp.code === 1) {
         let newCmt = { ...this.state.activeAnswer }
-        const prevCmts = this.state.data.askComment
+        const prevCmts = this.state.data.askComment ? this.state.data.askComment : []
         let newCmts: AskComment[]
         if (newCmt.id === -1) {
           newCmt.id = resp.data
           newCmts = [...prevCmts, newCmt]
         } else {
           newCmt.subComments[0].id = resp.data
-          newCmts = prevCmts.map(cmt =>
-            cmt.id === newCmt.id
-              ? { ...cmt, subComments: [...cmt.subComments, ...newCmt.subComments] }
+          newCmts = prevCmts.map(cmt => {
+            const prevSubCmts = cmt.subComments ? cmt.subComments : []
+            return cmt.id === newCmt.id
+              ? { ...cmt, subComments: [...prevSubCmts, ...newCmt.subComments] }
               : cmt
-          )
+          })
         }
 
         this.setState(
@@ -334,7 +335,7 @@ class AskItemDetail extends React.Component<Props, IAskItemDetailState> {
       <div className="ask-item-detail">
         <div className="ask">
           <div className="avatar">
-            <img src={isAnony ? anonyURL : avatarURL} alt="" width="50px" />
+            <img src={isAnony ? require('@images/anonyAvatar.png') : avatarURL} alt="" />
           </div>
           <div className="content">
             <div className="title">

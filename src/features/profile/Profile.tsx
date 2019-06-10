@@ -12,7 +12,7 @@ import UserTab, { UserProfileTab } from './component/User'
 import { Icon, Button } from 'antd'
 import { getDate } from '@utils/moment'
 import Loading from '@features/common/component/Loading'
-import AskItem from '@features/ask/component/AskItem';
+import AskItem from '@features/ask/component/AskItem'
 
 export type ProfileTab = CounselorProfileTab | UserProfileTab
 
@@ -62,11 +62,11 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
         this.props.dispatch(fetchAction('query/counselingRecords'))
         break
 
-      case 'article': 
+      case 'article':
         this.props.dispatch(fetchAction('info/myArticleList'))
         break
 
-      case 'ask': 
+      case 'ask':
         this.props.dispatch(fetchAction('info/myAskList'))
         break
 
@@ -116,7 +116,10 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
   }
 
   scrollToSetting = () => {
-    window.scrollTo(0, this.settingTabRef.current.offsetTop - 70)
+    const pos = this.settingTabRef.current
+    if (pos) {
+      window.scrollTo(0, pos.offsetTop - 70)
+    }
   }
 
   reloadSetting = () => {
